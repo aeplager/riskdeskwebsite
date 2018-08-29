@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
+using System.IO;
 using System.Text;
 
 namespace WCFWebRole
@@ -18,6 +19,7 @@ namespace WCFWebRole
         //     add [WebGet(ResponseFormat=WebMessageFormat.Xml)],
         //     and include the following line in the operation body:
         //         WebOperationContext.Current.OutgoingResponse.ContentType = "text/xml";
+        
         [OperationContract]
         public void DoWork()
         {

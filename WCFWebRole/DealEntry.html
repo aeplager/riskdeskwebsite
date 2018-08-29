@@ -22,10 +22,8 @@
 
     <link href="fonts/font-awesome.min.css" rel="stylesheet">
 
-    <!--Custom Java Script-->
-    <script type="text/javascript" src="Scripts/DataRetrieval_Deal.js"></script>
+    <!--Custom Java Script-->    
     <script type="text/javascript" src="Scripts/General.js"></script>
-    <script type="text/javascript" src="Scripts/Customer.js"></script>
     <script type="text/javascript" src="Scripts/DealEntry.js"></script>
     <script type="text/javascript" src="Scripts/AutoComplete.js"></script>
 
@@ -48,13 +46,18 @@
     <![endif]-->
     <script>
         /*An array containing all the country names in the world:*/
+        var Cities = [];
         function Initialize() {
             // Initialize the city
             try {
 
-                StateList_Reset('StateInfoList_Deal');
-                CityAuto_Reset('CityInfoAutoCompleteList_Deal')
-                //DealList_Reset('DealInfoList_Deal');
+                //StateList_Reset('StateInfoList_Deal');
+                //CityAuto_Reset('CityInfoAutoCompleteList_Deal')
+                CustomerList_Reset('CustomerInfoList_Deal');
+                SetMonths('DealStartDateMonth');
+                SetYearsAvailable('DealStartDateYear');
+                SetMonths('DealEndDateMonth');
+                SetYearsAvailable('DealEndDateYear');
                 //$('#StateInfoList_Deal').val('TX');
                 //CreateDealTable();
             }
@@ -267,12 +270,12 @@
             <!-- Sub Nav End -->
             <div class="sub-nav hidden-sm hidden-xs">
                 <ul>
-                    <li><a href="" class="heading">Customer Entry Form</a></li>  <!--Main Form for Data Entry-->
+                    <li><a href="" class="heading">Data Entry Form</a></li>  <!--Main Form for Data Entry-->
                     <li class="hidden-sm hidden-xs">
-                        <a href="#color-picker">Table of Customers</a>
+                        <a href="#RemoveAbleDiv_Cust">Table of Customers</a>
                     </li>
                     <li class="hidden-sm hidden-xs">
-                        <a href="#create-account">Upload of Data</a>
+                        <a href="#">Upload of Data</a>
                     </li>
                     <!--<li class="hidden-sm hidden-xs">
                       <a href="#inputs">Status of Upload</a>
@@ -311,73 +314,130 @@
                                 <div class="widget-body">
                                     <form class="form-horizontal no-margin">
                                         <div class="form-group">
-                                            <label for="ListLabel_Deal" class="col-sm-2 control-label">Deal</label>
+                                            <label for="CustomerDealListLabel" class="col-sm-2 control-label">Select Customer</label>
                                             <div class="col-md-4 col-sm-4 col-xs-4">
-                                                <select id="InfoList_Deal" name="InfoList_Deal_name" class="form-control" onchange="DealInfoList_Change()">
-                                                    <option>Test 1</option>
+                                                <select id="CustomerInfoList_Deal" name="CustomerInfoList_Deal_name" class="form-control" onchange="DealCustomerInfoList_Change()">
+                                                    <option>-Customer-</option>
+                                                </select>
+                                            </div>
+                                            <label for="DealListLabel" class="col-sm-2 control-label">Select Deal</label>
+                                            <div class="col-md-4 col-sm-4 col-xs-4">
+                                                <select id="DealInfoList_Deal" name="DealInfoList_Deal_name" class="form-control" onchange="DealInfoList_Change()">
+                                                    <option>-Deal-</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="userName" class="col-sm-2 control-label">Deal Name</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="DealName_Deal" placeholder="Name">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="Address1" class="col-sm-2 control-label">Address Line 1</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="Address1_Deal" placeholder="Address">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="Address2" class="col-sm-2 control-label">Address Line 2</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="Address2_Deal" placeholder="Address">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="pwd" class="col-sm-2 control-label">City</label>
+                                            <label for="pwd" class="col-sm-2 control-label">Start Date</label>
                                             <div class="col-sm-10">
                                                 <div class="row">
                                                     <div class="col-md-4 col-sm-4 col-xs-4">
-                                                        <!--<select id="CityInfoList_Deal" class="form-control">
-                                                        <option>
-                                                            - City -
-                                                        </option>
-                                                        Initial Value
-                                                        <option value="1">
-                                                            Initial Value
-                                                        </option>
-                                                        </select>-->
-                                                        <div class="autocomplete">
-                                                            <input id="CityInfoAutoCompleteList_Deal" class="form-control" type="text" name="CitiesAutoDeal" placeholder="Cities">
-                                                        </div>
-                                                        <script>
-                                                            /*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
-                                                            autocomplete(document.getElementById("CityInfoAutoCompleteList_Deal"), Cities);
-                                                        </script>
+                                                        <select id="DealStartDateMonth" class="form-control" onchange="SetDays('DealStartDateMonth', 'DealStartDateDay')">
+                                                            <option>
+                                                                - Month -
+                                                            </option>
+                                                            <option value="1">
+                                                                January
+                                                            </option>                                                            
+                                                        </select>
                                                     </div>
                                                     <div class="col-md-4 col-sm-4 col-xs-4">
-                                                        <select id="StateInfoList_Deal" name="StateInfo_Deal" class="form-control">
-                                                            <!--Initial Value-->
+                                                        <select id="DealStartDateDay" name="DealStartDateDay_Name" class="form-control">
+                                                            <option>
+                                                                - Day -
+                                                            </option>
                                                             <option value="1">
-                                                                Initial Value
+                                                                1
+                                                            </option>
+                                                            
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-4 col-xs-4">
+                                                        <select id="DealStartDateYear" name="DateOfBirth_Year" class="form-control">
+                                                            <option>
+                                                                - Year -
+                                                            </option>
+                                                            <option value="2013">
+                                                                2018
+                                                            </option>                                                            
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="pwd" class="col-sm-2 control-label">End Date</label>
+                                            <div class="col-sm-10">
+                                                <div class="row">
+                                                    <div class="col-md-4 col-sm-4 col-xs-4">
+                                                        <select id="DealEndDateMonth" class="form-control" onchange="SetDays('DealEndDateMonth', 'DealEndDateDay')">
+                                                            <option>
+                                                                - Month -
+                                                            </option>
+                                                            <option value="1">
+                                                                January
                                                             </option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4 col-sm-4 col-xs-4">
+                                                        <select id="DealEndDateDay" name="DealEndDateDay_Name" class="form-control">
+                                                            <option>
+                                                                - Day -
+                                                            </option>
+                                                            <option value="1">
+                                                                1
+                                                            </option>
+
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-4 col-xs-4">
+                                                        <select id="DealEndDateYear" name="DateOfEnd_Year" class="form-control">
+                                                            <option>
+                                                                - Year -
+                                                            </option>
+                                                            <option value="2013">
+                                                                2018
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="pwd" class="col-sm-2 control-label">Margin</label>
+                                            <div class="col-sm-10">
+                                                <div class="row">
+                                                    <div class="col-md-4 col-sm-4 col-xs-4">
                                                         <div class="col-sm-10">
-                                                            <input type="text" class="form-control" id="ZipCode_Deal" placeholder="Zip Code">
+                                                            <input type="number" class="form-control" id="Margin_Deal" placeholder="0.00" min="-1.00" max="500000.00">
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group">
+                                            <label for="pwd" class="col-sm-2 control-label">Broker Margin</label>
+                                            <div class="col-sm-10">
+                                                <div class="row">
+                                                    <div class="col-md-4 col-sm-4 col-xs-4">
+                                                        <div class="col-sm-10">
+                                                            <input type="number" class="form-control" id="BrokerMargin_Deal" placeholder="0.00" min="-1.00" max="500000.00">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="checkbox col-sm-offset-2 col-sm-20">
+                                                <label>
+                                                    <input type="checkbox" id="Active_Deal" checked="checked">Is Deal Active?
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
                                             <div class="col-sm-offset-2 col-sm-10">
                                                 <button type="button" class="btn btn-default btn" onclick="DealUpsert('New')">New</button>
-                                                <button type="button" class="btn btn-info" onclick="DealUpsert('Old')">Save</button>                                                
+                                                <button type="button" class="btn btn-info" onclick="DealUpsert('Old')">Save</button>
                                             </div>
                                         </div>
                                     </form>
@@ -550,7 +610,7 @@
     <!-- Main Container end -->
 
     <script src="js/wysi/wysihtml5-0.3.0.min.js"></script>
-    <script src="js/jquery.js"></script>
+    <!--<script src="js/jquery.js"></script>-->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/wysi/bootstrap3-wysihtml5.js"></script>
     <script src="js/jquery.scrollUp.js"></script>
