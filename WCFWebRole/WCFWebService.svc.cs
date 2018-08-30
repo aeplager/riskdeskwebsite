@@ -14,6 +14,7 @@ using System.Web.Hosting;
 using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System.Globalization;
 namespace WCFWebRole
 {
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "WCFWebService" in code, svc and config file together.
@@ -263,7 +264,7 @@ namespace WCFWebRole
             {
                 using (SqlCommand cmd = new SqlCommand())
                 {
-                    string SqlCommandText = "[WebSite].[DealAllGetInfo]";
+                    string SqlCommandText = "[WebSite].[CustomerDealsAllGetInfo]";
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = SqlCommandText;
                     cmd.Parameters.AddWithValue("@CustomerID", CustomerID);
@@ -290,8 +291,8 @@ namespace WCFWebRole
                                 DealID = Convert.ToInt32(dr["dealid"].ToString()),
                                 DealNumber = dr["dealnumber"].ToString(),
                                 DealName = dr["dealname"].ToString(),
-                                StartDate = Convert.ToDateTime(dr["startdate"].ToString()),
-                                EndDate = Convert.ToDateTime(dr["enddate"].ToString()),
+                                StartDate = dr["startdate"].ToString(),
+                                EndDate = dr["enddate"].ToString(),
                                 Margin = Convert.ToDouble(dr["Margin"].ToString()),
                                 BrokerMargin = Convert.ToDouble(dr["BrokerMargin"].ToString()),
                                 DealActive = Convert.ToBoolean(dr["DealActive"].ToString()),
@@ -302,7 +303,54 @@ namespace WCFWebRole
             }
             return SelectionItemsinfo;
         }
+        public List<DealInfo> DealsAllGetInfo()
+        {
 
+            List<DealInfo> SelectionItemsinfo = new List<DealInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[DealsAllGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;                    
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new DealInfo
+                            {
+                                CustomerID = Convert.ToInt32(dr["customerid"].ToString()),
+                                CustomerName = dr["customername"].ToString(),
+                                CustActive = Convert.ToBoolean(dr["CustActive"].ToString()),
+                                DealID = Convert.ToInt32(dr["dealid"].ToString()),
+                                DealNumber = dr["dealnumber"].ToString(),
+                                DealName = dr["dealname"].ToString(),
+                                StartDate = dr["startdate"].ToString(),
+                                EndDate = dr["enddate"].ToString(),
+                                Margin = Convert.ToDouble(dr["Margin"].ToString()),
+                                BrokerMargin = Convert.ToDouble(dr["BrokerMargin"].ToString()),
+                                DealActive = Convert.ToBoolean(dr["DealActive"].ToString()),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
         public int CustomerUpsert(int CustomerID, String CustomerName, String BillingAdd1, String BillingAdd2, String CityName, String StateAbb, String Zip, int Active)
         {
 
@@ -346,6 +394,106 @@ namespace WCFWebRole
                         foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
                         {
                             SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        public int DealUpsert(int CustomerID, int DealID, String DealNumber, String DealName, DateTime StartDate, DateTime EndDate, Double Margin, Double BrokerMargin, int Active)
+        {
+
+            int SelectionItemsinfo = new int();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            if (Active != 1)
+            {
+                if (Active != 0)
+                {
+                    Active = 1;
+                }
+            }
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[DealUpsert]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@CustomerID", CustomerID);
+                    cmd.Parameters.AddWithValue("@DealID", DealID);
+                    cmd.Parameters.AddWithValue("@DealNumber", DealNumber);
+                    cmd.Parameters.AddWithValue("@DealName", DealName);
+                    cmd.Parameters.AddWithValue("@StartDate", StartDate);
+                    cmd.Parameters.AddWithValue("@EndDate", EndDate);
+                    cmd.Parameters.AddWithValue("@Margin", Margin);
+                    cmd.Parameters.AddWithValue("@BrokerMargin", BrokerMargin);
+                    cmd.Parameters.AddWithValue("@Active", Active);
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+        public List<DealInfo> SpecificDealsGetInfo(int DealID)
+        {
+
+            List<DealInfo> SelectionItemsinfo = new List<DealInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[SpecificDealsGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@DealID", DealID);
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new DealInfo
+                            {
+                                CustomerID = Convert.ToInt32(dr["customerid"].ToString()),
+                                CustomerName = dr["customername"].ToString(),
+                                DealID = Convert.ToInt32(dr["dealid"].ToString()),
+                                DealName = dr["dealname"].ToString(),
+                                DealNumber = dr["dealnumber"].ToString(),
+                                StartDate = dr["StartDate"].ToString(),
+                                EndDate = dr["EndDate"].ToString(),
+                                Margin = Convert.ToDouble(dr["Margin"].ToString()),
+                                BrokerMargin = Convert.ToDouble(dr["BrokerMargin"].ToString()),
+                                DealActive = Convert.ToBoolean(dr["DealActive"].ToString()),
+                            });
                         }
                     }
                 }

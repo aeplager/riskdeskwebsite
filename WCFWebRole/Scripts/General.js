@@ -286,14 +286,22 @@ function SetDays(ControlFrom, ControlToSet) {
 function SetYearsAvailable(ControlToSet) {
     try {
         $('#' + ControlToSet).empty();
-        $('#' + ControlToSet).append('<option value="' + 0 + '">' + '- Year -' + '</option>')        
+        $('#' + ControlToSet).append('<option value="' + 0 + '">' + '- Year -' + '</option>')                
         for (i = 2010; i <= 2050; i++) {
-            $('#' + ControlToSet).append('<option value="' + i + '">' + i + '</option>')
+            $('#' + ControlToSet).append('<option value="' + i + '">' + i + '</option>')            
         }
 
     }
     catch (e) {
         HeaderDataErrorReport(e);
     }
-
+}
+function SetYear(ControlToSet, Yr) {
+    try {
+        var NewYr = Yr - 2010 + 1;
+        $('#' + ControlToSet).val(NewYr);
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
 }

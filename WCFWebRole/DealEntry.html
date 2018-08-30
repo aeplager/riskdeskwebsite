@@ -22,10 +22,11 @@
 
     <link href="fonts/font-awesome.min.css" rel="stylesheet">
 
-    <!--Custom Java Script-->    
+    <!--Custom Java Script-->
     <script type="text/javascript" src="Scripts/General.js"></script>
-    <script type="text/javascript" src="Scripts/DealEntry.js"></script>
+    <script type="text/javascript" src="Scripts/Customer.js"></script>
     <script type="text/javascript" src="Scripts/AutoComplete.js"></script>
+    <script type="text/javascript" src="Scripts/DealEntry.js"></script>
 
     <!--Included Scripts-->
     <!--AutoComplete Scripts-->
@@ -58,8 +59,7 @@
                 SetYearsAvailable('DealStartDateYear');
                 SetMonths('DealEndDateMonth');
                 SetYearsAvailable('DealEndDateYear');
-                //$('#StateInfoList_Deal').val('TX');
-                //CreateDealTable();
+                CreateDealTable();
             }
             catch (e) {
                 HeaderDataErrorReport(e);
@@ -272,7 +272,7 @@
                 <ul>
                     <li><a href="" class="heading">Data Entry Form</a></li>  <!--Main Form for Data Entry-->
                     <li class="hidden-sm hidden-xs">
-                        <a href="#RemoveAbleDiv_Cust">Table of Customers</a>
+                        <a href="#RemoveAbleDiv_Cust">Table of Deals</a>
                     </li>
                     <li class="hidden-sm hidden-xs">
                         <a href="#">Upload of Data</a>
@@ -322,7 +322,7 @@
                                             </div>
                                             <label for="DealListLabel" class="col-sm-2 control-label">Select Deal</label>
                                             <div class="col-md-4 col-sm-4 col-xs-4">
-                                                <select id="DealInfoList_Deal" name="DealInfoList_Deal_name" class="form-control" onchange="DealInfoList_Change()">
+                                                <select id="DealInfoList_Deal" name="DealInfoList_Deal_name" class="form-control" onchange="SpecificDealGetInfo()">
                                                     <option>-Deal-</option>
                                                 </select>
                                             </div>
@@ -338,7 +338,7 @@
                                                             </option>
                                                             <option value="1">
                                                                 January
-                                                            </option>                                                            
+                                                            </option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4 col-sm-4 col-xs-4">
@@ -349,7 +349,7 @@
                                                             <option value="1">
                                                                 1
                                                             </option>
-                                                            
+
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4 col-sm-4 col-xs-4">
@@ -359,7 +359,7 @@
                                                             </option>
                                                             <option value="2013">
                                                                 2018
-                                                            </option>                                                            
+                                                            </option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -401,6 +401,18 @@
                                                         </select>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="userName" class="col-sm-2 control-label">Deal Name</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="Name_Deal" placeholder="-Deal Name-">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="userName" class="col-sm-2 control-label">Deal Number</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" class="form-control" id="Number_Deal" placeholder="-Deal Number-">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -610,7 +622,7 @@
     <!-- Main Container end -->
 
     <script src="js/wysi/wysihtml5-0.3.0.min.js"></script>
-    <!--<script src="js/jquery.js"></script>-->
+    <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/wysi/bootstrap3-wysihtml5.js"></script>
     <script src="js/jquery.scrollUp.js"></script>
@@ -682,6 +694,6 @@
             });
         });
 
-    </script>    
+    </script>
 </body>
 </html>

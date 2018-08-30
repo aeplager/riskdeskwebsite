@@ -12,9 +12,9 @@ namespace WCFWebRole
     [ServiceContract]
     public interface IWCFWebService
     {
-      
 
 
+        #region
         [WebGet(UriTemplate = "/CitiesForStateGetInfo/?StateAbb={StateAbb}",
          RequestFormat = WebMessageFormat.Json,
          ResponseFormat = WebMessageFormat.Json,
@@ -26,6 +26,7 @@ namespace WCFWebRole
              ResponseFormat = WebMessageFormat.Json,
              BodyStyle = WebMessageBodyStyle.Bare)]
        List<StateInfo> StatesGetInfo();
+        #endregion
         // Customer Routines
         #region
         [WebGet(UriTemplate = "/CustomersAllGetInfo",
@@ -54,6 +55,26 @@ namespace WCFWebRole
              BodyStyle = WebMessageBodyStyle.Bare)]
         List<DealInfo> SpecificCustomerDealsGetInfo(int CustomerID);
 
+        [WebGet(UriTemplate = "/DealUpsert?CustomerID={CustomerID}&DealID={DealID}&DealNumber={DealNumber}&DealName={DealName}&StartDate={StartDate}&EndDate={EndDate}&Margin={Margin}&BrokerMargin={BrokerMargin}&Active={Active}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        int DealUpsert(int CustomerID, int DealID, String DealNumber, String DealName, DateTime StartDate, DateTime EndDate, Double Margin, Double BrokerMargin, int Active);
+
+        [WebGet(UriTemplate = "/DealsAllGetInfo",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DealInfo> DealsAllGetInfo();
+
+        [WebGet(UriTemplate = "/SpecificDealsGetInfo?DealID={DealID}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DealInfo> SpecificDealsGetInfo(int DealID);
+
+        
+        //DealUpsert(int CustomerID, int DealID, String DealNumber, String DealName, DateTime StartDate, DateTime EndDate, Double Margin, Double BrokerMargin, int Active)
         #endregion
         //// Uploading of Files
         //[OperationContract]
@@ -146,9 +167,9 @@ namespace WCFWebRole
         [DataMember]
         public bool DealActive { get; set; }
         [DataMember]
-        public DateTime StartDate { get; set; }
+        public String StartDate { get; set; }
         [DataMember]
-        public DateTime EndDate { get; set; }
+        public String EndDate { get; set; }
         [DataMember]
         public Double Margin { get; set; }
         [DataMember]
