@@ -36,7 +36,9 @@
     <script src="https://code.jquery.com/jquery-1.7.min.js"></script>
     <script src="https://code.jquery.com/ui/1.7.0/jquery-ui.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+    <!--<!--Links to Azure-->-->
+    <script src="Azure/azure-storage.blob.js"></script>
+    <script src="Azure/AzureGeneral.js"></script>
 
     <!--Table Scrolling-->
     <!--<link href="TableScroll/NewStyleSheet.css" rel="stylesheet">-->
@@ -238,7 +240,7 @@
                             <li><a href='DealEntry.html'>Line of Business</a></li>
                             <li><a href='Customer.html'>Customer</a></li>
                             <li><a href='DealEntry.html'>Deal</a></li>
-                            <li><a href='DealEntry.html'>Facility</a></li>
+                            <li><a href='FacilityDataEntry.html'>Facility</a></li>
                             <li><a href='DealEntry.html'>Grouping</a></li>
                             <li><a href='DealEntry.html'>Broker</a></li>
                         </ul>
@@ -482,24 +484,33 @@
                     </div>
                     <!-- Row End -->
                     <!-- Row Start -->
-                    <div id="RemoveAbleDiv_Cust" class="row">
+                    <div id="RemoveUploadDiv_Deal" class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="widget">
                                 <div class="widget-header">
-                                    <!--<div class="title">
-                                        Upload Files<a id="dynamic-upload files"></a>
+                                    <div class="title">
+                                        Upload Deal Data<a id="dynamic-tables-facility-upload"></a>
                                     </div>
-                                    Code to Upload files
-                                    <input type="file" id="fileUpload" value="" />
-                                    <button id="btnUpload" onclick="UploadFile()">
-                                        Upload
-                                    </button>-->
-                                    <!--<form id="fileinfo" enctype="multipart/form-data" method="post" name="fileinfo">
-                                        <label>File to stash:</label>
-                                        <input type="file" name="file" required />
-                                    </form>-->
-                                    <!--<input type="button" value="Stash the file!"></input>-->
-                                    <div id="output"></div>
+                                </div>
+                                <div id="dtExampleWidget-2" class="widget-body">
+                                    <div id="dt_example-2" class="example_alt_pagination">
+                                        <div class="form-group">
+                                            <input type="file" id="files" value="test" />
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="button" id="upload-button" value="Import File" onclick="UploadFiles()" />
+                                        </div>
+                                        <div class="form-group">
+                                            <div> Uploaded Bytes: <font id="read"> </font> </div>
+                                            <div class="progress">
+                                                <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                                    0%
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -22,8 +22,8 @@ namespace WCFWebRole
     public class WCFWebService : IWCFWebService
     {
 
-
-
+        // Azure Upload Calls
+        #region
         // Transfering of Files
         //public Stream DownloadFile(string fileName, string fileExtension)
         //{
@@ -69,8 +69,11 @@ namespace WCFWebRole
         //    //    }
         //    //}            
         //}
-            // Transfering of Files
-            public List<CityInfo> CitiesForStateGetInfo(String StateAbb)
+        // Transfering of Files
+        #endregion 
+        // General Calls
+        #region 
+        public List<CityInfo> CitiesForStateGetInfo(String StateAbb)
         {
 
             List<CityInfo> SelectionItemsinfo = new List<CityInfo>();
@@ -147,6 +150,143 @@ namespace WCFWebRole
                                StateAbb = dr["stateabb"].ToString(),
                                StateName = dr["Statename"].ToString(),
                             });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        public List<CongestionZoneInfo> CongestionZoneAllGetInfo()
+        {
+
+            List<CongestionZoneInfo> SelectionItemsinfo = new List<CongestionZoneInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[CongestionZoneAllGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new CongestionZoneInfo
+                            {
+
+                                CongestionZoneID = Convert.ToInt32(dr["CZID"].ToString()),
+                                CongestionZoneName = dr["CZName"].ToString(),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        public List<TDUInfo> TDUAllGetInfo()
+        {
+
+            List<TDUInfo> SelectionItemsinfo = new List<TDUInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[TDUAllGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new TDUInfo
+                            {
+
+                                TDUID= Convert.ToInt32(dr["TDUID"].ToString()),
+                                TDUName= dr["TDUName"].ToString(),
+                                DunsNumber= dr["DUNSNumber"].ToString(),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        #endregion
+        // Customer Calls
+        #region
+        public int CustomerUpsert(int CustomerID, String CustomerName, String BillingAdd1, String BillingAdd2, String CityName, String StateAbb, String Zip, int Active)
+        {
+
+            int SelectionItemsinfo = new int();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            if (Active != 1)
+            {
+                if (Active != 0)
+                {
+                    Active = 1;
+                }
+            }
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[CustomerUpsert]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@CustomerID", CustomerID);
+                    cmd.Parameters.AddWithValue("@CustomerName", CustomerName);
+                    cmd.Parameters.AddWithValue("@BillingAdd1", BillingAdd1);
+                    cmd.Parameters.AddWithValue("@BillingAdd2", BillingAdd2);
+                    cmd.Parameters.AddWithValue("@CityName", CityName);
+                    cmd.Parameters.AddWithValue("@StateAbb", StateAbb);
+                    cmd.Parameters.AddWithValue("@Zip", Zip);
+                    cmd.Parameters.AddWithValue("@Active", Active);
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
                         }
                     }
                 }
@@ -253,7 +393,9 @@ namespace WCFWebRole
             }
             return SelectionItemsinfo;
         }
-
+        #endregion
+        // Deal Calls
+        #region        
         public List<DealInfo> SpecificCustomerDealsGetInfo(int CustomerID)
         {
 
@@ -303,6 +445,7 @@ namespace WCFWebRole
             }
             return SelectionItemsinfo;
         }
+        
         public List<DealInfo> DealsAllGetInfo()
         {
 
@@ -351,56 +494,9 @@ namespace WCFWebRole
             }
             return SelectionItemsinfo;
         }
-        public int CustomerUpsert(int CustomerID, String CustomerName, String BillingAdd1, String BillingAdd2, String CityName, String StateAbb, String Zip, int Active)
-        {
 
-            int SelectionItemsinfo = new int();
-            DataSet ds = new DataSet();
-            string ConnectionString = ReturnConnectionString();
-            if (Active !=1) {
-                if (Active != 0)
-                {
-                    Active = 1;
-                }
-            }
-            using (SqlConnection con = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    string SqlCommandText = "[WebSite].[CustomerUpsert]";
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.CommandText = SqlCommandText;
-                    cmd.Parameters.AddWithValue("@CustomerID", CustomerID);
-                    cmd.Parameters.AddWithValue("@CustomerName", CustomerName);
-                    cmd.Parameters.AddWithValue("@BillingAdd1", BillingAdd1);
-                    cmd.Parameters.AddWithValue("@BillingAdd2", BillingAdd2);
-                    cmd.Parameters.AddWithValue("@CityName", CityName);
-                    cmd.Parameters.AddWithValue("@StateAbb", StateAbb);
-                    cmd.Parameters.AddWithValue("@Zip", Zip);
-                    cmd.Parameters.AddWithValue("@Active", Active);
-                    cmd.Connection = con;
-                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                    {
-                        da.Fill(ds, "SelectionItems");
-                    }
-                }
-            }
-            if (ds != null)
-            {
-                if (ds.Tables.Count > 0)
-                {
-                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
-                    {
-                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
-                        {
-                            SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
-                        }
-                    }
-                }
-            }
-            return SelectionItemsinfo;
-        }
 
+    
         public int DealUpsert(int CustomerID, int DealID, String DealNumber, String DealName, DateTime StartDate, DateTime EndDate, Double Margin, Double BrokerMargin, int Active)
         {
 
@@ -500,7 +596,301 @@ namespace WCFWebRole
             }
             return SelectionItemsinfo;
         }
-        // Generic and Private Functions 
+        #endregion
+        // Facility Calls
+        #region
+        public List<FacilityInfo> FacilityAllGetInfo()
+        {
+
+            List<FacilityInfo> SelectionItemsinfo = new List<FacilityInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[FacilityAllGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new FacilityInfo
+                            {
+                                CustomerID = Convert.ToInt32(dr["customerid"].ToString()),
+                                CustomerName = dr["customername"].ToString(),
+                                FacilityID = dr["FacilityID"].ToString(),
+                                CongestionZoneName = dr["CZName"].ToString(),
+                                CongestionZoneID = Convert.ToInt32(dr["CZID"].ToString()),
+                                TDUName= dr["TDUName"].ToString(),
+                                TDUID= Convert.ToInt32(dr["TDUID"].ToString()),
+                                LoadProfileName = dr["LProfileName"].ToString(),
+                                LoadProfileID = Convert.ToInt32(dr["LProfileID"].ToString()),
+                                LossCodeName = dr["LossCodeName"].ToString(),
+                                LossCodeID= dr["LossCodeID"].ToString(),
+                                DunsNumber= dr["DUNSNumber"].ToString(),
+                                FacilityActive = Convert.ToBoolean(dr["FacilityActive"].ToString()),
+                                BillingCycle = Convert.ToDouble(dr["BillingCycle"])
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+        public List<FacilityInfo> SpecificCustomerFacilitiesGetInfo(int CustomerID)
+        {
+
+            List<FacilityInfo> SelectionItemsinfo = new List<FacilityInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[CustomerFaciliesAllGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@CustomerID", CustomerID);
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new FacilityInfo
+                            {
+                                CustomerID = Convert.ToInt32(dr["customerid"].ToString()),
+                                CustomerName = dr["customername"].ToString(),
+                                FacilityID = dr["FacilityID"].ToString(),
+                                CongestionZoneName = dr["CZName"].ToString(),
+                                CongestionZoneID = Convert.ToInt32(dr["CZID"].ToString()),
+                                TDUName = dr["TDUName"].ToString(),
+                                TDUID = Convert.ToInt32(dr["TDUID"].ToString()),
+                                LoadProfileName = dr["LProfileName"].ToString(),
+                                LoadProfileID = Convert.ToInt32(dr["LProfileID"].ToString()),
+                                LossCodeName = dr["LossCodeName"].ToString(),
+                                LossCodeID = dr["LossCodeID"].ToString(),
+                                DunsNumber = dr["DUNSNumber"].ToString(),
+                                FacilityActive = Convert.ToBoolean(dr["FacilityActive"].ToString()),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        public List<FacilityInfo> SpecificFacilityGetInfo(int CustomerID, String FacilityID)
+        {
+
+            List<FacilityInfo> SelectionItemsinfo = new List<FacilityInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[SpecificFacilityGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@CustomerID", CustomerID);
+                    cmd.Parameters.AddWithValue("@FacilityID", FacilityID);
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new FacilityInfo
+                            {
+                                CustomerID = Convert.ToInt32(dr["customerid"].ToString()),
+                                CustomerName = dr["customername"].ToString(),
+                                FacilityID = dr["FacilityID"].ToString(),
+                                CongestionZoneName = dr["CZName"].ToString(),
+                                CongestionZoneID = Convert.ToInt32(dr["CZID"].ToString()),
+                                TDUName = dr["TDUName"].ToString(),
+                                TDUID = Convert.ToInt32(dr["TDUID"].ToString()),
+                                LoadProfileName = dr["LProfileName"].ToString(),
+                                LoadProfileID = Convert.ToInt32(dr["LProfileID"].ToString()),
+                                LossCodeName = dr["LossCodeName"].ToString(),
+                                LossCodeID = dr["LossCodeID"].ToString(),
+                                DunsNumber = dr["DUNSNumber"].ToString(),
+                                FacilityActive = Convert.ToBoolean(dr["FacilityActive"].ToString()),
+                                BillingCycle = Convert.ToDouble(dr["BillingCycle"].ToString()),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+        public int FacilityUpsert(int CustomerID, String FacilityID, String LoadProfile, int CongestionZoneID, int TDUID, Double BillingCycle, String LossCode, int Active)
+        {
+            int SelectionItemsinfo = new int();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            if (Active != 1)
+            {
+                if (Active != 0)
+                {
+                    Active = 1;
+                }
+            }
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[FacilityUpsert]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@CustomerID", CustomerID);
+                    cmd.Parameters.AddWithValue("@FacilityID", FacilityID);
+                    cmd.Parameters.AddWithValue("@LoadProfile", LoadProfile);
+                    cmd.Parameters.AddWithValue("@CongestionZoneID", CongestionZoneID);
+                    cmd.Parameters.AddWithValue("@TDUID", TDUID);
+                    cmd.Parameters.AddWithValue("@BillingCycle", BillingCycle);
+                    cmd.Parameters.AddWithValue("@LossCode", LossCode);
+                    cmd.Parameters.AddWithValue("@Active", Active);
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        public List<LossCodeInfo> TDULossCodeAllGetInfo(int TDUID)
+        {
+
+            List<LossCodeInfo> SelectionItemsinfo = new List<LossCodeInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[TDULossCodeAllGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@TDUID", TDUID);
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new LossCodeInfo
+                            {
+                                TDUID = Convert.ToInt32(dr["TDUID"].ToString()),
+                                LossCodeID = dr["TDUID"].ToString() + '-' + dr["lossCode"].ToString(),
+                                LossCodeName = dr["LossCodeName"].ToString(),
+                                LossCode = dr["lossCode"].ToString(),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+        public List<LoadProfileInfo> LoadProfileAllGetInfo()
+        {
+
+            List<LoadProfileInfo> SelectionItemsinfo = new List<LoadProfileInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[LoadProfileAllGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;                    
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new LoadProfileInfo
+                            {                                
+                                LoadProfileID = Convert.ToInt32(dr["LoadProfileID"].ToString()),
+                                LoadProfileName = dr["LoadProfileName"].ToString(),                                
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        #endregion
+        // Generic and Private Functions
+        #region       
+           
         private String ReturnConnectionString()
         {
             try
@@ -531,7 +921,9 @@ namespace WCFWebRole
                 return @"?sv=2017-11-09&ss=b&srt=sco&sp=rwlac&se=2021-08-25T04:00:37Z&st=2018-08-24T20:00:37Z&spr=https&sig=8oLl%2BMjWgoj%2FHgWFfdB8UOaes0K%2FZjmNwEvJd2stxMc%3D";
             }
         }
+        #endregion
         // NOT PART OF PROGRAM
+        #region 
         public List<Players> GetPlayersXml()
         {
             return GetPlayers();
@@ -567,7 +959,7 @@ namespace WCFWebRole
                 };
             return Players;
         }
-
+        #endregion 
         public string GetData(int value)
         {
             return string.Format("You entered: {0}", value);

@@ -217,6 +217,38 @@ function CityAuto_Reset(ControlToSet) {
         HeaderDataErrorReport(e);
     }
 }
+function TDUInfoListReset(ControlToSet) {
+    try {
+        var urlMain = '/WCFWebService.svc/TDUAllGetInfo';        
+        var ResultData = ReturnDataFromService(urlMain);
+        var j = 0;
+        $('#' + ControlToSet).empty();
+        for (var i in ResultData) {
+            var TDUID = ResultData[i].TDUID;
+            var TDUName = ResultData[i].TDUName            
+            $('#' + ControlToSet).append('<option value="' + TDUID + '">' + TDUName  + '</option>')
+        }
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function CongestionZoneInfoListReset(ControlToSet) {
+    try {
+        var urlMain = '/WCFWebService.svc/CongestionZoneAllGetInfo';
+        var ResultData = ReturnDataFromService(urlMain);
+        var j = 0;
+        $('#' + ControlToSet).empty();
+        for (var i in ResultData) {
+            var CongestionZoneID = ResultData[i].CongestionZoneID;
+            var CongestionZoneName = ResultData[i].CongestionZoneName
+            $('#' + ControlToSet).append('<option value="' + CongestionZoneID + '">' + CongestionZoneName + '</option>')
+        }
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
 function ReturnDataFromService(urlMain) {
     try {       
         var ReturnData;

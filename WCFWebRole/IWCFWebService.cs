@@ -13,7 +13,7 @@ namespace WCFWebRole
     public interface IWCFWebService
     {
 
-
+        //General Routines
         #region
         [WebGet(UriTemplate = "/CitiesForStateGetInfo/?StateAbb={StateAbb}",
          RequestFormat = WebMessageFormat.Json,
@@ -25,7 +25,20 @@ namespace WCFWebRole
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
              BodyStyle = WebMessageBodyStyle.Bare)]
-       List<StateInfo> StatesGetInfo();
+        List<StateInfo> StatesGetInfo();
+
+        [WebGet(UriTemplate = "/TDUAllGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<TDUInfo> TDUAllGetInfo();
+
+        [WebGet(UriTemplate = "/CongestionZoneAllGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<CongestionZoneInfo> CongestionZoneAllGetInfo();
+
         #endregion
         // Customer Routines
         #region
@@ -46,9 +59,10 @@ namespace WCFWebRole
              ResponseFormat = WebMessageFormat.Json,
              BodyStyle = WebMessageBodyStyle.Bare)]
         int CustomerUpsert(int CustomerID, String CustomerName, String BillingAdd1, String BillingAdd2, String CityName, String StateAbb, String Zip, int Active);
-        #endregion 
-        #region
+        #endregion
         // Deal Information Routines
+        #region
+
         [WebGet(UriTemplate = "/SpecificCustomerDealsGetInfo?CustomerID={CustomerID}",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
@@ -73,9 +87,50 @@ namespace WCFWebRole
             BodyStyle = WebMessageBodyStyle.Bare)]
         List<DealInfo> SpecificDealsGetInfo(int DealID);
 
-        
+        // Facility
+        [WebGet(UriTemplate = "/FacilityAllGetInfo",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        List<FacilityInfo> FacilityAllGetInfo();
+
+        [WebGet(UriTemplate = "/SpecificCustomerFacilitiesGetInfo?CustomerID={CustomerID}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        List<FacilityInfo> SpecificCustomerFacilitiesGetInfo(int CustomerID);
+
+        [WebGet(UriTemplate = "/SpecificFacilityGetInfo?CustomerID={CustomerID}&FacilityID={FacilityID}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        List<FacilityInfo> SpecificFacilityGetInfo(int CustomerID, String FacilityID);
+
         //DealUpsert(int CustomerID, int DealID, String DealNumber, String DealName, DateTime StartDate, DateTime EndDate, Double Margin, Double BrokerMargin, int Active)
         #endregion
+        // Facility
+        #region
+        [WebGet(UriTemplate = "/TDULossCodeAllGetInfo?TDUID={TDUID}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        List<LossCodeInfo> TDULossCodeAllGetInfo(int TDUID);
+
+        [WebGet(UriTemplate = "/LoadProfileAllGetInfo",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        List<LoadProfileInfo> LoadProfileAllGetInfo();
+
+        [WebGet(UriTemplate = "/FacilityUpsert?CustomerID={CustomerID}&FacilityID={FacilityID}&LoadProfile={LoadProfile}&CongestionZoneID={CongestionZoneID}&TDUIID={TDUID}&BillingCycle={BillingCycle}&LossCode={LossCode}&Active={Active}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        int FacilityUpsert(int CustomerID, String FacilityID, String LoadProfile, int CongestionZoneID, int TDUID, Double BillingCycle, String LossCode, int Active);
+
+
+        #endregion
+
         //// Uploading of Files
         //[OperationContract]
         //[WebGet(UriTemplate = "File/{fileName}/{fileExtension}")]
@@ -87,15 +142,12 @@ namespace WCFWebRole
 
 
         // NOT PART OF PROGRAM
+        #region 
         [WebGet(UriTemplate = "/GetPlayersXml",
             RequestFormat = WebMessageFormat.Xml,
             ResponseFormat = WebMessageFormat.Xml,
             BodyStyle = WebMessageBodyStyle.Bare)]
         List<Players> GetPlayersXml();
-
-        
-
-
 
         [WebGet(UriTemplate = "/GetPlayersJson",
             RequestFormat = WebMessageFormat.Json,
@@ -103,8 +155,50 @@ namespace WCFWebRole
             BodyStyle = WebMessageBodyStyle.Bare)]
         List<Players> GetPlayersJson();
         // NOT PART OF PROGRAM        
-
+        #endregion
         // TODO: Add your service operations here
+    }
+
+    #region 
+    [DataContract]
+    public class CongestionZoneInfo
+    {
+        [DataMember]
+        public int CongestionZoneID { get; set; }
+        [DataMember]
+        public String CongestionZoneName { get; set; }
+    }
+
+    [DataContract]
+    public class LoadProfileInfo
+    {
+        [DataMember]
+        public int LoadProfileID { get; set; }
+        [DataMember]
+        public String LoadProfileName { get; set; }
+    }
+    [DataContract]
+    public class LossCodeInfo
+    {
+        [DataMember]
+        public int TDUID { get; set; }
+        [DataMember]
+        public String LossCodeID { get; set; }
+        [DataMember]
+        public string LossCodeName { get; set; }
+        [DataMember]
+        public string LossCode { get; set; }
+    }
+
+    [DataContract]
+    public class TDUInfo
+    {
+        [DataMember]
+        public int TDUID { get; set; }
+        [DataMember]
+        public string TDUName { get; set; }
+        [DataMember]
+        public string DunsNumber { get; set; }
     }
     [DataContract]
     public class StateInfo
@@ -176,10 +270,52 @@ namespace WCFWebRole
         public Double BrokerMargin { get; set; }
 
 }
+    [DataContract]
+    public class CustomerInformation
+    {
+        [DataMember]
+        public int CustomerID { get; set; }
+        [DataMember]
+        public string WayPointName { get; set; }
+    }
+    [DataContract]
+    public class FacilityInfo
+    {
+        [DataMember]
+        public int CustomerID { get; set; }
+        [DataMember]
+        public String CustomerName { get; set; }
+        [DataMember]
+        public String FacilityID { get; set; }
+        [DataMember]
+        public String CongestionZoneName { get; set; }
+        [DataMember]
+        public int CongestionZoneID { get; set; }
+        [DataMember]
+        public int TDUID { get; set; }
+        [DataMember]
+        public String TDUName { get; set; }
+        [DataMember]
+        public String DunsNumber { get; set; }
+        [DataMember]
+        public String LoadProfileName { get; set; }
+        [DataMember]
+        public int LoadProfileID { get; set; }
+        [DataMember]
+        public String LossCodeName { get; set; }
+        [DataMember]
+        public String LossCodeID { get; set; }
+        [DataMember]
+        public bool FacilityActive { get; set; }
+        [DataMember]
+        public Double BillingCycle { get; set; }
+
+    }
 
 
-// NOT PART OF PROGRAM   
-[DataContract]
+    // NOT PART OF PROGRAM   
+
+    [DataContract]
     public class Players
     {
         [DataMember]
@@ -192,6 +328,7 @@ namespace WCFWebRole
         public string ImageUrl { get; set; }
 
     }
+    
     // NOT PART OF PROGRAM   
     // Use a data contract as illustrated in the sample below to add composite types to service operations.
     [DataContract]
@@ -214,13 +351,7 @@ namespace WCFWebRole
             set { stringValue = value; }
         }
     }
+    #endregion 
     // Data Classes
-    [DataContract]
-    public class CustomerInformation
-    {
-        [DataMember]
-        public int CustomerID { get; set; }
-        [DataMember]
-        public string WayPointName { get; set; }        
-    }
+   
     }
