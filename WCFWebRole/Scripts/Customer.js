@@ -1,17 +1,6 @@
-﻿function FunctionComplete(msg) {
-    alert(msg);
-}
-function RemoveCustRow(idrow) {
+﻿function CreateCustomerTable() {
     try {
-        $('#cust_8').remove();        
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }
-}
-function CreateCustomerTable() {
-    try {
-        var urlMain = '/WCFWebService.svc/CustomersAllGetInfo';                
+        var urlMain = '/WCFWebService.svc/CustomersAllGetInfo';
         var ResultData = ReturnDataFromService(urlMain);
         var j = 0;
         for (var i in ResultData) {
@@ -30,22 +19,22 @@ function CreateCustomerTable() {
                 $('<th></th>').text("Customer Id").appendTo(row);
                 $('<th></th>').text("Customer Name").appendTo(row);
                 $('<th></th>').text("Billing Address").appendTo(row);
-                $('<th></th>').attr({class:  "hidden-phone"}).text("City Name").appendTo(row);
-                $('<th></th>').text("State").appendTo(row);                
-                $('<th></th>').text("Zip").appendTo(row);                
-                
+                $('<th></th>').attr({ class: "hidden-phone" }).text("City Name").appendTo(row);
+                $('<th></th>').text("State").appendTo(row);
+                $('<th></th>').text("Zip").appendTo(row);
+
             } else {
                 if (i == 1) {
                     var tBody = $('<tbody></tbody>').appendTo(mytable);
-                }                
-                for (var i in ResultData) {                    
-                    var row = $('<tr></tr>').attr({ id: "cust_" + ResultData[i].CustomerID, class: "gradeA success" }).appendTo(tBody);                    
+                }
+                for (var i in ResultData) {
+                    var row = $('<tr></tr>').attr({ id: "cust_" + ResultData[i].CustomerID, class: "gradeA success" }).appendTo(tBody);
                     $('<td></td>').text(ResultData[i].CustomerID).appendTo(row);
                     $('<td></td>').text(ResultData[i].CustomerName).appendTo(row);
                     $('<td></td>').text(ResultData[i].billingadd1).appendTo(row);
                     $('<td></td>').text(ResultData[i].CityName).appendTo(row);
                     $('<td></td>').text(ResultData[i].StateAbb).appendTo(row);
-                    $('<td></td>').text(ResultData[i].Zip).appendTo(row);                    
+                    $('<td></td>').text(ResultData[i].Zip).appendTo(row);
                 }
             }
         }
@@ -58,12 +47,24 @@ function CreateCustomerTable() {
                 "bScrollCollapse": true,
                 "bPaginate": false,
                 "bFilter": false
-            });        
+            });
     }
     catch (e) {
         HeaderDataErrorReport(e);
     }
 }
+function FunctionComplete(msg) {
+    alert(msg);
+}
+function RemoveCustRow(idrow) {
+    try {
+        $('#cust_8').remove();        
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
 function Customer_AddRows() {
     var rowCount = $('#data-table tr').length;
     for (var i = 0; i <= rowCount -1; i++) { 
@@ -89,40 +90,25 @@ function CustomerInfoList_Change() {
         var urlMain = '/WCFWebService.svc/CustomersGetInfo';
         var DataUrl = '?CustomerID=' + CustomerID;
         urlMain = urlMain + DataUrl;
-        $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            // Change Here To Change The Web Service Needed
-            //url: "/AzureHooknLineAjax.svc/HelloWorld",
-            url: urlMain,
-            // Change Here To Change The Parameters Needed
-            // data: "{}",
-            dataType: "json",
-            async: false,
-            success: function (Result) {
-                var iRow = -1;
-                var SelectedItem = 'N/A';
-                for (var i in Result) {
-                    $('#CustomerName_Customer').val(Result[i].CustomerName)
-                    $('#Address1_Customer').val(Result[i].billingadd1)
-                    $('#Address2_Customer').val(Result[i].billingadd2)
-                    $('#ZipCode_Customer').val(Result[i].zip)                                        
-                    $('#CityInfoAutoCompleteList_Customer').val(Result[i].CityName)
-                    $("#StateInfoList_Customer").val(Result[i].stateabb);
-                    if (Result[i].Active == true) {
-                        $('#Active_Customer').prop('checked', true);
-                        //$('#Active_Customer').is(':checked') = true;
-                    } else {
-                        $('#Active_Customer').prop('checked', false);
-                        //$('#Active_Customer').is(':checked') = false;
-                    }
-
-                }
-            },
-            error: function (Result) {
-                alert("Error");
+        var Result = ReturnDataFromService(urlMain);
+        var iRow = -1;
+        var SelectedItem = 'N/A';
+        for (var i in Result) {
+            $('#CustomerName_Customer').val(Result[i].CustomerName)
+            $('#Address1_Customer').val(Result[i].billingadd1)
+            $('#Address2_Customer').val(Result[i].billingadd2)
+            $('#ZipCode_Customer').val(Result[i].zip)
+            $('#CityInfoAutoCompleteList_Customer').val(Result[i].CityName)
+            $("#StateInfoList_Customer").val(Result[i].stateabb);
+            if (Result[i].Active == true) {
+                $('#Active_Customer').prop('checked', true);
+                //$('#Active_Customer').is(':checked') = true;
+            } else {
+                $('#Active_Customer').prop('checked', false);
+                //$('#Active_Customer').is(':checked') = false;
             }
-        });        
+        }
+       
     }
     catch (e) {
         HeaderDataErrorReport(e);        
@@ -209,6 +195,83 @@ function testStuff() {
         $("#autocomplete").autocomplete({
             source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
         });
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function DiplayCustomerValidation(FileName, ContainerName) {
+    try {
+        var urlMain = '/WCFWebService.svc/CustomerValidationUpsert';
+        var DataUrl = '?FileName=' + FileName + '&ContainerName=' + ContainerName;
+        urlMain = urlMain + DataUrl;
+        var ResultInt = ReturnDataFromService(urlMain);
+        urlMain = '/WCFWebService.svc/CustomersValidateGetInfo';
+        var ResultData = ReturnDataFromService(urlMain);
+        var j = 0;
+        for (var i in ResultData) {
+            j = j + 1;
+        }
+        $('#data-tableUpload').remove();
+        $("#tableContainerUpload").remove("#data-tableUpload");
+        var mytable = $('<table></table>').attr({ id: "data-tableUpload", width: "100%", overflow: "scroll", class: "scrollTable table-hover" });
+        var rows = 21;
+        if (j < rows) { rows = j - 1; }
+        if (rows <= 0) { rows = 0; } 
+        var cols = 2;
+        var tr = [];
+        for (var i = 0; i <= rows; i++) {
+            if (i == 0) {
+                var tHead = $('<thead></thead>').attr({}).appendTo(mytable);
+                var row = $('<tr></tr>').appendTo(tHead);
+                $('<th></th>').text("Customer Id").appendTo(row);
+                $('<th></th>').text("Customer Name").appendTo(row);
+                $('<th></th>').text("Billing Address").appendTo(row);
+                $('<th></th>').attr({ class: "hidden-phone" }).text("City Name").appendTo(row);
+                $('<th></th>').text("State").appendTo(row);
+                $('<th></th>').text("Zip").appendTo(row);
+                $('<th></th>').text("Start Date").appendTo(row);
+                $('<th></th>').text("End Date").appendTo(row);
+                $('<th></th>').text("New City?").appendTo(row);
+                $('<th></th>').text("Customer?").appendTo(row);
+
+            } else {
+                if (i == 1) {
+                    var tBody = $('<tbody></tbody>').appendTo(mytable);
+                }
+                for (var i in ResultData) {
+                    var row = $('<tr></tr>').attr({ id: "cust_" + ResultData[i].CustomerID, class: "gradeA success" }).appendTo(tBody);
+                    $('<td></td>').text(ResultData[i].CustomerID).appendTo(row);
+                    $('<td></td>').text(ResultData[i].CustomerName).appendTo(row);
+                    $('<td></td>').text(ResultData[i].billingadd1).appendTo(row);
+                    $('<td></td>').text(ResultData[i].CityName).appendTo(row);
+                    $('<td></td>').text(ResultData[i].StateAbb).appendTo(row);
+                    $('<td></td>').text(ResultData[i].Zip).appendTo(row);
+                    var StartDate = new Date(ResultData[i].StartDateString);
+                    $('<td></td>').text(StartDate.toLocaleDateString("en-US")).appendTo(row);
+                    var EndDate = new Date(ResultData[i].EndDateString);
+                    var EndDateString = "";
+                    if (EndDate.toLocaleDateString("en-US") != "1/1/1900") { EndDateString = EndDate.toLocaleDateString("en-US"); }
+                    $('<td></td>').text(EndDateString).appendTo(row);
+                    if (ResultData[i].NewCityID == 0) {
+                        $('<td></td>').text("Yes").appendTo(row);
+                    } else {
+                        $('<td></td>').text("No").appendTo(row);
+                    }
+                    $('<td></td>').text(ResultData[i].NewCustomer).appendTo(row);
+                }
+            }
+        }
+        mytable.appendTo("#tableContainerUpload");
+        var oTable = $('#data-tableUpload').dataTable(
+            {
+                "sScrollY": "300px",
+                "sScrollX": "100%",
+                "sScrollXInner": "150%",
+                "bScrollCollapse": true,
+                "bPaginate": false,
+                "bFilter": false
+            });
     }
     catch (e) {
         HeaderDataErrorReport(e);

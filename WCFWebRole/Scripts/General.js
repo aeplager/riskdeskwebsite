@@ -7,6 +7,10 @@ function FunctionFailed(msg) {
     // Used for none specific error messages to be shown
     alert(msg);
 }
+function ReturnUserName() {
+    // Once Security Is Added This Will Change
+    return 'N/A';
+}
 function UploadFile() {
     // grab your file object from a file input
     try {
@@ -332,6 +336,53 @@ function SetYear(ControlToSet, Yr) {
     try {
         var NewYr = Yr - 2010 + 1;
         $('#' + ControlToSet).val(NewYr);
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function ObtainDateSuffix() {
+    try {
+        var urlMain = "/WCFWebService.svc/ObtainDateSuffix";
+        var ResultData = ReturnDataFromService(urlMain);
+        var j = 0;        
+        return ResultData;
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function ImportFile(FileType) {
+    try {
+        var msg = "Please confirm that you save all of these ";
+        if (FileType == "CUST") {
+            msg = msg + "customers";
+        } else if (FileType == "DEAL") {
+            msg = msg + "deals";
+        }
+        alertify.confirm(msg, function (e) {
+            if (e) {
+                if (FileType == "CUST") {
+                    // Update the customers
+                    var UserName = ReturnUserName();
+                    msg = "All customers updated!!!"
+                    var urlMain = "/WCFWebService.svc/CustomerValidatedFileUpsert";
+                    var ResultData = ReturnDataFromService(urlMain);
+                    var j = 0;
+                    var FileID = LogFileUploadStatus(0, FileNameUpload, 'IMTBL', FileType, UserName);
+                } else if (FileType == "DEAL") {
+                    var UserName = ReturnUserName();
+                    msg = "All deals updated!!!"                    
+                    var urlMain = "/WCFWebService.svc/DealsValidatedFileUpsert";
+                    var ResultData = ReturnDataFromService(urlMain);
+                    var j = 0;
+                    var FileID = LogFileUploadStatus(0, FileNameUpload, 'IMTBL', FileType, UserName);
+                }   
+                alertify.success(msg);
+            } else {
+                alertify.error("Nothing completed");
+            }
+        });    
     }
     catch (e) {
         HeaderDataErrorReport(e);

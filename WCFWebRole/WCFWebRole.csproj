@@ -132,8 +132,8 @@
     <Content Include="css\timepicker.css" />
     <Content Include="css\wysi\bootstrap-wysihtml5.css" />
     <Content Include="Customer.html" />
-    <Content Include="DataEntry.html" />
     <Content Include="DataEntry_DELETE.html" />
+    <Content Include="DealEntry.html" />
     <Content Include="default.html" />
     <Content Include="edit-profile.html" />
     <Content Include="FacilityDataEntry.html" />
@@ -317,6 +317,7 @@
     <Compile Include="WebRole.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\" />
     <Folder Include="bin\" />
   </ItemGroup>
   <ItemGroup>
@@ -340,9 +341,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
-    <Content Include="App_Data\riskdeskdev.PublishSettings" />
     <None Include="Properties\PublishProfiles\hooknlinebasetest - Web Deploy.pubxml" />
-    <Content Include="riskdeskdev.PublishSettings" />
+    <None Include="Properties\PublishProfiles\riskdeskdev - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\riskdeskdev - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

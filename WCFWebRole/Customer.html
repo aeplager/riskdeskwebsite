@@ -23,8 +23,9 @@
     <link href="fonts/font-awesome.min.css" rel="stylesheet">
 
     <!--Custom Java Script-->
-    <script type="text/javascript" src="Scripts/General.js"></script>
+    <script type="text/javascript" src="Scripts/General.js"></script>    
     <script type="text/javascript" src="Scripts/Customer.js"></script>
+
     <script type="text/javascript" src="Scripts/AutoComplete.js"></script>
 
     <!--Included Scripts-->
@@ -49,10 +50,10 @@
     <script>
         /*An array containing all the country names in the world:*/
         var Cities = [];
+        var FileNameUpload = "";
         function Initialize() {
             // Initialize the city
             try {
-
                 StateList_Reset('StateInfoList_Customer');
                 CityAuto_Reset('CityInfoAutoCompleteList_Customer');
                 CustomerList_Reset('CustomerInfoList_Customer');
@@ -229,7 +230,7 @@
                         </a>
                     </li>
                     <li class='active'>
-                        <a href="DataEntry.html">
+                        <a href="DealEntry.html">
                             <i class="fa fa-align-justify"></i>
                             Data Entry
                         </a>
@@ -342,7 +343,7 @@
                                             <label for="pwd" class="col-sm-2 control-label">City</label>
                                             <div class="col-sm-10">
                                                 <div class="row">
-                                                    <div class="col-md-4 col-sm-4 col-xs-4">                                                       
+                                                    <div class="col-md-4 col-sm-4 col-xs-4">
                                                         <div class="autocomplete">
                                                             <input id="CityInfoAutoCompleteList_Customer" class="form-control" type="text" name="CitiesAutoCustomer" placeholder="Cities">
                                                         </div>
@@ -424,7 +425,9 @@
                                             <input type="file" id="files" value="test" />
                                         </div>
                                         <div class="form-group">
-                                            <input type="button" id="upload-button" value="Import File" onclick="UploadFiles()" />
+                                            <input type="button" id="upload-button" value="Upload File" onclick="UploadFiles('CUST')" />
+                                            <input type="button" id="validate-button" value="Validate File" onclick="ValidateFile('CUST')" />
+                                            <input type="button" id="validate-button" value="Import Data File" onclick="ImportFile('CUST')" />
                                         </div>
                                         <div class="form-group">
                                             <div> Uploaded Bytes: <font id="read"> </font> </div>
@@ -433,6 +436,27 @@
                                                     0%
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ListUpload_Cust" class="row">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <div class="title">
+                                        Data From Upload<a id="dynamic-tables"></a>
+                                    </div>
+                                </div>
+                                <div id="dtExampleWidget" class="widget-body">
+                                    <div id="dt_example" class="example_alt_pagination">
+                                        <div id="tableContainerUpload" class="tableContainer">
+                                            <!--width:  "100%",overflow:  "scroll",class: "scrollTable" });-->
+                                            <table id="data-tableUpload" width="100%" overflow: "scroll" class="scrollTable"></table>
                                         </div>
                                         <div class="clearfix">
                                         </div>

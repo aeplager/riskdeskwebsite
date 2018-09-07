@@ -59,9 +59,45 @@ namespace WCFWebRole
              ResponseFormat = WebMessageFormat.Json,
              BodyStyle = WebMessageBodyStyle.Bare)]
         int CustomerUpsert(int CustomerID, String CustomerName, String BillingAdd1, String BillingAdd2, String CityName, String StateAbb, String Zip, int Active);
+
+        [WebGet(UriTemplate = "/CustomerValidationUpsert?FileName={FileName}&ContainerName={ContainerName}",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        int CustomerValidationUpsert(String FileName, String ContainerName);
+            
+        [WebGet(UriTemplate = "/CustomersValidateGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<CustomerInfo> CustomersValidateGetInfo();
+
+        [WebGet(UriTemplate = "/CustomerValidatedFileUpsert",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        int CustomerValidatedFileUpsert();
+
         #endregion
         // Deal Information Routines
         #region
+        [WebGet(UriTemplate = "/DealsValidationUpsert?FileName={FileName}&ContainerName={ContainerName}",
+                    RequestFormat = WebMessageFormat.Json,
+                    ResponseFormat = WebMessageFormat.Json,
+                    BodyStyle = WebMessageBodyStyle.Bare)]
+        int DealValidationUpsert(String FileName, String ContainerName);
+
+        [WebGet(UriTemplate = "/DealsValidateGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<DealInfo> DealsValidateGetInfo();
+
+        [WebGet(UriTemplate = "/DealsValidatedFileUpsert",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        int DealsValidatedFileUpsert();
 
         [WebGet(UriTemplate = "/SpecificCustomerDealsGetInfo?CustomerID={CustomerID}",
              RequestFormat = WebMessageFormat.Json,
@@ -122,18 +158,36 @@ namespace WCFWebRole
             BodyStyle = WebMessageBodyStyle.Bare)]
         List<LoadProfileInfo> LoadProfileAllGetInfo();
 
+        [WebGet(UriTemplate = "/ObtainDateSuffix",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        String ObtainDateSuffix();
+
+        [WebGet(UriTemplate = "/ObtainAzureParameters?FileType={FileType}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        AzureParameters ObtainAzureParameters(string FileType);
+
+
         [WebGet(UriTemplate = "/FacilityUpsert?CustomerID={CustomerID}&FacilityID={FacilityID}&LoadProfile={LoadProfile}&CongestionZoneID={CongestionZoneID}&TDUIID={TDUID}&BillingCycle={BillingCycle}&LossCode={LossCode}&Active={Active}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
         int FacilityUpsert(int CustomerID, String FacilityID, String LoadProfile, int CongestionZoneID, int TDUID, Double BillingCycle, String LossCode, int Active);
 
+        [WebGet(UriTemplate = "/FileUpsert?FileID={FileID}&FileName={FileName}&FileStatus={FileStatus}&FileType={FileType}&UserName={UserName}",                                                          
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        int FileUpsert(int FileID, String FileName, String FileStatus, String FileType, String UserName);        
 
         #endregion
 
         //// Uploading of Files
         //[OperationContract]
-        //[WebGet(UriTemplate = "File/{fileName}/{fileExtension}")]
+        //[WebGet(UriTemplate = "File/{fileNa;me}/{fileExtension}")]
         //Stream DownloadFile(string fileName, string fileExtension);
 
         //[OperationContract]
@@ -160,6 +214,19 @@ namespace WCFWebRole
     }
 
     #region 
+    [DataContract]
+    public class AzureParameters
+    {
+        [DataMember]
+        public String AzureStorageName { get; set; }
+        [DataMember]
+        public String SASKey { get; set; }
+        [DataMember]
+        public String blobUri { get; set; }
+        [DataMember]
+        public String AzureContainer { get; set; }
+    }
+
     [DataContract]
     public class CongestionZoneInfo
     {
@@ -240,7 +307,20 @@ namespace WCFWebRole
         [DataMember]
         public DateTime EndDate { get; set; }
         [DataMember]
+        public String StartDateString { get; set; }
+        [DataMember]
+        public String EndDateString { get; set; }
+        [DataMember]
         public bool Active { get; set; }
+        [DataMember]
+        public int NewCityID { get; set; }
+        [DataMember]
+        public String FileName { get; set; }
+        [DataMember]
+        public DateTime InsertDate { get; set; }
+        [DataMember]
+        public String NewCustomer { get; set; }
+
 
     }
     [DataContract]
@@ -268,8 +348,14 @@ namespace WCFWebRole
         public Double Margin { get; set; }
         [DataMember]
         public Double BrokerMargin { get; set; }
+        [DataMember]
+        public String FileName { get; set; }
+        [DataMember]
+        public DateTime InsertDate { get; set; }
+        [DataMember]
+        public String NewDeal { get; set; }
 
-}
+    }
     [DataContract]
     public class CustomerInformation
     {

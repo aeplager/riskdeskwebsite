@@ -10,11 +10,15 @@
     }
     return true;
 }
-function getBlobService(accountname, sas, blobUri) {
-    if (!checkParameters(accountname, sas))
+function getBlobService(AzureParms) {
+        //var AzureStorageName = AzureParms.AzureStorageName;
+    //var sas = AzureParms.SASKey;
+    //var blobUri = AzureParms.blobUri;
+    //container = AzureParms.AzureContainer;
+    if (!checkParameters(AzureParms.AzureStorageName, AzureParms.SASKey))
         return null;
     //blobUri = 'https://riskdeskstorage.blob.core.windows.net';
-    var blobService = AzureStorage.Blob.createBlobServiceWithSas(blobUri, sas).withFilter(new AzureStorage.Blob.ExponentialRetryPolicyFilter());
+    var blobService = AzureStorage.Blob.createBlobServiceWithSas(AzureParms.blobUri, AzureParms.SASKey).withFilter(new AzureStorage.Blob.ExponentialRetryPolicyFilter());
     return blobService;
 }
 function refreshContainer() {
@@ -51,7 +55,7 @@ function refreshContainer() {
     });
 }
 function deleteContainer(name) {
-    var blobService = getBlobService();
+    var blobService = getBlobService();    
     if (!blobService)
         return;
     blobService.deleteContainerIfExists(name, function (error, result) {
@@ -131,8 +135,8 @@ function refreshBlobList() {
         }
     })
 }
-function deleteBlob(blob) {
-    var blobService = getBlobService();
+function deleteBlob(blob, container, accountname, sas, blobUri) {
+    var blobService = getBlobService(accountname, sas, blobUri);
     if (!blobService)
         return;
     blobService.deleteBlobIfExists(container, blob, function (error, result) {
@@ -149,15 +153,19 @@ function displayProcess(process) {
     document.getElementById("progress").style.width = process + '%';
     document.getElementById("progress").innerHTML = process + '%';
 }
-function uploadBlobByStream(checkMD5, files, container, accountname, sas, blobUri) {
+function uploadBlobByStream(checkMD5, files, filename, AzureParms) {
     //var files = document.getElementById('files').files;
     if (!files.length) {
         alert('Please select a file!');
         return;
     }
     var file = files[0];
-    //var blobService = getBlobService();
-    var blobService = getBlobService(accountname, sas, blobUri);
+    //var AzureStorageName = AzureParms.AzureStorageName;
+    //var sas = AzureParms.SASKey;
+    //var blobUri = AzureParms.blobUri;
+    //container = AzureParms.AzureContainer;
+
+    var blobService = getBlobService(AzureParms);
     if (!blobService)
         return;
     //var btn = document.getElementById("upload-button");
@@ -172,7 +180,10 @@ function uploadBlobByStream(checkMD5, files, container, accountname, sas, blobUr
     blobService.singleBlobPutThresholdInBytes = blockSize;
     var finishedOrError = false;
     var container = 'testuploadcontainer';
-    var speedSummary = blobService.createBlockBlobFromBrowserFile(container, file.name, file, options, function (error, result, response) {
+    var dt = new Date();
+    //var filesuffix = dt.getFullYear() + '_' + dt.getMonth() + '_' + dt.getDate() + '_' + dt.getHours() + '_' + dt.getMinutes() + "_" + dt.getSeconds() + '_' 
+    //var filename = ObtainFileName() + file.name;
+    var speedSummary = blobService.createBlockBlobFromBrowserFile(AzureParms.AzureContainer, filename , file, options, function (error, result, response) {
         finishedOrError = true;
         //btn.disabled = false;
         //btn.innerHTML = "UploadBlob";
@@ -210,21 +221,42 @@ function CreateContainerName() {
     }
 }
 
-function UploadFiles() {
+function DeleteFiles() {
     try {
         var files = document.getElementById('files').files;
         var accountname = 'riskdeskstorage';
         var sas = '?sv=2017-11-09&ss=b&srt=sco&sp=rwdlac&se=2018-09-03T00:27:10Z&st=2018-09-02T16:27:10Z&spr=https,http&sig=G6VnxZVUlogyetZw2XLPF%2F9k2Kz0TyXEJ0GL46LVofQ%3D';
         sas = '?sv=2017-11-09&ss=b&srt=sco&sp=rwdlac&se=2018-09-04T04:59:19Z&st=2018-09-03T02:03:19Z&spr=https,http&sig=Q6pQIXOShXVh46rbgE5IvThXmkZCkd9cZHGkWL%2BI4sA%3D';
-        blobUri = 'https://riskdeskstorage.blob.core.windows.net';
-        //container = document.getElementById('FieldForName').value;
+        blobUri = 'https://riskdeskstorage.blob.core.windows.net';        
         container = "testuploadcontainer";
-        //createContainer(container, accountname, sas, blobUri);
-        uploadBlobByStream(false, files, container, accountname, sas, blobUri);
+        deleteBlob(files, container, accountname, sas, blobUri)
+        msg = "Delete proceeding";
+        alertify.success(msg);
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function UploadFiles(FileType) {
+    try {
+
+        var files = document.getElementById('files').files;
+        var FileName = ObtainDateSuffix() + files[0].name;        
+        var dt = new Date();                   
+        AzureParms = ObtainAzureParams(FileType);
+        var UserName = ReturnUserName();
+        var AzureStorageName = AzureParms.AzureStorageName;
+        var sas = AzureParms.SASKey;
+        var blobUri = AzureParms.blobUri;
+        container = AzureParms.AzureContainer;
+        FileType = FileType.toUpperCase();
+        FileType = FileType.trim();
+        // Update DB for File Status
+        var FileID = LogFileUploadStatus(0, FileName, 'UPLD', FileType, UserName);                                        
+        uploadBlobByStream(false, files, FileName, AzureParms);
         msg = "Uploading proceeding";
         alertify.success(msg);
-        //alert("Finalized");
-
+        FileNameUpload = FileName;
     }
     catch (e) {
         HeaderDataErrorReport(e);
@@ -232,4 +264,50 @@ function UploadFiles() {
 }
 function HeaderDataErrorReport(e) {
     alert(e);
+}
+function ObtainAzureParams(FileType) {
+    try {        
+        var urlMain = "/WCFWebService.svc/ObtainAzureParameters";
+        var DataUrl = '?FileType=' + FileType
+        urlMain = urlMain + DataUrl;
+        var ResultData = ReturnDataFromService(urlMain);
+        var j = 0;
+        return ResultData;
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function LogFileUploadStatus(FileID, FileName, FileStatus, FileType, UserName) {
+    var urlMain = '/WCFWebService.svc/FileUpsert';
+    // File Types
+    //CUST
+    //DEAL
+    //FACL
+    // File Status
+    //UPLD
+    //IMPG
+    //IMTBL
+    var DataUrl = '?FileID=' + FileID + '&FileName=' + FileName + '&FileStatus=' + FileStatus + '&FileType=' + FileType + '&UserName=' + UserName
+    urlMain = urlMain + DataUrl;
+    var ResultData = ReturnDataFromService(urlMain);
+    return ResultData; // Returning the File Name
+}
+
+function ValidateFile(FileType) {
+    try {
+        //Asquire Azure Parms
+        AzureParms = ObtainAzureParams(FileType);
+        if (FileNameUpload != "") {
+            if (FileType == "CUST") {
+                DiplayCustomerValidation(FileNameUpload, AzureParms.AzureContainer);
+            } else if (FileType == "DEAL") {
+                DiplayDealValidation(FileNameUpload, AzureParms.AzureContainer);
+            }
+
+        } 
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
 }

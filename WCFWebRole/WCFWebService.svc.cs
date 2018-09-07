@@ -73,6 +73,76 @@ namespace WCFWebRole
         #endregion 
         // General Calls
         #region 
+        public AzureParameters ObtainAzureParameters(string FileType)
+        {
+            AzureParameters AzureParms = new AzureParameters();
+            AzureParms.AzureStorageName = "riskdeskstorage";
+            AzureParms.AzureContainer = "currentclient";
+            FileType = FileType.ToUpper();
+            FileType = FileType.Trim();
+            if (FileType == "DEAL")
+            {
+                AzureParms.AzureContainer = "riskdeal";
+            }
+            else if (FileType == "CUST")
+            {
+                AzureParms.AzureContainer = "riskcust";
+            }
+            else if (FileType == "FACL")
+            {
+                AzureParms.AzureContainer = "riskfacility";
+            }            
+            AzureParms.SASKey = "?sv=2017-11-09&ss=b&srt=sco&sp=rwdlac&se=2018-09-08T03:48:38Z&st=2018-09-05T19:48:38Z&spr=https,http&sig=b2cbJHx51ell2qHK3qCV1Uoni7AKQtZOzlmSiOJ%2B00s%3D";
+            AzureParms.blobUri = "https://riskdeskstorage.blob.core.windows.net";
+
+            return AzureParms;
+        }
+        public String ObtainDateSuffix()
+        {
+            DateTime CD = System.DateTime.UtcNow;
+            String ReturnString = CD.Year.ToString() + "_" + CD.Month.ToString() + "_" + CD.Day.ToString() + "_" + CD.Hour.ToString() + "_" + CD.Second.ToString() + "_";
+            return ReturnString;
+        }
+        public int FileUpsert(int FileID, String FileName, String FileStatus, String FileType, String UserName)
+        {
+
+            int SelectionItemsinfo = new int();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString(); 
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[FileUpsert]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@FileID", FileID);
+                    cmd.Parameters.AddWithValue("@FileName", FileName);
+                    cmd.Parameters.AddWithValue("@FileStatus", FileStatus);
+                    cmd.Parameters.AddWithValue("@FileType", FileType);
+                    cmd.Parameters.AddWithValue("@UserName", UserName);
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
         public List<CityInfo> CitiesForStateGetInfo(String StateAbb)
         {
 
@@ -294,6 +364,79 @@ namespace WCFWebRole
             return SelectionItemsinfo;
         }
 
+        public int CustomerValidatedFileUpsert()
+        {
+
+            int SelectionItemsinfo = new int();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[CustomerValidatedFileUpsert]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        public int CustomerValidationUpsert(String FileName, String ContainerName)
+        {
+
+            int SelectionItemsinfo = new int();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();          
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[CustomerFileUpsert]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@FileName", FileName);
+                    cmd.Parameters.AddWithValue("@ContainerName", ContainerName);
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
         public List<CustomerInfo> CustomersAllGetInfo()
         {
 
@@ -393,9 +536,187 @@ namespace WCFWebRole
             }
             return SelectionItemsinfo;
         }
+        public List<CustomerInfo> CustomersValidateGetInfo()
+        {
+
+            List<CustomerInfo> SelectionItemsinfo = new List<CustomerInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[CustomerValidationGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;                    
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new CustomerInfo
+                            {
+                                CustomerID = Convert.ToInt32(dr["customerid"].ToString()),
+                                CustomerName = dr["customername"].ToString(),
+                                billingadd1 = dr["billingadd1"].ToString(),
+                                billingadd2 = dr["billingadd2"].ToString(),
+                                //cityid = Convert.ToInt32(dr["cityid"].ToString()),
+                                CityName = dr["City"].ToString(),
+                                zip = dr["zip"].ToString(),
+                                stateabb = dr["stateabb"].ToString(),
+                                StartDate = Convert.ToDateTime(dr["startdate"].ToString()),
+                                EndDate = Convert.ToDateTime(dr["enddate"].ToString()),                                
+                                StartDateString = String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(dr["startdate"].ToString())),
+                                EndDateString = String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(dr["enddate"].ToString())),
+                                Active = Convert.ToBoolean(dr["Active"].ToString()),
+                                FileName = dr["FileName"].ToString(),
+                                NewCityID = Convert.ToInt32(dr["NewCityID"].ToString()),
+                                InsertDate = Convert.ToDateTime(dr["InsertDate"].ToString()),
+                                NewCustomer = dr["NewCustomer"].ToString(),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+
         #endregion
         // Deal Calls
-        #region        
+        #region      
+        public int DealsValidatedFileUpsert()
+        {
+
+            int SelectionItemsinfo = new int();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[DealValidatedFileUpsert]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        public List<DealInfo> DealsValidateGetInfo()
+        {
+
+            List<DealInfo> SelectionItemsinfo = new List<DealInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[DealValidationGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new DealInfo
+                            {
+                                CustomerID = Convert.ToInt32(dr["customerid"].ToString()),
+                                CustomerName = dr["customername"].ToString(),
+                                DealID = Convert.ToInt32(dr["dealid"].ToString()),
+                                DealNumber = dr["dealnumber"].ToString(),
+                                DealName = dr["dealnumber"].ToString(),
+                                StartDate  = String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(dr["startdate"].ToString())),
+                                EndDate= String.Format("{0:MM/dd/yyyy}", Convert.ToDateTime(dr["enddate"].ToString())),
+                                DealActive = Convert.ToBoolean(dr["Active"].ToString()),
+                                FileName = dr["FileName"].ToString(),                                
+                                InsertDate = Convert.ToDateTime(dr["InsertDate"].ToString()),
+                                NewDeal = dr["NewDeal"].ToString(),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+        public int DealValidationUpsert(String FileName, String ContainerName)
+        {
+
+            int SelectionItemsinfo = new int();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[DealFileUpsert]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@FileName", FileName);
+                    cmd.Parameters.AddWithValue("@ContainerName", ContainerName);
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
         public List<DealInfo> SpecificCustomerDealsGetInfo(int CustomerID)
         {
 
