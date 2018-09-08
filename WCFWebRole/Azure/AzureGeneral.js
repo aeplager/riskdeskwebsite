@@ -303,7 +303,10 @@ function ValidateFile(FileType) {
                 DiplayCustomerValidation(FileNameUpload, AzureParms.AzureContainer);
             } else if (FileType == "DEAL") {
                 DiplayDealValidation(FileNameUpload, AzureParms.AzureContainer);
-            }
+            } else if (FileType == "FACL") {
+                DiplayFacilityValidation(FileNameUpload, AzureParms.AzureContainer);
+            } 
+
 
         } 
     }

@@ -146,6 +146,25 @@ namespace WCFWebRole
         #endregion
         // Facility
         #region
+
+        [WebGet(UriTemplate = "/FacilityValidationUpsert?FileName={FileName}&ContainerName={ContainerName}",
+                    RequestFormat = WebMessageFormat.Json,
+                    ResponseFormat = WebMessageFormat.Json,
+                    BodyStyle = WebMessageBodyStyle.Bare)]
+        int FacilityValidationUpsert(String FileName, String ContainerName);
+
+        [WebGet(UriTemplate = "/FacilityValidateGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<FacilityInfo> FacilityValidateGetInfo();
+
+        [WebGet(UriTemplate = "/FacilityValidatedFileUpsert",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        int FacilityValidatedFileUpsert();
+
         [WebGet(UriTemplate = "/TDULossCodeAllGetInfo?TDUID={TDUID}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
@@ -395,6 +414,12 @@ namespace WCFWebRole
         public bool FacilityActive { get; set; }
         [DataMember]
         public Double BillingCycle { get; set; }
+        [DataMember]
+        public String FileName { get; set; }
+        [DataMember]
+        public String NewFacility { get; set; }
+        [DataMember]
+        public String InsertDate { get; set; }
 
     }
 

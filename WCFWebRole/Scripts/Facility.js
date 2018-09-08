@@ -265,3 +265,73 @@ function FacilityDataUpsert(NewOld) {
         HeaderDataErrorReport(e);
     }
 }
+function DiplayFacilityValidation(FileName, ContainerName) {
+    try {
+        // Push File to Validation
+        var urlMain = '/WCFWebService.svc/FacilityValidationUpsert';
+        var DataUrl = '?FileName=' + FileName + '&ContainerName=' + ContainerName; 
+        FileNameUpload = FileName; 
+        urlMain = urlMain + DataUrl;
+        var ResultInt = ReturnDataFromService(urlMain);
+        // Display Validation
+        var urlMain = '/WCFWebService.svc/FacilityValidateGetInfo';
+        var ResultData = ReturnDataFromService(urlMain);
+        var j = 0;
+        for (var i in ResultData) {
+            j = j + 1;
+        }
+        $('#data-tableUpload').remove();
+        $("#tableContainerUpload").remove("#data-tableUpload");
+        var mytable = $('<table></table>').attr({ id: "data-table", width: "100%", overflow: "scroll", class: "scrollTable table-hover" });
+        var rows = 5;
+        if (j < rows) { rows = j - 2; }
+        if (rows <= 0) { rows = 1; }
+        var cols = 2;
+        var tr = [];
+        for (var i = 0; i <= rows; i++) {
+            if (i == 0) {
+                var tHead = $('<thead></thead>').attr({}).appendTo(mytable);
+                var row = $('<tr></tr>').appendTo(tHead);
+                $('<th></th>').text("Customer Name").appendTo(row);
+                $('<th></th>').attr({ class: "hidden-phone" }).text("FacilityID").appendTo(row);
+                $('<th></th>').text("Congestion Zone Name").appendTo(row);
+                $('<th></th>').text("TDU Name").appendTo(row);
+                $('<th></th>').text("Load Profile Name ").appendTo(row);
+                $('<th></th>').text("Loss Code Name ").appendTo(row);
+                $('<th></th>').text("Billing Cycle").appendTo(row);
+                //$('<th></th>').text("Facility Active").appendTo(row);
+                $('<th></th>').text("New Facility").appendTo(row);
+
+            } else {
+                if (i == 1) {
+                    var tBody = $('<tbody></tbody>').appendTo(mytable);
+                }
+                for (var i in ResultData) {
+                    var row = $('<tr></tr>').attr({ id: "facl_" + ResultData[i].CustomerID + '_' +  ResultData[i].FacilityID, class: "gradeA success" }).appendTo(tBody);
+                    $('<td></td>').text(ResultData[i].CustomerName).appendTo(row);
+                    $('<td></td>').text(ResultData[i].FacilityID).appendTo(row);
+                    $('<td></td>').text(ResultData[i].CongestionZoneName).appendTo(row);
+                    $('<td></td>').text(ResultData[i].TDUName).appendTo(row);
+                    $('<td></td>').text(ResultData[i].LoadProfileName).appendTo(row);
+                    $('<td></td>').text(ResultData[i].LossCodeName).appendTo(row);
+                    $('<td></td>').text(ResultData[i].BillingCycle).appendTo(row);
+                    $('<td></td>').text(ResultData[i].NewFacility).appendTo(row);
+                    //$('<td></td>').text(ResultData[i].FileName).appendTo(row);
+                }
+            }
+        }
+        mytable.appendTo("#tableContainerUpload");
+        var oTable = $('#data-tableUpload').dataTable(
+            {
+                "sScrollY": "300px",
+                "sScrollX": "100%",
+                "sScrollXInner": "150%",
+                "bScrollCollapse": true,
+                "bPaginate": false,
+                "bFilter": false
+            });
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}

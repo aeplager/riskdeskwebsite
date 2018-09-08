@@ -920,6 +920,130 @@ namespace WCFWebRole
         #endregion
         // Facility Calls
         #region
+
+        public int FacilityValidationUpsert(String FileName, String ContainerName)
+        {
+
+            int SelectionItemsinfo = new int();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[FacilityFileUpsert]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@FileName", FileName);
+                    cmd.Parameters.AddWithValue("@ContainerName", ContainerName);
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+        public List<FacilityInfo> FacilityValidateGetInfo()
+        {
+
+            List<FacilityInfo> SelectionItemsinfo = new List<FacilityInfo>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[FacilityValidationGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new FacilityInfo
+                            {
+                                CustomerID = Convert.ToInt32(dr["customerid"].ToString()),
+                                CustomerName = dr["customername"].ToString(),
+                                FacilityID = dr["FacilityID"].ToString(),
+                                CongestionZoneName = dr["CongestionZoneName"].ToString(),
+                                TDUName = dr["TDUName"].ToString(),
+                                LoadProfileName = dr["LoadProfileName"].ToString(),
+                                LossCodeName = dr["LossCodeName"].ToString(),
+                                FacilityActive = Convert.ToBoolean(dr["Active"].ToString()),
+                                FileName = dr["FileName"].ToString(),
+                                InsertDate = String.Format("{0:g}", Convert.ToDateTime(dr["InsertDate"].ToString())),
+                                NewFacility = dr["NewFacility"].ToString(),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        public int FacilityValidatedFileUpsert()
+        {
+
+            int SelectionItemsinfo = new int();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[FacilityValidatedFileUpsert]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo = Convert.ToInt32(dr["ReturnValue"]);
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+
         public List<FacilityInfo> FacilityAllGetInfo()
         {
 

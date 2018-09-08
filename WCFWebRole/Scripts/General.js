@@ -377,6 +377,13 @@ function ImportFile(FileType) {
                     var ResultData = ReturnDataFromService(urlMain);
                     var j = 0;
                     var FileID = LogFileUploadStatus(0, FileNameUpload, 'IMTBL', FileType, UserName);
+                } else if (FileType == "FACL") {
+                    var UserName = ReturnUserName();
+                    msg = "All facilities updated!!!"
+                    var urlMain = "/WCFWebService.svc/FacilityValidatedFileUpsert";
+                    var ResultData = ReturnDataFromService(urlMain);
+                    var j = 0;
+                    var FileID = LogFileUploadStatus(0, FileNameUpload, 'IMTBL', FileType, UserName);
                 }   
                 alertify.success(msg);
             } else {

@@ -59,6 +59,7 @@
         /*An array containing all the country names in the world:*/
         var LoadProfiles = [];
         var Facilities = [];
+        var FileNameUpload = "";
         function Initialize() {
             // Initialize the city
             try {
@@ -343,16 +344,16 @@
                                                 <select id="CustomerInfoList_Facility" name="CustomerInfoList_Facility_name" class="form-control" onchange="FacilityCustomerInfoList_Change()">
                                                     <option>-Customer-</option>
                                                 </select>
-                                            </div>                                            
+                                            </div>
                                             <label for="FacilityListLabel" class="col-sm-2 control-label">Select Facility</label>
                                             <div class="col-md-4 col-sm-4 col-xs-4">
                                                 <div class="autocomplete cd-full-width">
-                                                    <input id="FacilityAutoCompleteList_Facility" class="form-control" type="text" name="FacilityAutoFacility" placeholder="Facility"/>
+                                                    <input id="FacilityAutoCompleteList_Facility" class="form-control" type="text" name="FacilityAutoFacility" placeholder="Facility" />
                                                 </div>
-                                                <script>                                                    
-                                                    //autocomplete(document.getElementById('FacilityAutoCompleteList_Facility', Facilities);       
+                                                <script>
+                                                    //autocomplete(document.getElementById('FacilityAutoCompleteList_Facility', Facilities);
                                                     /*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
-                                                    autocomplete(document.getElementById("FacilityAutoCompleteList_Facility"), Facilities);                                                    
+                                                    autocomplete(document.getElementById("FacilityAutoCompleteList_Facility"), Facilities);
                                                     //$("#FacilityAutoCompleteList_Facility").autocomplete({ source: Facilities })
                                                     //function showLabel(event, ui) {
                                                     //    alert('test');
@@ -389,8 +390,8 @@
                                             <div class="col-md-4 col-sm-4 col-xs-4">
                                                 <input id="BillingCycle_Facility" type="number" min="0" max="20" />
                                                 <!--<select id="LossCodeInfoList_Facility" name="LossCodeInfoList_Facility" class="form-control">
-                                                    <option>-Billing Cycle-</option>
-                                                </select>-->
+                                    <option>-Billing Cycle-</option>
+                                </select>-->
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -444,12 +445,12 @@
                     </div>
                     <!-- Row End -->
                     <!-- Row Start -->
-                    <div id="RemoveUploadDiv_facility" class="row">
+                    <div id="RemoveUploadDiv_Facility" class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="widget">
                                 <div class="widget-header">
                                     <div class="title">
-                                        Upload Facility Data<a id="dynamic-tables-facility-upload"></a>
+                                        Upload Facility<a id="dynamic-tables-facility-upload"></a>
                                     </div>
                                 </div>
                                 <div id="dtExampleWidget-2" class="widget-body">
@@ -458,7 +459,9 @@
                                             <input type="file" id="files" value="test" />
                                         </div>
                                         <div class="form-group">
-                                            <input type="button" id="upload-button" value="Import File" onclick="UploadFiles('FACL')" />
+                                            <input type="button" id="upload-button" value="Upload File" onclick="UploadFiles('FACL')" />
+                                            <input type="button" id="validate-button" value="Validate File" onclick="ValidateFile('FACL')" />
+                                            <input type="button" id="validate-button" value="Import Data File" onclick="ImportFile('FACL')" />
                                         </div>
                                         <div class="form-group">
                                             <div> Uploaded Bytes: <font id="read"> </font> </div>
@@ -468,10 +471,31 @@
                                                 </div>
                                             </div>
                                         </div>
-                                            <div class="clearfix">
-                                            </div>
+                                        <div class="clearfix">
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ListUpload_Facility" class="row">
+                        <div class="col-lg-12 col-md-12">
+                            <div class="widget">
+                                <div class="widget-header">
+                                    <div class="title">
+                                        Data From Upload<a id="dynamic-tables"></a>
+                                    </div>
+                                </div>
+                                <div id="dtExampleWidget" class="widget-body">
+                                    <div id="dt_example" class="example_alt_pagination">
+                                        <div id="tableContainerUpload" class="tableContainer">
+                                            <!--width:  "100%",overflow:  "scroll",class: "scrollTable" });-->
+                                            <table id="data-tableUpload" width="100%" overflow: "scroll" class="scrollTable"></table>
+                                        </div>
+                                        <div class="clearfix">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -136,7 +136,7 @@
     <Content Include="DealEntry.html" />
     <Content Include="default.html" />
     <Content Include="edit-profile.html" />
-    <Content Include="FacilityDataEntry.html" />
+    <Content Include="FacilityEntry.html" />
     <Content Include="flot.html" />
     <Content Include="fonts\font-awesome.css" />
     <Content Include="fonts\font-awesome.min.css" />
