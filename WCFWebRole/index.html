@@ -1,39 +1,78 @@
 ﻿<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Risk Desk</title>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Blue Moon - Responsive Admin Dashboard" />
     <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery" />
     <meta name="author" content="Bootstrap Gallery" />
     <link rel="shortcut icon" href="img/favicon.ico">
-    
+
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/new.css" rel="stylesheet"> 
+    <link href="css/new.css" rel="stylesheet">
     <link href="css/charts-graphs.css" rel="stylesheet">
     <!-- Datepicker CSS -->
     <link rel="stylesheet" type="text/css" href="css/datepicker.css">
 
     <link href="fonts/font-awesome.min.css" rel="stylesheet">
+    <link href="fonts/font-awesome.min.css" rel="stylesheet">
 
+    <!--Included Scripts-->
+    <!--AutoComplete Scripts-->
+    <link rel="stylesheet" href="css/AutoComplete.css" />
+    <!--Normal Scripts-->
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/jquery-1.7.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.7.0/jquery-ui.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!--AutoComplete New-->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.3/themes/hot-sneaks/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-2.1.3.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
+    <!--Custom Java Script-->
+    <script type="text/javascript" src="Scripts/General.js"></script>
+    <script type="text/javascript" src="Scripts/Customer.js"></script>
+    <script type="text/javascript" src="Scripts/AutoComplete.js"></script>
+    <script type="text/javascript" src="Scripts/DealEntry.js"></script>
+    <script type="text/javascript" src="Scripts/Facility.js"></script>
+
+    <!--<!--Links to Azure-->-->
+    <script src="Azure/azure-storage.blob.js"></script>
+    <script src="Azure/AzureGeneral.js"></script>
     <!-- HTML5 shiv and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="js/html5shiv.js"></script>
       <script src="js/respond.min.js"></script>
     <![endif]-->
+
     <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','http://www.google-analytics.com/analytics.js','ga');
-      ga('create', 'UA-40304444-1', 'iamsrinu.com');
-      ga('send', 'pageview');
+        function Initialize() {
+            // Initialize the city
+            try {
+                AddHeader();
+                MainPageTransactionsGetInfo();
+            }
+            catch (e) {
+                alert(e);
+            }
+        }
+        (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'http://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-40304444-1', 'iamsrinu.com');
+        ga('send', 'pageview');
 
     </script>
-  </head>
+</head>
 
-  <body>
+  <body onload="Initialize()">
 
     <!-- Header Start -->
     <header>
@@ -174,104 +213,10 @@
 
     <!-- Main Container start -->
     <div class="dashboard-container">
-
       <div class="container">
         <!-- Top Nav Start -->
         <div id='cssmenu'>
-          <ul>
-            <li class='active'>
-              <a href='#'>
-                <i class="fa fa-dashboard"></i>
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <a href="DealEntry.html">
-                <i class="fa fa-align-justify"></i>
-                Data Entry
-              </a>
-                <ul>
-                    <li><a href='DealEntry.html'>Line of Business</a></li>
-                    <li><a href='Customer.html'>Customer</a></li>
-                    <li><a href='DealEntry.html'>Deal</a></li>
-                    <li><a href='DealEntry.html'>Facility</a></li>
-                    <li><a href='DealEntry.html'>Grouping</a></li>                    
-                    <li><a href='DealEntry.html'>Broker</a></li>
-                </ul>
-            </li>
-              <li class=''>
-                  <a href='#'><i class="fa fa-thumbs-o-up"></i>Validation</a>
-                  <ul>
-                      <li><a href='ui-elements.html'>Deal</a></li>
-                      <li><a href='panels.html'>Customer</a></li>
-                      <li><a href='notifications.html'>Facility</a></li>
-                      <li><a href='icons.html'>Grouping</a></li>
-                      <li><a href='icons.html'>Broker</a></li>
-                  </ul>
-              </li>
-            <li class=''>
-              <a href='#'><i class="fa fa-bar-chart-o"></i>Data Analytics</a>
-              <ul>
-                 <li><a href='flot.html'>Origination</a></li>
-                 <li><a href='graphs.html'>Gross Margin</a></li>
-                 <li><a href='vector-maps.html'>Pricing</a></li>
-                  <li><a href='vector-maps.html'>Batch Levl Pricing</a></li>
-                  <li><a href='vector-maps.html'>Retail Pricing</a></li>
-                  <li><a href='vector-maps.html'>Weather Norm Pricing</a></li>
-              </ul>
-            </li>
-
-            <!--<li class=''>
-              <a href='#'><i class="fa fa-dashboard"></i>Extras</a>
-              <ul>
-                <li><a href='#'>Blog</a>
-                  <ul>
-                    <li><a href='blog.html'>Blog</a></li>
-                    <li><a href='blog-full-page.html'>Blog Full Page</a></li>
-                  </ul>
-                </li>
-                <li><a href='edit-profile.html'>Edit Profile</a></li>
-                <li><a href='invoice.html'>Invoice</a></li>
-                <li><a href='default.html'>default</a></li>
-                <li><a href='#'>Submenu</a>
-                  <ul>
-                    <li><a href='#'>Sub Product</a></li>
-                    <li><a href='#'>Sub Product</a></li>
-                    <li><a href='#'>Sub Product</a></li>
-                  </ul>
-                </li>
-                <li><a href='login.html'>Login</a></li>
-                <li><a href='help.html'>Help</a></li>
-                <li><a href='404.html'>404</a></li>
-                <li><a href='500.html'>500</a></li>
-              </ul>
-            </li>-->
-            <!--<li class=''>
-              <a href='#'><i class="fa fa-table"></i>Tables</a>
-              <ul>
-                 <li><a href='tables.html'>Tables</a></li>
-                 <li><a href='pricing.html'>Pricing Plan</a></li>
-                 <li><a href='timeline.html'>Timeline</a></li>
-              </ul>
-            </li>-->
-            <!--<li>
-              <a href="media.html">
-                <i class="fa fa-picture-o"></i>
-                Media
-              </a>
-            </li>-->
-            <!--<li class="hidden-sm">
-              <a href="calendar.html">
-                <i class="fa fa-calendar"></i>
-                Calendar
-              </a>
-            </li>-->
-            <!--<li class="hidden-sm">
-              <a href="typography.html">
-                <i class="fa fa-font"></i>
-                Typography
-              </a>
-            </li>-->
+          <ul id="MainUL">                        
           </ul>
         </div>
         <!-- Top Nav End -->
@@ -302,14 +247,14 @@
             <div class="col-lg-3 col-md-3 col-sm-6">
               <div class="mini-widget">
                 <div class="mini-widget-heading clearfix">
-                  <div class="pull-left">Visitors</div>
+                  <div class="pull-left">Customers</div>
                   <div class="pull-right"><i class="fa fa-angle-up"></i> 12.2<sup>%</sup></div>
                 </div>
                 <div class="mini-widget-body clearfix">
                   <div class="pull-left">
                     <i class="fa fa-globe"></i>
                   </div>
-                  <div class="pull-right number">8757</div>
+                  <div id="CustomersDivLabel" class="pull-right number">8757</div>
                 </div>
 <!--                 <div class="mini-widget-footer center-align-text">
                   <span>Better than last week</span>
@@ -319,14 +264,14 @@
             <div class="col-lg-3 col-md-3 col-sm-6">
               <div class="mini-widget">
                 <div class="mini-widget-heading clearfix">
-                  <div class="pull-left">Shares</div>
+                  <div class="pull-left">Facilities</div>
                   <div class="pull-right"><i class="fa fa-angle-up"></i> 18.3<sup>%</sup></div>
                 </div>
                 <div class="mini-widget-body clearfix">
                   <div class="pull-left">
                     <i class="fa fa-twitter"></i>
                   </div>
-                  <div class="pull-right number">3780</div>
+                  <div id="FacilityDivLabel" class="pull-right number">3780</div>
                 </div>
 <!--                 <div class="mini-widget-footer center-align-text">
                   <span>Better than last week</span>
@@ -336,14 +281,14 @@
             <div class="col-lg-3 col-md-3 col-sm-6">
               <div class="mini-widget">
                 <div class="mini-widget-heading clearfix">
-                  <div class="pull-left">Downloads</div>
+                  <div class="pull-left">Deals</div>
                   <div class="pull-right"><i class="fa fa-angle-down"></i> 21.9<sup>%</sup></div>
                 </div>
                 <div class="mini-widget-body clearfix">
                   <div class="pull-left">
                     <i class="fa fa-upload"></i>
                   </div>
-                  <div class="pull-right number">12658</div>
+                  <div id="DealsDivLabel" class="pull-right number">12658</div>
                 </div>
 <!--                 <div class="mini-widget-footer center-align-text">
                   <span>Better than last week</span>
@@ -353,14 +298,14 @@
             <div class="col-lg-3 col-md-3 col-sm-6">
               <div class="mini-widget mini-widget-grey">
                 <div class="mini-widget-heading clearfix">
-                  <div class="pull-left">Signups</div>
+                  <div class="pull-left">Files</div>
                   <div class="pull-right"><i class="fa fa-angle-up"></i> 67.1<sup>%</sup></div>
                 </div>
                 <div class="mini-widget-body clearfix">
                   <div class="pull-left">
                     <i class="fa fa-coffee"></i>
                   </div>
-                  <div class="pull-right number">1135</div>
+                  <div id="FilesDivLabel" class="pull-right number">1135</div>
                 </div>
 <!--                 <div class="mini-widget-footer center-align-text">
                   <span>Better than last week</span>
@@ -369,9 +314,12 @@
             </div>
           </div>
           <!-- Row ends -->
+          <div class="row">
+              <iframe width="933" height="700" src="https://app.powerbi.com/groups/me/dashboards/b9b5618e-2932-4e65-9cc8-b62e0ea15a05" frameborder="0" allowFullScreen="true"></iframe>
+          </div>
 
           <!-- Row Start -->
-          <div class="row">
+          <!--<div class="row">
             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
               <div class="widget">
                 <div class="widget-header">
@@ -411,12 +359,12 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div>-->
           <!-- Row End -->
 
           <!-- Row Start -->
-          <div class="row">
-            <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
+          <!--<div class="row">-->
+            <!--<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
               <div class="widget">
                 <div class="widget-header">
                   <div class="title">
@@ -426,7 +374,7 @@
                 <div class="widget-body">
                   <div class="social-stats">
                     <!-- Row Starts -->
-                    <div class="row">
+                    <!--<div class="row">
                       <div class="col-md-3 col-sm-3 col-xs-12">
                         <div class="social-icon facebook-bg">
                           <i class="fa fa-facebook fa-2x"></i>
@@ -467,13 +415,13 @@
                           <h5>Shares</h5>
                         </div>
                       </div>
-                    </div>
+                    </div>-->
                     <!-- Row Ends -->
-                  </div>
+                  <!--</div>
                 </div>
               </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+            </div>-->
+            <!--<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
               <div class="widget">
                 <div class="widget-header">
                   <div class="title">
@@ -484,12 +432,12 @@
                   <div id="gg1" class="gauge chart-height-md"></div>
                 </div>
               </div>
-            </div>
+            </div>-->
           </div>
           <!-- Row End -->
 
           <!-- Row Start -->
-          <div class="row">
+          <!--<div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <div class="widget">
                 <div class="widget-header">
@@ -527,11 +475,11 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div>-->
           <!-- Row End -->
 
           <!-- Row Start -->
-          <div class="row">
+          <!--<div class="row">
             <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
               <div class="widget">
                 <div class="widget-header">
@@ -629,7 +577,7 @@
                 </div>
                 <div class="widget-body">
                   <!-- Row starts -->
-                  <div class="row">
+                  <!--<div class="row">
                     <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                       <div class="bg-primary-light">
                         <div class="spacer-xs">
@@ -647,12 +595,12 @@
                     <div class="col-md-8 col-sm-8 col-xs-12">
                       <div id="datepicker"></div>
                     </div>
-                  </div>
+                  </div>-->
                   <!-- Row ends -->
-                </div>
+                <!--</div>
               </div>
             </div>
-          </div>
+          </div>-->
           <!-- Row End -->
 
         </div>

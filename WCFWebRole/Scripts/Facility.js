@@ -1,337 +1,394 @@
-﻿function CreateFacilityTable() {
+﻿
+function FacilityFillDropdowns() {
     try {
-        var urlMain = '/WCFWebService.svc/FacilityAllGetInfo';
-        var ResultData = ReturnDataFromService(urlMain);
-        var j = 0;
-        for (var i in ResultData) {
-            j = j + 1;
-        }
-        $('#data-table').remove();
-        $("#tableContainer").remove("#data-table");
-        var mytable = $('<table></table>').attr({ id: "data-table", width: "100%", overflow: "scroll", class: "scrollTable table-hover" });
-        var rows = j-2;
-        var cols = 2;
-        var tr = [];
-        for (var i = 0; i <= rows; i++) {
-            if (i == 0) {
-                var tHead = $('<thead></thead>').attr({}).appendTo(mytable);
-                var row = $('<tr></tr>').appendTo(tHead);
-                $('<th></th>').text("Facility ID").appendTo(row);
-                $('<th></th>').text("DUNS Number").appendTo(row);
-                $('<th></th>').text("Customer Name").appendTo(row);
-                $('<th></th>').text("Congestion Zone").appendTo(row);
-                $('<th></th>').text("TDU").appendTo(row);
-                $('<th></th>').text("Load Profile").appendTo(row);
-                $('<th></th>').text("Loss Code").appendTo(row);
-                //$('<th></th>').text("Broker Margin").appendTo(row);
-            } else {
-                if (i == 1) {
-                    var tBody = $('<tbody></tbody>').appendTo(mytable);
-                }
-                for (var i in ResultData) {
-                    var row = $('<tr></tr>').attr({ id: "fac_" + ResultData[i].FacilityID, class: "gradeA success" }).appendTo(tBody);
-                    $('<td></td>').text(ResultData[i].FacilityID).appendTo(row);
-                    $('<td></td>').text(ResultData[i].DunsNumber).appendTo(row);
-                    $('<td></td>').text(ResultData[i].CustomerName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].CongestionZoneName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].TDUName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].LoadProfileName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].LossCodeName ).appendTo(row);
-                    //$('<td></td>').text(ResultData[i].BrokerMargin).appendTo(row);
-                }
-            }
-        }
-        mytable.appendTo("#tableContainer");
-        var oTable = $('#data-table').dataTable(
-            {
-                "sScrollY": "300px",
-                "sScrollX": "100%",
-                "sScrollXInner": "150%",
-                "bScrollCollapse": true,
-                "bPaginate": false,
-                "bFilter": false
-            });
-    }
-    catch (e) {
+        //Fill All Dropdowns
+        CustomerDropDownFill();        
+        CustomerStateDropDownFill();
+        CustomerCityDropDownFill();
+        FacilityLoadProfiles();       
+        var urlMain;
+        var SelectorName;
+        var SelectorFirstName;        
+        // Load Profile
+        urlMain = '/Services/Facility.svc/TDUGetInfo';
+        SelectorName = 'SelTDU';
+        SelectorFirstName = 'TDU';
+        FacilityFillGenericSelectorDropDown(urlMain, SelectorName, SelectorFirstName);
+        urlMain = '/Services/Facility.svc/CongestionZonesGetInfo';
+        SelectorName = 'SelCongestionZones';
+        SelectorFirstName = 'Congestion Zone';
+        FacilityFillGenericSelectorDropDown(urlMain, SelectorName, SelectorFirstName);
+        urlMain = '/Services/Facility.svc/WeatherStationGetInfo';
+        SelectorName = 'SelWeatherStation';
+        SelectorFirstName = 'Weather Station';
+        FacilityFillGenericSelectorDropDown(urlMain, SelectorName, SelectorFirstName);
+        $('#' + SelectorName).val(1);
+        FacilityUtilityAccountSetUp(0);
+        
+    } catch (e) {
         HeaderDataErrorReport(e);
     }
 }
-function FacilityCustomerInfoList_Change() {
+function UpdateOldTables() {
     try {
-        // Change the Facilities in the list based on the Customer ID        
-        var Test = [];
-        Facilities = [];
-        var CustomerID = $('#CustomerInfoList_Facility').val();
-        $('#FacilityAutoCompleteList_Facility').text('');
-        $('#FacilityAutoCompleteList_Facility').val('');
-        var urlMain = '/WCFWebService.svc/SpecificCustomerFacilitiesGetInfo';
-        var DataUrl = '?CustomerID=' + CustomerID;
-        urlMain = urlMain + DataUrl;
-        var ResultData = ReturnDataFromService(urlMain);
-        var j = 0;
-        var iRow = -1;
-        var SelectedItem = 'N/A';
-        for (var i in ResultData) {
-            var LoadProfileName;
-            var FacilityID;
-            //LoadProfileName = ResultData[i].LoadProfileName;
-            FacilityID= ResultData[i].FacilityID;
-            Facilities.push(FacilityID);
+        var CustomerID = $('#SelCustomer').val();            
+        var UtilityAccountNumber = $('#FacilityAutoCompleteList_Facility').val();
+        CustomerID = CustomerID.trim();
+        if ((CustomerID == "") || (CustomerID == null)) {
+            CustomerID = 0;
         }
-        autocomplete(document.getElementById('FacilityAutoCompleteList_Facility'), Facilities);
-        var input = document.getElementById("FacilityAutoCompleteList_Facility");
-        input.addEventListener("keyup", function (event) {
-            event.preventDefault();
-            if ((event.keyCode === 13) || (event.keyCode === 9)) {
-                Facility_Specific_Change();
-            }
-        });
-        $("#FacilityAutoCompleteList_Facility").blur(function () {
-            Facility_Specific_Change();
-        });
-        $("#FacilityAutoCompleteList_Facility").click(function () {
-            Facility_Specific_Change();
-        });
-        //$("#FacilityAutoCompleteList_Facility").autocomplete({ source: Facilities })
-        //$('#FacilityAutoCompleteList_Facility').autocomplete({
-        //    source: Facilities
-        //    //    focus: showLabel,
-        //    //    select: showLabel,
-        //    //    change: showLabel
-        //})
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }
-}
-
-function Facility_Specific_Change() {
-    try {
-        var ControlToSet = 'CustomerInfoList_Facility'
-        var CustomerID = $('#' + ControlToSet).val();
-        ControlToSet = 'FacilityAutoCompleteList_Facility'
-        var FacilityID = $('#FacilityAutoCompleteList_Facility').val();        
-        var urlMain = '/WCFWebService.svc/SpecificFacilityGetInfo';
-        var dataurl = '?CustomerID=' + CustomerID + '&FacilityID=' + FacilityID;
-        urlMain = urlMain + dataurl;
-        var resultdata = ReturnDataFromService(urlMain);
-        var j = 0;
-        //$('#' + controltoset).empty();
-        for (var i in resultdata) {
-            var TDUID = resultdata[i].TDUID;
-            var LoadProfile = resultdata[i].LoadProfileName;
-            var LossCodeID = resultdata[i].LossCodeID;
-            var BillingCycle = resultdata[i].BillingCycle;
-            var CurrActive = resultdata[i].FacilityActive;
-            var CongestionZoneID = resultdata[i].CongestionZoneID
-            $('#TDUInfoList_Facility').val(TDUID);            
-            TDUInfoList_Facility_Change();
-            $('#LossCodeInfoList_Facility').val(LossCodeID);            
-            $('#LoadProfileAutoCompleteList_Facility').val(LoadProfile);            
-            $('#BillingCycle_Facility').val(BillingCycle);
-            $("#Active_Facility").prop("checked", CurrActive)            
-            $('#CongestionZoneInfoList_Facility').val(CongestionZoneID);
-            //var CurrentDealActive = 1;
-            //if ($('#Active_Deal').is(':checked') != true) { CurrentDealActive = 0; } 
+        UtilityAccountNumber = UtilityAccountNumber.trim()
+        if ((UtilityAccountNumber == "") || (UtilityAccountNumber == null)) {
+            UtilityAccountNumber = "N/A";
         }
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }
-}
-function TDUInfoList_Facility_Change() {
-    try {
-        var ControlToSet = 'TDUInfoList_Facility'
-        TDUID = $('#' + ControlToSet).val();
-        ControlToSet = 'LossCodeInfoList_Facility'
-        $('#' + ControlToSet).empty();
-        var urlMain = '/WCFWebService.svc/TDULossCodeAllGetInfo';
-        var DataUrl = '?TDUID=' + TDUID;
-        urlMain = urlMain + DataUrl;
-        var ResultData = ReturnDataFromService(urlMain);
-        var j = 0;
-        $('#' + ControlToSet).empty();
-        for (var i in ResultData) {
-            var TDUID = ResultData[i].TDUID;
-            var LossCodeID = ResultData[i].LossCodeID
-            var LossCodeName = ResultData[i].LossCodeName
-            var LossCode = ResultData[i].LossCode
-            var CodeValue = LossCodeID;
-            $('#' + ControlToSet).append('<option value="' + CodeValue + '">' + LossCodeName  + '</option>')
-        }
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }
-}
-function FacilityLoadProfileAuto_Reset(ControlToSet) {
-    // Retrieves the list of cities and places them into the proper place
-    try {
-        // Empty the list box        
-        //$('#' + ControlToSet).empty();
-        // Set up the list call
-        var Test = [];
-        LoadProfiles = [];
-        var urlMain = '/WCFWebService.svc/LoadProfileAllGetInfo';
-        var ResultData = ReturnDataFromService(urlMain);
-        var j = 0;
-        var iRow = -1;
-        var SelectedItem = 'N/A';
-        for (var i in ResultData) {
-            var LoadProfileName;
-            var LoadProfileID;
-            LoadProfileName = ResultData[i].LoadProfileName;
-            LoadProfileID = ResultData[i].LoadProfileID;         
-            LoadProfiles.push(LoadProfileName);
-        }
-        autocomplete(document.getElementById(ControlToSet), LoadProfiles);
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }
-}
-function FacilityAuto_Reset(ControlToSet) {
-    // Retrieves the list of cities and places them into the proper place
-    try {
-        // Empty the list box        
-        //$('#' + ControlToSet).empty();
-        // Set up the list call
-        var Test = [];
-        Facilities = [];
-        var urlMain = '/WCFWebService.svc/LoadProfileAllGetInfo';
-        var ResultData = ReturnDataFromService(urlMain);
-        var j = 0;
-        var iRow = -1;
-        var SelectedItem = 'N/A';
-        for (var i in ResultData) {
-            var LoadProfileName;
-            var LoadProfileID;
-            LoadProfileName = ResultData[i].LoadProfileName;
-            LoadProfileID = ResultData[i].LoadProfileID;
-            LoadProfiles.push(LoadProfileName);
-        }
-        autocomplete(document.getElementById(ControlToSet), LoadProfiles);
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }
-}
-
-function FacilityUpsert(NewOld) {
-    var msg = "Please confirm that you want to save this record";
-    if (NewOld == 'New') {
-        msg = "Please confirm that you want to add a new record";
-    }
-    alertify.confirm(msg, function (e) {
-        if (e) {
-            if (NewOld == 'New') {
-                msg = 'You have added a new record';
-            } else {
-                msg = 'You have saved this record';
-            }
-            alertify.success(msg);
-            FacilityDataUpsert(NewOld);
+        if ((CustomerID == 0) && (UtilityAccountNumber == "N/A")) {
+            alertify.error("Please select at least a customer or a utility account number")
         } else {
-            alertify.error("Nothing completed");
+            urlMain = '/Services/Facility.svc/PushDataToOldTables';
+            DataMain = '?CustomerID=' + CustomerID;
+            DataMain = DataMain + '&UtilityAccountNumber=' + UtilityAccountNumber;
+            urlMain = urlMain + DataMain;
+            var ResultData = ReturnDataFromService(urlMain);
+            alertify.success(ResultData);
+        }
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+function FacilityChangeFillDropdowns() {
+    
+}
+function FacilityUtilityAccountSetUp(CustomerID) {
+    try {        
+        // Fills The Utilty Account Numbers
+        var Facilities2 = [];
+        autocomplete(document.getElementById("FacilityAutoCompleteList_Facility"), Facilities);
+        //var CustomerID = "0";
+        var urlMain = '/Services/Facility.svc/FacilityGetInfo';
+        var DataMain = '?CustomerID=' + CustomerID;
+        urlMain = urlMain + DataMain;
+        var ResultData = ReturnDataFromService(urlMain);
+        ControlToSet = "FacilityAutoCompleteList_Facility";
+        for (var i in ResultData) {
+            Facilities2.push(ResultData[i].UtilityAccountNumber);
+        }
+        UtilityAccountNumberautocomplete(document.getElementById("FacilityAutoCompleteList_Facility"), Facilities2);
+        //alertify.success(CurrentUtilityAccountNumber);
+
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+function FacilityLoadProfiles() {
+    try {
+        var urlMain = '/Services/Facility.svc/LoadProfileGetInfo';
+        var ResultData = ReturnDataFromService(urlMain);
+        var LoadProfilesNew = [];
+        for (var i in ResultData) {
+            LoadProfilesNew.push(ResultData[i].SelectorText);
+        }
+        autocomplete(document.getElementById("FacilityAutoCompleteList_LoadProfile"), LoadProfilesNew);
+
+        //UtilityAccountNumberautocomplete
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+
+function FacilityFillGenericSelectorDropDown (urlMain, SelectorName, SelectorFirstName) {
+    try {
+        $('#' + SelectorName).empty();
+        AddItemsToSelector(SelectorName, "--" + SelectorFirstName + "--", 0);
+        var urlMain = urlMain;
+        var ResultData = ReturnDataFromService(urlMain);
+        for (var iRows in ResultData) {
+            AddItemsToSelector(SelectorName, ResultData[iRows].SelectorText, ResultData[iRows].SelectorID);
+        }
+
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+function FacilityGetInfo(CurrentUtilityAccountNumber) {
+    try {        
+        var CustomerID = 0;
+        var urlMain = '/Services/Facility.svc/FacilityGetInfo';
+        var DataMain = '?UtilityAccountNumber=' + CurrentUtilityAccountNumber;
+        urlMain = urlMain + DataMain;
+        var ResultData = ReturnDataFromService(urlMain);
+        // Reset to Nothing
+        $('#ServiceAdd1').val("");
+        $('#ServiceAdd2').val("");
+        $('#SelState').val("TX");
+        $('#SelCity').val(0);
+        $('#ZipCode').val("");
+        $('#SelTDU').val(0);
+        $('#FacilityAutoCompleteList_LoadProfile').val("");
+        $('#SelCongestionZones').val(0);
+        $('#SelWeatherStation').val(0);        
+        $('#SelCustomer').val(0);            
+        $('#SelTDUTariff').empty();
+        $('#SelLossCode').empty();
+        
+        if (ResultData.length > 0) {
+            var iRow = 0;
+            $('#ServiceAdd1').val(ResultData[iRow].ServiceAddressOne);
+            $('#ServiceAdd2').val(ResultData[iRow].ServiceAddressTwo);
+            $('#SelCity').val(ResultData[iRow].CityID);
+            $('#FacilityAutoCompleteList_LoadProfile').val(ResultData[iRow].LoadProfile);
+            $('#SelCongestionZones').val(ResultData[iRow].CongestionZonesID);
+            $('#ZipCode').val(ResultData[iRow].ZipCode);
+            $('#SelTDU').val(ResultData[iRow].TDUID);
+            FacilityTDUSettings();
+            $('#SelTDUTariff').val(ResultData[iRow].TDUTariffID);
+            $('#SelLossCode').val(ResultData[iRow].LossCodeID);
+            $('#BillingCycle').val(ResultData[iRow].LossCodeID);
+            $('#SelWeatherStation').val(ResultData[iRow].BillingCyle);
+            $('#SelCustomer').val(ResultData[iRow].CustomerID);            
+        } 
+        
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+
+function FacilityUtilityAccountNumberStatusSetUp() {
+    try {
+        $('#UtilityAccountStatus').html("Utility Account Number New");
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function FacilityTDUSettings() {
+    try {
+        FacilityTDUTariffGetInfo();
+        FacilityLossCodeGetInfo();
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function FacilityTDUTariffGetInfo() {
+    try {
+        var TDUID = 0;
+        var SelectorName = 'SelTDUTariff';
+        TDUID = $('#SelTDU').val();
+        $('#' + SelectorName).empty();
+        var urlMain = '/Services/Facility.svc/TDUTariffGetInfo';
+        var DataMain = '?TDUID=' + TDUID;
+        urlMain = urlMain + DataMain;
+        var ResultData = ReturnDataFromService(urlMain);
+        AddItemsToSelector(SelectorName, "--TDU Tariff--", 0);
+        for (var iRows in ResultData) {
+            AddItemsToSelector(SelectorName, ResultData[iRows].TDUTariffName, ResultData[iRows].TDUTariffID);
+        }
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+function FacilityLossCodeGetInfo() {
+    try {
+        var TDUID = 0;
+        var SelectorName = 'SelLossCode';
+        TDUID = $('#SelTDU').val();
+        $('#' + SelectorName).empty();
+        var urlMain = '/Services/Facility.svc/LossCodeGetInfo';
+        var DataMain = '?TDUID=' + TDUID;
+        urlMain = urlMain + DataMain;
+        var ResultData = ReturnDataFromService(urlMain);
+        AddItemsToSelector(SelectorName, "--Loss Code--", 0);
+        for (var iRows in ResultData) {
+            AddItemsToSelector(SelectorName, ResultData[iRows].LossCodeName, ResultData[iRows].LossCodeID);
+        }
+
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function FacilityUpsert() {
+    try {
+        ///FacilityUpsert?UtilityAccountNew={UtilityAccountNew}&UtilityAccountNumber={UtilityAccountNumber}&CustomerID={CustomerID}&ServiceAddressOne={ServiceAddressOne}&ServiceAddressTwo={ServiceAddressTwo}&StateAbb={StateAbb}&TDUID={TDUID}&LoadProfile={LoadProfile}&CongestionZoneID={CongestionZoneID}&WeatherStationID={WeatherStationID}&BillCycle={BillCycle}&LossCodeID={LossCodeID}&TDUTariffID={TDUTariffID}
+        var UtilityAccountNew = '1';
+        if ($('#UtilityAccountStatus').html() == "Utility Account Number Exists") {
+            UtilityAccountNew = '0';
+        }
+        var UtilityAccountNumber = $('#FacilityAutoCompleteList_Facility').val();
+        var message = "";
+        if (UtilityAccountNew == '0') {
+            message = "Are you sure you want to update utility account number:  " + UtilityAccountNumber + "?";
+        } else {
+            message = "Are you sure you want to add utility account number:  " + UtilityAccountNumber + "?";
+        }
+        alertify.confirm(message, function (e) {
+            if (e) {
+                var CustomerID = $('#SelCustomer').val();            
+                var ServiceAddressOne = $('#ServiceAdd1').val();
+                var ServiceAddressTwo = $('#ServiceAdd2').val();
+                var StateAbb = 'TX';
+                var CityID = $('#SelCity').val()
+                var TDUID = $('#SelTDU').val();
+                var LoadProfile = $('#FacilityAutoCompleteList_LoadProfile').val();
+                var CongestionZoneID = $('#SelCongestionZones').val();
+                var WeatherStationID = $('#SelWeatherStation').val();
+                var BillCycle = $('#BillingCycle').val();
+                var LossCodeID = $('#SelLossCode').val();
+                var TDUTariffID = $('#SelTDUTariff').val();
+                var ZipCode = $('#ZipCode').val();                 
+                if (CustomerID == 0) {
+                    alertify.error("Please select a customer.   No action has been taken");
+                } else {
+                    var urlMain = '/Services/Facility.svc/FacilityUpsert';
+                    var DataMain = '?UtilityAccountNew=' + UtilityAccountNew;
+                    DataMain = DataMain + '&UtilityAccountNumber=' + UtilityAccountNumber;
+                    DataMain = DataMain + '&CustomerID=' + CustomerID;
+                    DataMain = DataMain + '&ServiceAddressOne=' + ServiceAddressOne;
+                    DataMain = DataMain + '&ServiceAddressTwo=' + ServiceAddressTwo;
+                    DataMain = DataMain + '&StateAbb=' + StateAbb;
+                    DataMain = DataMain + '&CityID=' + CityID;
+                    DataMain = DataMain + '&ZipCode=' + ZipCode;
+                    DataMain = DataMain + '&TDUID=' + TDUID;
+                    DataMain = DataMain + '&LoadProfile=' + LoadProfile;
+                    DataMain = DataMain + '&CongestionZoneID=' + CongestionZoneID;
+                    WeatherStationID = "1";
+                    DataMain = DataMain + '&WeatherStationID=' + WeatherStationID;
+                    DataMain = DataMain + '&BillCycle=' + BillCycle;
+                    DataMain = DataMain + '&LossCodeID=' + LossCodeID;
+                    DataMain = DataMain + '&TDUTariffID=' + TDUTariffID;
+                    urlMain = urlMain + DataMain;
+                    var ResultData = ReturnDataFromService(urlMain);
+                    if (ResultData == "SUCCESS") {
+                        alertify.success(UtilityAccountNumber + ' successfully updated');
+                    } else {
+                        if (ResultData == "DUPLICATE") {                            
+                            alertify.error(UtilityAccountNumber + ' already exists.   You cannot duplicate a utility account number');
+                        } else if (ResultData == "DNE") {
+                            alertify.error(UtilityAccountNumber + ' does not exist.   Please either add it or use a different utility account number');
+                        }
+                    }
+                }   
+            } else {
+                alertify.success("No change implemented");
+                return;
+            }
+        } );
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }   
+
+}
+
+//*******************************************************************
+//Start AutoComplete
+//*******************************************************************
+function UtilityAccountNumberautocomplete(inp, arr) {
+    /*the autocomplete function takes two arguments,
+    the text field element and an array of possible autocompleted values:*/
+    var currentFocus;
+    /*execute a function when someone writes in the text field:*/
+    inp.addEventListener("input", function (e) {
+        var a, b, i, val = this.value;
+        /*close any already open lists of autocompleted values*/
+        closeAllLists();
+        if (!val) { return false; }
+        currentFocus = -1;
+        /*create a DIV element that will contain the items (values):*/
+        a = document.createElement("DIV");
+        a.setAttribute("id", this.id + "autocomplete-list");
+        a.setAttribute("class", "autocomplete-items");
+        /*append the DIV element as a child of the autocomplete container:*/
+        this.parentNode.appendChild(a);
+        /*for each item in the array...*/
+        for (i = 0; i < arr.length; i++) {
+            /*check if the item starts with the same letters as the text field value:*/
+            if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                /*create a DIV element for each matching element:*/
+                b = document.createElement("DIV");
+                /*make the matching letters bold:*/
+                b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                b.innerHTML += arr[i].substr(val.length);
+                /*insert a input field that will hold the current array item's value:*/
+                b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                /*execute a function when someone clicks on the item value (DIV element):*/
+                b.addEventListener("click", function (e) {
+                    /*insert the value for the autocomplete text field:*/
+                    inp.value = this.getElementsByTagName("input")[0].value;
+                    /*close the list of autocompleted values,
+                    (or any other open lists of autocompleted values:*/
+                    if (inp.value != undefined) {
+                        alertify.success("Selected Value is " + inp.value);
+                        FacilityGetInfo(inp.value);
+                        $('#UtilityAccountStatus').html("Utility Account Number Exists");
+                    } else {
+                        FacilityGetInfo("N/A");
+                        
+                    }
+                    closeAllLists();
+                });
+                a.appendChild(b);
+            }
         }
     });
-}
-function FacilityDataUpsert(NewOld) {
-    try {
-        // Select the customer and display the deals in the deals combo box
-        //ReturnDataFromService
-        //SpecificCustomerDealsGetInfo?CustomerID=
-        var DealID = $('#DealInfoList_Deal').val();
-        if (NewOld == 'New') {
-            DealID = 0;
-        }
-        var CustomerID = $('#CustomerInfoList_Facility').val();
-        var FacilityID = $('#FacilityAutoCompleteList_Facility').val();
-        var TDUID = $('#TDUInfoList_Facility').val();
-        var LossCodeID = $('#LossCodeInfoList_Facility').val();
-        var LoadProfile = $('#LoadProfileAutoCompleteList_Facility').val();
-        var BillingCycle = $('#BillingCycle_Facility').val();
-        var CongestionZoneID = $('#CongestionZoneInfoList_Facility').val();
-
-        var CurrentFacilityActive = 1;
-        if ($('#Active_Facility').is(':checked') != true) { CurrentFacilityActive = 0; }
-        var urlMain = '/WCFWebService.svc/FacilityUpsert';
-        var DataUrl = '?CustomerID=' + CustomerID + '&FacilityID=' + FacilityID + '&LoadProfile=' + LoadProfile + '&CongestionZoneID=' + CongestionZoneID + '&TDUIID=' + TDUID + '&BillingCycle=' + BillingCycle + '&LossCode=' + LossCodeID + '&Active=' + CurrentFacilityActive;
-        urlMain = urlMain + DataUrl;
-        var ResultData = ReturnDataFromService(urlMain);
-        var j = 0;
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }
-}
-function DiplayFacilityValidation(FileName, ContainerName) {
-    try {
-        // Push File to Validation
-        var urlMain = '/WCFWebService.svc/FacilityValidationUpsert';
-        var DataUrl = '?FileName=' + FileName + '&ContainerName=' + ContainerName; 
-        FileNameUpload = FileName; 
-        urlMain = urlMain + DataUrl;
-        var ResultInt = ReturnDataFromService(urlMain);
-        // Display Validation
-        var urlMain = '/WCFWebService.svc/FacilityValidateGetInfo';
-        var ResultData = ReturnDataFromService(urlMain);
-        var j = 0;
-        for (var i in ResultData) {
-            j = j + 1;
-        }
-        $('#data-tableUpload').remove();
-        $("#tableContainerUpload").remove("#data-tableUpload");
-        var mytable = $('<table></table>').attr({ id: "data-table", width: "100%", overflow: "scroll", class: "scrollTable table-hover" });
-        var rows = 5;
-        if (j < rows) { rows = j - 2; }
-        if (rows <= 0) { rows = 1; }
-        var cols = 2;
-        var tr = [];
-        for (var i = 0; i <= rows; i++) {
-            if (i == 0) {
-                var tHead = $('<thead></thead>').attr({}).appendTo(mytable);
-                var row = $('<tr></tr>').appendTo(tHead);
-                $('<th></th>').text("Customer Name").appendTo(row);
-                $('<th></th>').attr({ class: "hidden-phone" }).text("FacilityID").appendTo(row);
-                $('<th></th>').text("Congestion Zone Name").appendTo(row);
-                $('<th></th>').text("TDU Name").appendTo(row);
-                $('<th></th>').text("Load Profile Name ").appendTo(row);
-                $('<th></th>').text("Loss Code Name ").appendTo(row);
-                $('<th></th>').text("Billing Cycle").appendTo(row);
-                //$('<th></th>').text("Facility Active").appendTo(row);
-                $('<th></th>').text("New Facility").appendTo(row);
-
-            } else {
-                if (i == 1) {
-                    var tBody = $('<tbody></tbody>').appendTo(mytable);
-                }
-                for (var i in ResultData) {
-                    var row = $('<tr></tr>').attr({ id: "facl_" + ResultData[i].CustomerID + '_' +  ResultData[i].FacilityID, class: "gradeA success" }).appendTo(tBody);
-                    $('<td></td>').text(ResultData[i].CustomerName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].FacilityID).appendTo(row);
-                    $('<td></td>').text(ResultData[i].CongestionZoneName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].TDUName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].LoadProfileName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].LossCodeName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].BillingCycle).appendTo(row);
-                    $('<td></td>').text(ResultData[i].NewFacility).appendTo(row);
-                    //$('<td></td>').text(ResultData[i].FileName).appendTo(row);
-                }
+    /*execute a function presses a key on the keyboard:*/
+    inp.addEventListener("keydown", function (e) {
+        var x = document.getElementById(this.id + "autocomplete-list");
+        if (x) x = x.getElementsByTagName("div");
+        if (e.keyCode == 40) {
+            /*If the arrow DOWN key is pressed,
+            increase the currentFocus variable:*/
+            currentFocus++;
+            /*and and make the current item more visible:*/
+            addActive(x);
+        } else if (e.keyCode == 38) { //up
+            /*If the arrow UP key is pressed,
+            decrease the currentFocus variable:*/
+            currentFocus--;
+            /*and and make the current item more visible:*/
+            addActive(x);
+        } else if (e.keyCode == 13) {
+            /*If the ENTER key is pressed, prevent the form from being submitted,*/
+            e.preventDefault();
+            if (currentFocus > -1) {
+                /*and simulate a click on the "active" item:*/
+                if (x) x[currentFocus].click();
             }
         }
-        mytable.appendTo("#tableContainerUpload");
-        var oTable = $('#data-tableUpload').dataTable(
-            {
-                "sScrollY": "300px",
-                "sScrollX": "100%",
-                "sScrollXInner": "150%",
-                "bScrollCollapse": true,
-                "bPaginate": false,
-                "bFilter": false
-            });
+    });
+    function addActive(x) {
+        /*a function to classify an item as "active":*/
+        if (!x) return false;
+        /*start by removing the "active" class on all items:*/
+        removeActive(x);
+        if (currentFocus >= x.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = (x.length - 1);
+        /*add class "autocomplete-active":*/
+        x[currentFocus].classList.add("autocomplete-active");
     }
-    catch (e) {
-        HeaderDataErrorReport(e);
+    function removeActive(x) {
+        /*a function to remove the "active" class from all autocomplete items:*/
+        for (var i = 0; i < x.length; i++) {
+            x[i].classList.remove("autocomplete-active");
+        }
     }
+    function closeAllLists(elmnt) {
+        /*close all autocomplete lists in the document,
+        except the one passed as an argument:*/
+        var x = document.getElementsByClassName("autocomplete-items");
+        for (var i = 0; i < x.length; i++) {
+            if (elmnt != x[i] && elmnt != inp) {
+                x[i].parentNode.removeChild(x[i]);
+            }
+        }
+    }
+    /*execute a function when someone clicks in the document:*/
+    document.addEventListener("click", function (e) {
+        closeAllLists(e.target);
+    });
 }
+// End AutoComplete
+
+

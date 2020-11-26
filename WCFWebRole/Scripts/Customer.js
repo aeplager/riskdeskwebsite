@@ -1,279 +1,161 @@
-﻿function CreateCustomerTable() {
+﻿function CustomerFillDropdowns() {
     try {
-        var urlMain = '/WCFWebService.svc/CustomersAllGetInfo';
+        CustomerDropDownFill();        
+        CustomerStateDropDownFill();
+        CustomerCityDropDownFill();
+        CustomerLineOfBusinessDropDownFill();
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function CustomerDropDownFill() {
+    try {
+        $('#SelCustomer').empty();
+        AddItemsToSelector("SelCustomer", "--Customer--", 0);            
+        var urlMain = '/Services/Customers.svc/CustomersGetInfo';
         var ResultData = ReturnDataFromService(urlMain);
-        var j = 0;
-        for (var i in ResultData) {
-            j = j + 1;
+        for (var iRows in ResultData) {
+            AddItemsToSelector("SelCustomer", ResultData[iRows].CustomerName, ResultData[iRows].CustomerID);            
         }
-        $('#data-table').remove();
-        $("#tableContainer").remove("#data-table");
-        var mytable = $('<table></table>').attr({ id: "data-table", width: "100%", overflow: "scroll", class: "scrollTable table-hover" });
-        var rows = 21;
-        var cols = 2;
-        var tr = [];
-        for (var i = 0; i <= rows; i++) {
-            if (i == 0) {
-                var tHead = $('<thead></thead>').attr({}).appendTo(mytable);
-                var row = $('<tr></tr>').appendTo(tHead);
-                $('<th></th>').text("Customer Id").appendTo(row);
-                $('<th></th>').text("Customer Name").appendTo(row);
-                $('<th></th>').text("Billing Address").appendTo(row);
-                $('<th></th>').attr({ class: "hidden-phone" }).text("City Name").appendTo(row);
-                $('<th></th>').text("State").appendTo(row);
-                $('<th></th>').text("Zip").appendTo(row);
 
-            } else {
-                if (i == 1) {
-                    var tBody = $('<tbody></tbody>').appendTo(mytable);
-                }
-                for (var i in ResultData) {
-                    var row = $('<tr></tr>').attr({ id: "cust_" + ResultData[i].CustomerID, class: "gradeA success" }).appendTo(tBody);
-                    $('<td></td>').text(ResultData[i].CustomerID).appendTo(row);
-                    $('<td></td>').text(ResultData[i].CustomerName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].billingadd1).appendTo(row);
-                    $('<td></td>').text(ResultData[i].CityName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].StateAbb).appendTo(row);
-                    $('<td></td>').text(ResultData[i].Zip).appendTo(row);
-                }
-            }
-        }
-        mytable.appendTo("#tableContainer");
-        var oTable = $('#data-table').dataTable(
-            {
-                "sScrollY": "300px",
-                "sScrollX": "100%",
-                "sScrollXInner": "150%",
-                "bScrollCollapse": true,
-                "bPaginate": false,
-                "bFilter": false
-            });
-    }
-    catch (e) {
+    } catch (e) {
         HeaderDataErrorReport(e);
     }
 }
-function FunctionComplete(msg) {
-    alert(msg);
-}
-function RemoveCustRow(idrow) {
-    try {
-        $('#cust_8').remove();        
-    }
-    catch (e) {
+function CustomerCityDropDownFill() {
+    try {        
+        $('#SelCity').empty();
+        AddItemsToSelector("SelCity", "--City--", 0);
+        var urlMain = '/Services/SharedInfo.svc/CityGetInfo/?CityID=0';
+        var ResultData = ReturnDataFromService(urlMain);
+        for (var iRows in ResultData) {
+            AddItemsToSelector("SelCity", ResultData[iRows].CityName, ResultData[iRows].CityID);
+        }
+
+    } catch (e) {
         HeaderDataErrorReport(e);
     }
 }
-
-function Customer_AddRows() {
-    var rowCount = $('#data-table tr').length;
-    for (var i = 0; i <= rowCount -1; i++) { 
-        $('#data-table tr:last').remove();
-    }        
-    for (var i = 0; i <= rowCount + 75; i++) {
-        if (i <= 10) {
-            $('#data-table > tbody').after('<tr><td>my data</td><td>more data</td></tr>');
-        }
-        else {
-            $('#data-table > tbody').after('<tr><td>my data</td><td>112313213more dafdafadfafafafafafata</td></tr>');
-        }
-    }        
-}
-
-
-function CustomerInfoList_Change() {
-    // Retrieves the list of cities and places them into the proper place
+function CustomerLineOfBusinessDropDownFill() {
     try {
-        // Empty the list box                
-        // Set up the list call  
-        var CustomerID = $('#CustomerInfoList_Customer').val();        
-        var urlMain = '/WCFWebService.svc/CustomersGetInfo';
-        var DataUrl = '?CustomerID=' + CustomerID;
-        urlMain = urlMain + DataUrl;
-        var Result = ReturnDataFromService(urlMain);
-        var iRow = -1;
-        var SelectedItem = 'N/A';
-        for (var i in Result) {
-            $('#CustomerName_Customer').val(Result[i].CustomerName)
-            $('#Address1_Customer').val(Result[i].billingadd1)
-            $('#Address2_Customer').val(Result[i].billingadd2)
-            $('#ZipCode_Customer').val(Result[i].zip)
-            $('#CityInfoAutoCompleteList_Customer').val(Result[i].CityName)
-            $("#StateInfoList_Customer").val(Result[i].stateabb);
-            if (Result[i].Active == true) {
-                $('#Active_Customer').prop('checked', true);
-                //$('#Active_Customer').is(':checked') = true;
-            } else {
-                $('#Active_Customer').prop('checked', false);
-                //$('#Active_Customer').is(':checked') = false;
-            }
+        $('#SelLineOfBusiness').empty();
+        AddItemsToSelector("SelLineOfBusiness", "--Line of Business--", 0);
+        var urlMain = '/Services/SharedInfo.svc/LineOfBusinessGetInfo/?LineOfBusinessID=0';
+        var ResultData = ReturnDataFromService(urlMain);
+        for (var iRows in ResultData) {
+            AddItemsToSelector("SelLineOfBusiness", ResultData[iRows].SelectorText, ResultData[iRows].SelectorID);
         }
-       
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);        
+    } catch (e) {
+        HeaderDataErrorReport(e);
     }
 }
-function CustomerUpsert(NewOld) {
-    var msg = "Please confirm that you want to save this record";
-    if (NewOld == 'New') {
-        msg = "Please confirm that you want to add a new record";
+function CustomerStateDropDownFill() {
+    try {
+        $('#SelState').empty();
+        AddItemsToSelector("SelCity", "--State--", 0);
+        var urlMain = '/Services/SharedInfo.svc/StatesGetInfo';
+        var ResultData = ReturnDataFromService(urlMain);                
+        for (var iRows in ResultData) {
+            AddItemsToSelector("SelState", ResultData[iRows].SelectorText, ResultData[iRows].SelectorID);
+        }
+        $('#SelState').val('TX');
+
+    } catch (e) {
+        HeaderDataErrorReport(e);
     }
-    alertify.confirm(msg, function (e) {
-        if (e) {
-            if (NewOld == 'New') {
-                msg = 'You have added a new record';
-            } else {
-                msg = 'You have saved this record';
-            }
-            alertify.success(msg );
-            CustomerDataUpsert(NewOld);            
+}
+function CustomerSelectCustomer() {
+    try {
+        var urlMain = '/Services/Customers.svc/CustomersGetInfo?';
+        var DataMain = 'CustomerID=' + $('#SelCustomer').val();
+        urlMain = urlMain + DataMain;
+        var ResultData = ReturnDataFromService(urlMain);
+        var CustomerName;
+        var BillingAdd1;
+        var BillingAdd2;
+        var CityID;
+        var StateAbb;
+        var ZipCode;
+        var LineOfBusinessID;
+        for (var iRows in ResultData) {
+            CustomerName = ResultData[iRows].CustomerName;
+            BillingAdd1 = ResultData[iRows].BillingAdd1;
+            BillingAdd2 = ResultData[iRows].BillingAdd2;
+            CityID = ResultData[iRows].CityID;
+            StateAbb = ResultData[iRows].StateAbb;
+            ZipCode = ResultData[iRows].ZipCode ;
+            LineOfBusinessID = ResultData[iRows].LineOfBusinessID;
+        }
+        if ((CityID == "") || (CityID == null)) { CityID = 0;}
+        $('#txtCustomerName').val(CustomerName);
+        $('#BillingAdd1').val(BillingAdd1);
+        $('#BillingAdd2').val(BillingAdd2);
+        $('#ZipCode').val(ZipCode);
+        $('#SelState').val(StateAbb);
+        $('#SelCity').val(CityID);
+        $('#SelLineOfBusiness').val(LineOfBusinessID);
+        alertify.success("Selection Complete");
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function CustomerUpdateCustomer() {
+    try {
+        var CustomerID = $('#SelCustomer').val();
+        var CustomerName = $('#txtCustomerName').val();
+        var BillingAddrOne = $('#BillingAdd1').val();
+        var BillingAddrTwo = $('#BillingAdd2').val();
+        var ZipCode = $('#ZipCode').val();
+        var StateAbb = $('#SelState').val();
+        var CityID = $('#SelCity').val();
+        var LineOfBusinessID = $('#SelLineOfBusiness').val();
+        var urlMain = '/Services/Customers.svc/CustomerUpsert?';
+        var DataMain = 'CustomerID=' + $('#SelCustomer').val();
+        if (CustomerName.trim() == "") { CustomerName = "N/A"; }
+        if (BillingAddrOne.trim() == "") { BillingAddrOne = "N/A"; }
+        if (BillingAddrTwo.trim() == "") { BillingAddrTwo = "N/A"; }
+        if (ZipCode.trim() == "") { ZipCode = "N/A"; }
+        if (CityID.trim() == "") { CityID = "0"; }
+        if (LineOfBusinessID.trim() == "") { LineOfBusinessID = "0"; }
+        DataMain = DataMain + "&CustomerName=" + CustomerName;
+        DataMain = DataMain + "&BillingAddrOne=" + BillingAddrOne;
+        DataMain = DataMain + "&BillingAddrTwo=" + BillingAddrTwo;
+        DataMain = DataMain + "&ZipCode=" + ZipCode;
+        DataMain = DataMain + "&CityID=" + CityID;
+        DataMain = DataMain + "&LineOfBusinessID=" + LineOfBusinessID;
+        DataMain = DataMain + "&StateAbb=" + StateAbb;
+        urlMain = urlMain + DataMain; 
+        var ResultData = ReturnDataFromService(urlMain);
+        if (ResultData == "SUCCESS") {
+            alertify.success("Customer Information Saved");
+        } else if (ResultData == "DUPLICATE") {
+            alertify.error(CustomerName + " already exists.  No duplicate customer names are allowed.   The system has selected " + CustomerName + " for you.  Please make your changes on the selected customer.");
+            var CustomerID = SelectorFindByText("SelCustomer", CustomerName);            
         } else {
-            alertify.error("Nothing completed");            
+            alertify.error("Customer information:  " + ResultData);
         }
-    });    
-}
-function CustomerDataUpsert(NewOld) {
-    try { 
-        // Empty the list box                
-        // Set up the list call              
-        var urlMain = '/WCFWebService.svc/CustomerUpsert';
-        var CustomerID = $('#CustomerInfoList_Customer').val();         
-        if (NewOld == 'New') {
-            CustomerID = 0;
+        CustomerDropDownFill();
+        if (CustomerID != 0) {
+            $("#SelCustomer").val(CustomerID);
+            CustomerSelectCustomer();
+        } else {
         }
-        var CustomerName = $('#CustomerName_Customer').val();
-        var BillingAdd1 = $('#Address1_Customer').val();
-        var BillingAdd2 = $('#Address2_Customer').val();
-        var CityName = $('#CityInfoAutoCompleteList_Customer').val();
-        var StateAbb = $('#StateInfoList_Customer').val();
-        var Zip = $('#ZipCode_Customer').val();
-        var CurrentCustActive = 1;
-        if ($('#Active_Customer').is(':checked') != true) { CurrentCustActive= 0;} 
-        var DataUrl = '?CustomerID=' + CustomerID + '&CustomerName=' + CustomerName + '&BillingAdd1=' + BillingAdd1 + '&BillingAdd2=' + BillingAdd2 + '&CityName=' + CityName + '&StateAbb=' + StateAbb + '&Zip=' + Zip + '&Active=' + CurrentCustActive;
-        //var DataUrl = '?CustomerID=' + CustomerID;
-        urlMain = urlMain + DataUrl;
-        $.ajax({
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            // Change Here To Change The Web Service Needed
-            //url: "/AzureHooknLineAjax.svc/HelloWorld",            
-            url: urlMain,
-            // Change Here To Change The Parameters Needed
-            // data: "{}",
-            dataType: "json",
-            async: false,
-            success: function (Result) {
-                var iRow = -1;                
-                var SelectedItem = 'N/A';
-                var j = 0;
-                for (var i in Result) {
-                    j = j + 1;
-                }
-            },
-            error: function (Result) {
-                alert("Error");
-            }
-        });
-        if (NewOld == 'New') {
-            CustomerList_Reset('CustomerInfoList_Customer');
-        }
-        //$("success").onclick = function () {
-        //    reset();
-        //    alertify.success("Success log message");
-        //    return false;
-        //};        
-        // Add Code to Remove and Add the Current Record
-        // If the customer id = 0, then add the record only        
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }    
-}
-function testStuff() {
-    try{
-        $("#autocomplete").autocomplete({
-            source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
-        });
-    }
-    catch (e) {
+    } catch (e) {
         HeaderDataErrorReport(e);
     }
 }
-function DiplayCustomerValidation(FileName, ContainerName) {
+function CustomerNewCustomer() {
     try {
-        var urlMain = '/WCFWebService.svc/CustomerValidationUpsert';
-        var DataUrl = '?FileName=' + FileName + '&ContainerName=' + ContainerName;
-        urlMain = urlMain + DataUrl;
-        var ResultInt = ReturnDataFromService(urlMain);
-        urlMain = '/WCFWebService.svc/CustomersValidateGetInfo';
-        var ResultData = ReturnDataFromService(urlMain);
-        var j = 0;
-        for (var i in ResultData) {
-            j = j + 1;
-        }
-        $('#data-tableUpload').remove();
-        $("#tableContainerUpload").remove("#data-tableUpload");
-        var mytable = $('<table></table>').attr({ id: "data-tableUpload", width: "100%", overflow: "scroll", class: "scrollTable table-hover" });
-        var rows = 21;
-        if (j < rows) { rows = j - 1; }
-        if (rows <= 0) { rows = 0; } 
-        var cols = 2;
-        var tr = [];
-        for (var i = 0; i <= rows; i++) {
-            if (i == 0) {
-                var tHead = $('<thead></thead>').attr({}).appendTo(mytable);
-                var row = $('<tr></tr>').appendTo(tHead);
-                $('<th></th>').text("Customer Id").appendTo(row);
-                $('<th></th>').text("Customer Name").appendTo(row);
-                $('<th></th>').text("Billing Address").appendTo(row);
-                $('<th></th>').attr({ class: "hidden-phone" }).text("City Name").appendTo(row);
-                $('<th></th>').text("State").appendTo(row);
-                $('<th></th>').text("Zip").appendTo(row);
-                $('<th></th>').text("Start Date").appendTo(row);
-                $('<th></th>').text("End Date").appendTo(row);
-                $('<th></th>').text("New City?").appendTo(row);
-                $('<th></th>').text("Customer?").appendTo(row);
-
-            } else {
-                if (i == 1) {
-                    var tBody = $('<tbody></tbody>').appendTo(mytable);
-                }
-                for (var i in ResultData) {
-                    var row = $('<tr></tr>').attr({ id: "cust_" + ResultData[i].CustomerID, class: "gradeA success" }).appendTo(tBody);
-                    $('<td></td>').text(ResultData[i].CustomerID).appendTo(row);
-                    $('<td></td>').text(ResultData[i].CustomerName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].billingadd1).appendTo(row);
-                    $('<td></td>').text(ResultData[i].CityName).appendTo(row);
-                    $('<td></td>').text(ResultData[i].StateAbb).appendTo(row);
-                    $('<td></td>').text(ResultData[i].Zip).appendTo(row);
-                    var StartDate = new Date(ResultData[i].StartDateString);
-                    $('<td></td>').text(StartDate.toLocaleDateString("en-US")).appendTo(row);
-                    var EndDate = new Date(ResultData[i].EndDateString);
-                    var EndDateString = "";
-                    if (EndDate.toLocaleDateString("en-US") != "1/1/1900") { EndDateString = EndDate.toLocaleDateString("en-US"); }
-                    $('<td></td>').text(EndDateString).appendTo(row);
-                    if (ResultData[i].NewCityID == 0) {
-                        $('<td></td>').text("Yes").appendTo(row);
-                    } else {
-                        $('<td></td>').text("No").appendTo(row);
-                    }
-                    $('<td></td>').text(ResultData[i].NewCustomer).appendTo(row);
-                }
-            }
-        }
-        mytable.appendTo("#tableContainerUpload");
-        var oTable = $('#data-tableUpload').dataTable(
-            {
-                "sScrollY": "300px",
-                "sScrollX": "100%",
-                "sScrollXInner": "150%",
-                "bScrollCollapse": true,
-                "bPaginate": false,
-                "bFilter": false
-            });
-    }
-    catch (e) {
+        var CustomerID = 0;        
+        $("#SelCustomer").val(CustomerID).change();        
+        $('#txtCustomerName').val("");
+        $('#BillingAdd1').val("");
+        $('#BillingAdd2').val("");
+        $('#ZipCode').val("");        
+        $('#SelState').val("TX").change();        
+        $('#SelCity').val(CustomerID).change();        
+        $('#SelLineOfBusiness').val(CustomerID).change();                
+    } catch (e) {
         HeaderDataErrorReport(e);
     }
 }

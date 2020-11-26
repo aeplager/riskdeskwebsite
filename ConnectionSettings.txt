@@ -1,0 +1,11 @@
+Connection String
+BlobEndpoint=https://riskdeskstorage.blob.core.windows.net/;TableEndpoint=https://riskdeskstorage.table.core.windows.net/;SharedAccessSignature=sv=2018-03-28&ss=b&srt=sco&sp=rwdlac&se=2020-04-08T01:42:40Z&st=2019-04-07T17:42:40Z&spr=https&sig=dNyqhu2uCrrAgb7h2bSFxFfESucVvTbqofevTGPPv7Q%3D
+
+
+SAS Settings
+?sv=2018-03-28&ss=b&srt=sco&sp=rwdlac&se=2020-04-08T01:42:40Z&st=2019-04-07T17:42:40Z&spr=https&sig=dNyqhu2uCrrAgb7h2bSFxFfESucVvTbqofevTGPPv7Q%3D
+
+Blob Service URL SAS
+
+https://riskdeskstorage.blob.core.windows.net/?sv=2018-03-28&ss=b&srt=sco&sp=rwdlac&se=2020-04-08T01:42:40Z&st=2019-04-07T17:42:40Z&spr=https&sig=dNyqhu2uCrrAgb7h2bSFxFfESucVvTbqofevTGPPv7Q%3D
+

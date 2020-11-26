@@ -155,57 +155,82 @@ function displayProcess(process) {
 }
 function uploadBlobByStream(checkMD5, files, filename, AzureParms) {
     //var files = document.getElementById('files').files;
-    if (!files.length) {
-        alert('Please select a file!');
-        return;
-    }
-    var file = files[0];
-    //var AzureStorageName = AzureParms.AzureStorageName;
-    //var sas = AzureParms.SASKey;
-    //var blobUri = AzureParms.blobUri;
-    //container = AzureParms.AzureContainer;
+    //if (!files.length) {
+    //    alert('Please select a file!');
+    //    return;
+    //}
+    //var file = files[0];
+    try {
+        var file = files;
+        //var AzureStorageName = AzureParms.AzureStorageName;
+        //var sas = AzureParms.SASKey;
+        //var blobUri = AzureParms.blobUri;
+        //container = AzureParms.AzureContainer;
 
-    var blobService = getBlobService(AzureParms);
-    if (!blobService)
-        return;
-    //var btn = document.getElementById("upload-button");
-    //btn.disabled = true;
-    //btn.innerHTML = "Uploading";
-    // Make a smaller block size when uploading small blobs
-    var blockSize = file.size > 1024 * 1024 * 32 ? 1024 * 1024 * 4 : 1024 * 512;
-    var options = {
-        storeBlobContentMD5: checkMD5,
-        blockSize: blockSize
-    };
-    blobService.singleBlobPutThresholdInBytes = blockSize;
-    var finishedOrError = false;
-    var container = 'testuploadcontainer';
-    var dt = new Date();
-    //var filesuffix = dt.getFullYear() + '_' + dt.getMonth() + '_' + dt.getDate() + '_' + dt.getHours() + '_' + dt.getMinutes() + "_" + dt.getSeconds() + '_' 
-    //var filename = ObtainFileName() + file.name;
-    var speedSummary = blobService.createBlockBlobFromBrowserFile(AzureParms.AzureContainer, filename , file, options, function (error, result, response) {
-        finishedOrError = true;
-        //btn.disabled = false;
-        //btn.innerHTML = "UploadBlob";
-        if (error) {
-            alert('Upload filed, open brower console for more detailed info.');
-            var msg = "Upload Failed";
-            alertify.error(msg);
-            console.log(error);
-            displayProcess(0);
-        } else {
-            displayProcess(100);
-            setTimeout(function () { // Prevent alert from stopping UI progress update
-                var msg = "Successful Upload";
-                alertify.success(msg);
-            }, 1000);
-            //refreshBlobList();
-        }
-    });
-    speedSummary.on('progress', function () {
-        var process = speedSummary.getCompletePercent();
-        displayProcess(process);
-    });
+        var blobService = getBlobService(AzureParms);
+        if (!blobService)
+            return;
+        //var btn = document.getElementById("upload-button");
+        //btn.disabled = true;
+        //btn.innerHTML = "Uploading";
+        // Make a smaller block size when uploading small blobs
+        var blockSize = file.size > 1024 * 1024 * 32 ? 1024 * 1024 * 4 : 1024 * 512;
+        var options = {
+            storeBlobContentMD5: checkMD5,
+            blockSize: blockSize
+        };
+        blobService.singleBlobPutThresholdInBytes = blockSize;
+        var finishedOrError = false;
+        var container = 'testuploadcontainer';
+        var dt = new Date();
+        //var filesuffix = dt.getFullYear() + '_' + dt.getMonth() + '_' + dt.getDate() + '_' + dt.getHours() + '_' + dt.getMinutes() + "_" + dt.getSeconds() + '_' 
+        //var filename = ObtainFileName() + file.name;
+        //Changed on 04/19/2019
+        //var speedSummary = blobService.createBlockBlobFromBrowserFile(AzureParms.AzureContainer, filename, file, options, function (error, result, response) {
+        //var speedSummary = blobService.createBlockBlobFromBrowserFile(AzureParms.AzureContainer, files[0]["fileid"], file, options, function (error, result, response) {
+        //    finishedOrError = true;
+        //    //btn.disabled = false;
+        //    //btn.innerHTML = "UploadBlob";
+        //    if (error) {
+        //        alert('Upload filed, open brower console for more detailed info.');
+        //        var msg = "Upload Failed";
+        //        alertify.error(msg);
+        //        console.log(error);
+        //        displayProcess(0);
+        //    } else {
+        //        displayProcess(100);
+        //        setTimeout(function () { // Prevent alert from stopping UI progress update
+        //            var msg = "Successful Upload";
+        //            alertify.success(msg);
+        //        }, 1000);
+        //        //refreshBlobList();
+        //    }
+        //});
+        var speedSummary = blobService.createBlockBlobFromBrowserFile(AzureParms.AzureContainer,
+            filename,
+            file,
+            (error, result) => {
+                if (error) {
+                    // Handle blob error
+                } else {
+                    console.log('Upload is successful');
+                    //await delay(2000);
+                    setInterval(ImportIntoValidationTableNew(), 2000);
+                    //ImportIntoValidationTableNew();
+                }
+            });
+
+        speedSummary.on('progress', function () {
+            var process = speedSummary.getCompletePercent();
+            displayProcess(process);
+        });
+    }
+    catch (e) {
+        alert(e);
+    }
+
+
+
 }
 function CreateContainerName() {
     try {
@@ -227,6 +252,7 @@ function DeleteFiles() {
         var accountname = 'riskdeskstorage';
         var sas = '?sv=2017-11-09&ss=b&srt=sco&sp=rwdlac&se=2018-09-03T00:27:10Z&st=2018-09-02T16:27:10Z&spr=https,http&sig=G6VnxZVUlogyetZw2XLPF%2F9k2Kz0TyXEJ0GL46LVofQ%3D';
         sas = '?sv=2017-11-09&ss=b&srt=sco&sp=rwdlac&se=2018-09-04T04:59:19Z&st=2018-09-03T02:03:19Z&spr=https,http&sig=Q6pQIXOShXVh46rbgE5IvThXmkZCkd9cZHGkWL%2BI4sA%3D';
+        sas = '?sv=2018-03-28&ss=b&srt=sco&sp=rwdlac&se=2020-01-01T07:50:25Z&st=2019-03-29T22:50:25Z&spr=https&sig=S5WciMmg99VPA42YsszU%2FxiG9GV0x3kZOCdAi0Gi2n0%3D'
         blobUri = 'https://riskdeskstorage.blob.core.windows.net';        
         container = "testuploadcontainer";
         deleteBlob(files, container, accountname, sas, blobUri)
@@ -237,12 +263,13 @@ function DeleteFiles() {
         HeaderDataErrorReport(e);
     }
 }
-function UploadFiles(FileType) {
+function TrialTest() {
     try {
-
+        //alert('Ok');        
         var files = document.getElementById('files').files;
-        var FileName = ObtainDateSuffix() + files[0].name;        
-        var dt = new Date();                   
+        var FileName = ObtainDateSuffix() + files[0].name;
+        var dt = new Date();
+        var FileType = "DEAL";
         AzureParms = ObtainAzureParams(FileType);
         var UserName = ReturnUserName();
         var AzureStorageName = AzureParms.AzureStorageName;
@@ -251,12 +278,75 @@ function UploadFiles(FileType) {
         container = AzureParms.AzureContainer;
         FileType = FileType.toUpperCase();
         FileType = FileType.trim();
+        FileType = FileType.toUpperCase();
+        FileType = FileType.trim();
+        //alert("Position 1");
         // Update DB for File Status
-        var FileID = LogFileUploadStatus(0, FileName, 'UPLD', FileType, UserName);                                        
+        var FileID = LogFileUploadStatus(0, FileName, 'UPLD', FileType, UserName);
+        alert("Position 2");
+        AzureParms.container
+        // riskaccounts
         uploadBlobByStream(false, files, FileName, AzureParms);
+        alert("Position 3");
         msg = "Uploading proceeding";
         alertify.success(msg);
+        alert("Position 4");
         FileNameUpload = FileName;
+        alertify.success(sas);
+    }
+    catch (e) {
+        alert('car');
+        alert(e);
+    }
+
+}
+function UploadFiles(FileType) {
+    try {
+        //alertify.success("Ok Great");
+        var files = document.getElementById('files').files;       
+        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+        fileslength = files.length;
+        if (fileslength > 0) {
+            //var FileName = ObtainDateSuffix() + files[0].name;
+            var FileName = files[0].name;
+            FileNameForImport = ObtainDateSuffix(FileName);
+            files[0].name = FileNameForImport;
+            var dt = new Date();
+            AzureParms = ObtainAzureParams(FileType);
+            var UserName = ReturnUserName();
+            var AzureStorageName = AzureParms.AzureStorageName;
+            var sas = AzureParms.SASKey;
+            var blobUri = AzureParms.blobUri;
+            container = AzureParms.AzureContainer;
+            FileType = FileType.toUpperCase();
+            FileType = FileType.trim();
+            if (FileType == 'ICECURVE') {
+                FileName = files[0].name;
+                // Update DB for File Status
+                iFileCount = files.length;
+                for (iFile = 0; iFile < iFileCount; iFile++) {
+                    FileName = files[iFile].name;
+                    var FileID = LogFileUploadStatus(0, FileNameForImport, 'UPLD', FileType, UserName);
+                    // Change the files
+                    uploadBlobByStream(false, files[iFile], FileNameForImport, AzureParms);
+                }
+                msg = "Uploading proceeding";
+                alertify.success(msg);
+                FileNameUpload = FileNameForImport;
+            } else {
+                FileType = FileType.toUpperCase();
+                FileType = FileType.trim();
+                // Update DB for File Status
+                var FileID = LogFileUploadStatus(0, FileName, 'UPLD', FileType, UserName);
+                uploadBlobByStream(false, files, FileName, AzureParms);
+                msg = "Uploading proceeding";
+                alertify.success(msg);
+                FileNameUpload = FileNameForImport;
+            }
+        } else {
+            alertify.error("Please select a file before pressing upload");
+        }
+ 
     }
     catch (e) {
         HeaderDataErrorReport(e);
@@ -267,7 +357,7 @@ function HeaderDataErrorReport(e) {
 }
 function ObtainAzureParams(FileType) {
     try {        
-        var urlMain = "/WCFWebService.svc/ObtainAzureParameters";
+        var urlMain = "/Services/WCFWebService.svc/ObtainAzureParameters";
         var DataUrl = '?FileType=' + FileType
         urlMain = urlMain + DataUrl;
         var ResultData = ReturnDataFromService(urlMain);
@@ -279,7 +369,7 @@ function ObtainAzureParams(FileType) {
     }
 }
 function LogFileUploadStatus(FileID, FileName, FileStatus, FileType, UserName) {
-    var urlMain = '/WCFWebService.svc/FileUpsert';
+    var urlMain = '/Services/WCFWebService.svc/FileUpsert';
     // File Types
     //CUST
     //DEAL
@@ -301,14 +391,14 @@ function ValidateFile(FileType) {
         if (FileNameUpload != "") {
             if (FileType == "CUST") {
                 DiplayCustomerValidation(FileNameUpload, AzureParms.AzureContainer);
-            } else if (FileType == "DEAL") {
+            } else if (FileType == "DEALINDIV") {
                 DiplayDealValidation(FileNameUpload, AzureParms.AzureContainer);
             } else if (FileType == "FACL") {
                 DiplayFacilityValidation(FileNameUpload, AzureParms.AzureContainer);
             } 
-
-
-        } 
+            } else if (FileType == "ICECURVE") {
+                DiplayFacilityValidation(FileNameUpload, AzureParms.AzureContainer);
+            }                 
     }
     catch (e) {
         HeaderDataErrorReport(e);

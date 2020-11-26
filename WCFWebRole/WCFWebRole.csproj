@@ -42,6 +42,27 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="commons-logging, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\pdfboxNet.1.8.9.0\lib\commons-logging.dll</HintPath>
+    </Reference>
+    <Reference Include="fontbox-1.8.9, Version=1.8.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\pdfboxNet.1.8.9.0\lib\fontbox-1.8.9.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Core, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\pdfboxNet.1.8.9.0\lib\IKVM.OpenJDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.SwingAWT, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\pdfboxNet.1.8.9.0\lib\IKVM.OpenJDK.SwingAWT.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Text, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\pdfboxNet.1.8.9.0\lib\IKVM.OpenJDK.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Util, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\pdfboxNet.1.8.9.0\lib\IKVM.OpenJDK.Util.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <HintPath>..\packages\pdfboxNet.1.8.9.0\lib\IKVM.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Azure.KeyVault.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.3.0.0\lib\net452\Microsoft.Azure.KeyVault.Core.dll</HintPath>
     </Reference>
@@ -66,6 +87,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="pdfbox-1.8.9, Version=1.8.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\pdfboxNet.1.8.9.0\lib\pdfbox-1.8.9.dll</HintPath>
     </Reference>
     <Reference Include="System.Spatial, Version=5.8.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.8.4\lib\net40\System.Spatial.dll</HintPath>
@@ -101,9 +125,48 @@
     <Content Include="Azure\azure-storage.table.js" />
     <Content Include="Azure\azure-storage.table.min.js" />
     <Content Include="Azure\AzureGeneral.js" />
+    <Content Include="Background.jpg" />
     <Content Include="blog-full-page.html" />
     <Content Include="blog.html" />
+    <Content Include="bundle\azure-storage.blob.js" />
+    <Content Include="bundle\azure-storage.blob.min.js" />
+    <Content Include="bundle\azure-storage.file.js" />
+    <Content Include="bundle\azure-storage.file.min.js" />
+    <Content Include="bundle\azure-storage.queue.js" />
+    <Content Include="bundle\azure-storage.queue.min.js" />
+    <Content Include="bundle\azure-storage.table.js" />
+    <Content Include="bundle\azure-storage.table.min.js" />
     <Content Include="calendar.html" />
+    <Content Include="css\jquery-ui.css" />
+    <Content Include="css\vrd.css" />
+    <Content Include="Facilities.html" />
+    <Content Include="Customer.html" />
+    <Content Include="GenericUploader - Copy.html" />
+    <Content Include="GenericUploader.html" />
+    <Content Include="GenericUploadForm.html" />
+    <Content Include="img\calendar-128-Resize.png" />
+    <Content Include="img\GFX-MWA-Parks-Reservations.png" />
+    <Content Include="JSFiddle.html" />
+    <Content Include="js\jquery.ajax-cross-origin.min.js" />
+    <Content Include="NewUploader.html" />
+    <Content Include="ICECurveUploader.html" />
+    <Content Include="index.html" />
+    <Content Include="PricingPowerBI.html" />
+    <Content Include="RetailDeals.html" />
+    <Content Include="SampleUploader.html" />
+    <Content Include="Scripts\DeletedCode.js" />
+    <Content Include="Scripts\GenericUploader.js" />
+    <Content Include="Scripts\GraphingGeneral.js" />
+    <Content Include="Scripts\GraphingObtainData.js" />
+    <Content Include="Scripts\GraphingSelectDropDowns.js" />
+    <Content Include="Scripts\GraphingSetDropDowns.js" />
+    <Content Include="Scripts\ICECurveUploader.js" />
+    <Content Include="Scripts\AccountValidation.js" />
+    <Content Include="Scripts\RetailDealEntry.js" />
+    <Content Include="Scripts\WholeSaleDealEntry.js" />
+    <Content Include="Scripts\StatsPage.js" />
+    <Content Include="Scripts\TransposeData.js" />
+    <Content Include="Services\Contracts.svc" />
     <Content Include="css\alertify.core.css" />
     <Content Include="css\AutoComplete.css" />
     <Content Include="css\blog.css" />
@@ -131,11 +194,15 @@
     <Content Include="css\theme.css" />
     <Content Include="css\timepicker.css" />
     <Content Include="css\wysi\bootstrap-wysihtml5.css" />
-    <Content Include="Customer.html" />
     <Content Include="DataEntry_DELETE.html" />
-    <Content Include="DealEntry.html" />
+    <Content Include="DealEntryGeneric.html" />
+    <Content Include="DealEntryIndividual.html" />
+    <Content Include="Services\CurveUploader.svc" />
+    <Content Include="Services\Customers.svc" />
+    <Content Include="Services\Deals.svc" />
     <Content Include="default.html" />
     <Content Include="edit-profile.html" />
+    <Content Include="Services\Facility.svc" />
     <Content Include="FacilityEntry.html" />
     <Content Include="flot.html" />
     <Content Include="fonts\font-awesome.css" />
@@ -203,8 +270,9 @@
     <Content Include="img\user7.jpg" />
     <Content Include="img\user8.jpg" />
     <Content Include="img\user9.jpg" />
-    <Content Include="index.html" />
     <Content Include="index2.html" />
+    <Content Include="Index3.html" />
+    <Content Include="indexDELETE.html" />
     <Content Include="invoice.html" />
     <Content Include="js\alertify.min.js" />
     <Content Include="js\bootstrap.js" />
@@ -291,6 +359,8 @@
     <Content Include="Scripts\DealEntry.js" />
     <Content Include="Scripts\Facility.js" />
     <Content Include="Scripts\General.js" />
+    <Content Include="Services\SharedInfo.svc" />
+    <Content Include="StatsPage.html" />
     <Content Include="tables.html" />
     <Content Include="TableScroll\demo.html" />
     <Content Include="TableScroll\jquery.tablescroll.css" />
@@ -298,21 +368,43 @@
     <Content Include="TableScroll\NewStyleSheet.css" />
     <Content Include="TestAnything.html" />
     <Content Include="TestPage.html" />
+    <Content Include="TestPowerBI.html" />
     <Content Include="timeline.html" />
     <Content Include="typography.html" />
     <Content Include="ui-elements.html" />
     <Content Include="vector-maps.html" />
-    <Content Include="WCFAjax.svc" />
-    <Content Include="WCFWebService.svc" />
+    <Content Include="Services\WCFAjax.svc" />
+    <Content Include="Services\WCFWebService.svc" />
+    <Content Include="WholesaleDeals.html" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WCFAjax.svc.cs">
+    <Compile Include="Services\Contracts.svc.cs">
+      <DependentUpon>Contracts.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\CurveUploader.svc.cs">
+      <DependentUpon>CurveUploader.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Customers.cs" />
+    <Compile Include="Services\Deals.svc.cs">
+      <DependentUpon>Deals.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Facility.svc.cs">
+      <DependentUpon>Facility.svc</DependentUpon>
+    </Compile>
+    <Compile Include="Services\IContracts.cs" />
+    <Compile Include="Services\ICurveUploader.cs" />
+    <Compile Include="Services\ICustomers.cs" />
+    <Compile Include="Services\IDeals.cs" />
+    <Compile Include="Services\IFacility.cs" />
+    <Compile Include="Services\ISharedInfo.cs" />
+    <Compile Include="Services\SharedInfo.cs" />
+    <Compile Include="Services\WCFAjax.svc.cs">
       <DependentUpon>WCFAjax.svc</DependentUpon>
     </Compile>
-    <Compile Include="WCFWebService.svc.cs">
+    <Compile Include="Services\WCFWebService.svc.cs">
       <DependentUpon>WCFWebService.svc</DependentUpon>
     </Compile>
-    <Compile Include="IWCFWebService.cs" />
+    <Compile Include="Services\IWCFWebService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebRole.cs" />
   </ItemGroup>
@@ -341,8 +433,8 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
-    <None Include="Properties\PublishProfiles\hooknlinebasetest - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\riskdeskdev - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\riskdeskdev - ReadOnly - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\riskdeskdev - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

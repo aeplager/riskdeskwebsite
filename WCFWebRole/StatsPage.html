@@ -1,0 +1,1198 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Risk Desk</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blue Moon - Responsive Admin Dashboard" />
+    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery" />
+    <meta name="author" content="Bootstrap Gallery" />
+    <link rel="shortcut icon" href="img/favicon.ico">
+
+    <!--Uncommented here on 02/16/2020-->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/new.css" rel="stylesheet">
+    <link href="css/charts-graphs.css" rel="stylesheet">
+
+
+
+
+    <!-- Datepicker CSS -->
+    <!--02/16/2020-->
+    <!--<link href="fonts/font-awesome.min.css" rel="stylesheet">-->
+    <!--<link href="fonts/font-awesome.min.css" rel="stylesheet">-->
+
+
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+    <link href="css/alertify.core.css" rel="stylesheet" id="toggleCSS">
+    <script type="text/javascript" src="js/alertify.min.js"></script>
+
+    <!--Included Scripts-->
+    <!--AutoComplete Scripts-->
+    <link rel="stylesheet" href="css/AutoComplete.css" />
+
+
+    <!--Normal Scripts-->
+    <!--Remove Below-->
+    <!--<script src="https://code.jquery.com/jquery-1.10.2.js"></script>-->
+    <!--<script src="https://code.jquery.com/jquery-1.7.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.7.0/jquery-ui.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!--AutoComplete New-->
+    <!--<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.3/themes/hot-sneaks/jquery-ui.css" />-->
+    <link rel="stylesheet" href="css/jquery-ui.css" />
+    <!--Remove Below-->
+    <script src="http://code.jquery.com/jquery-2.1.3.js"></script>
+
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
+
+    <!--Date Selector-->
+    <!--<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
+    <!--Custom Java Script-->
+    <script type="text/javascript" src="Scripts/General.js"></script>
+    <script type="text/javascript" src="Scripts/Customer.js"></script>
+    <script type="text/javascript" src="Scripts/AutoComplete.js"></script>
+    <script type="text/javascript" src="Scripts/DealEntry.js"></script>
+    <script type="text/javascript" src="Scripts/Facility.js"></script>
+    <script type="text/javascript" src="Scripts/StatsPage.js"></script>
+    <script type="text/javascript" src="Scripts/GraphingSetDropDowns.js"></script>
+    <script type="text/javascript" src="Scripts/GraphingObtainData.js"></script>
+    <script type="text/javascript" src="Scripts/TransposeData.js"></script>
+    <script type="text/javascript" src="Scripts/GraphingGeneral.js"></script>
+    <script type="text/javascript" src="Scripts/GraphingSelectDropDowns.js"></script>
+    <script type="text/javascript" src="Scripts/WholeSaleDealEntry.js"></script>
+    <script type="text/javascript" src="Scripts/RetailDealEntry.js"></script>
+     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <!--MultiSelect Dropdwon-->
+    <!--<!--Links to Azure-->-->
+    <script src="Azure/azure-storage.blob.js"></script>
+    <script src="Azure/AzureGeneral.js"></script>
+    <!-- HTML5 shiv and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+
+
+
+    <style>
+        .marginRow {
+            margin: 0px !important;
+            /*margin-top: 0;
+        margin-bottom: 0;*/
+        }
+
+        input[type="date"]::-webkit-inner-spin-button {
+            opacity: 0
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background: url(/img/GFX-MWA-Parks-Reservations.png) center/100% no-repeat;
+            color: rgba(0, 0, 0, 0);
+            opacity: 0.5
+        }
+
+            input[type="date"]::-webkit-calendar-picker-indicator:hover {
+                background: url(/img/GFX-MWA-Parks-Reservations.png) center/100% no-repeat;
+                opacity: 0.8
+            }
+
+        .chartMain {
+            width: 100%;
+            min-height: 450px;
+        }
+
+        .tdOptions {
+            border: 1px solid black;
+        }
+
+        .bold-font {
+            font-weight: bold;
+        }
+
+        .CT_Tbl {
+            height: 50%;
+            width: 75%;
+            border-spacing: 10px;
+            overflow-x: auto;
+            overflow-y: auto
+        }
+
+        .box {
+            //width:300px;
+            //height:300px;
+            background-color: #d9d9d9;
+            position: fixed;
+            margin-left: -150px; /* half of width */
+            margin-top: -150px; /* half of height */
+            top: 50%;
+            left: 50%;
+        }
+
+        .normal-whitespace {
+            white-space: normal;
+        }
+
+        .chkBoxClassLI {
+            transform: scale(10);
+        }
+
+        .customHeader {
+            text-align: right;
+        }
+
+        .customTitle {
+            text-align: right;
+        }
+
+        .labelTitle {
+            text-align: left;
+            background-color: white;
+            align-content: center;
+            text-align: center;
+            width: 100%;
+        }
+
+        table_AutoLayoutC {
+            table-layout: auto;
+            width: 100%;
+        }
+
+        .ColumnPadding {
+            padding-right: -120px;
+        }
+
+        .nopadding-TopBottom {
+            margin-bottom: 1px;
+            margin-top: 1px;
+        }
+
+        .nopadding-Row {
+            line-height: 0;
+            padding-top: 0px;
+            padding-bottom: 0px;
+        }
+
+        .nopadding {
+            padding-top: 0px;
+            padding-bottom: 0px;
+            //padding-right: 0;
+            /*padding-top: 0;
+            padding-bottom: 0;
+
+            margin-bottom: 0;
+            margin-top: 0;*/
+            /*padding: 0 !important;*/
+            /*margin: 0 !important;*/
+        }
+
+        .with-margin {
+            margin-bottom: 5px;
+        }
+
+        .WDE_Label {
+            color: black;
+            font-size: 18px;
+            font-weight: bolder;
+        }
+        .WDE_DataLabel {
+            border-color:   black;
+            border: groove;
+            color: black;
+            font-size: 18px;
+        }
+        .WDE_DateField {
+            font-size: 14px;
+        }
+
+        .WDE_Table {
+            border-bottom-color: lightgrey;
+        }
+        .WDE_Row{
+            padding-bottom: 12px;
+        }
+        .WHE_Button {
+            margin-bottom: 12px;
+        }
+        .RDE_CheckBox {
+            height:  15px;
+            width:  15px;
+        }
+        .RDE_TableTextBox {
+//            height:  25px;
+            width:  100px;
+        }
+        .RDE_TableDateField {
+            height:  25px;
+            width: 200px;
+        }
+        .RDE_TableLable {
+            font-size: 12;
+            font-weight: bolder;
+        }
+        .RDE_DivSpacing {
+            padding-top: 10px;
+        }
+        .WDE_DivWidgetSpacing {
+            padding-bottom: 10px;
+            padding-top: 10px;
+        }
+    </style>    
+    <script>
+        var DrawGraphType = "Monthly";
+        var chart;
+        function Initialize() {
+            // Initialize the city
+            try {
+                //AddHeader();
+                //$("#StatsPageHeaderLabel").text("Monthly");
+                //var ControlToSet = "selFirst";
+                //GraphingSetMonths(ControlToSet);
+                //var ControlToSet = "selSecond";
+                //GraphingSetCongestionZones(ControlToSet);
+                //var ControlToSet = "selThird";
+                //GraphingSetWholeSaleBlocks(ControlToSet);
+                //var ControlToSet = "selFrth";
+                //GraphingSetAccounts(ControlToSet);
+                //drawChart("Monthly");
+
+                var dtStartDate = new Date();
+                dtStartDate = new Date(2020, dtStartDate.getMonth(), dtStartDate.getDate());
+                document.getElementById('dtEndDate').valueAsDate = dtStartDate;
+                dtStartDate = new Date(dtStartDate.getFullYear(), dtStartDate.getMonth() - 1, dtStartDate.getDate());
+                document.getElementById('dtStartDate').valueAsDate = dtStartDate;
+                DrawGraphType = "Monthly";
+                ChangeSelectorsMemGraph(DrawGraphType);
+                //drawMultSeries();
+                //drawTrendlines();
+            }
+            catch (e) {
+                alert(e);
+            }
+        }
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'http://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-40304444-1', 'iamsrinu.com');
+        ga('send', 'pageview');
+
+
+
+        // Google Code
+        //google.charts.load('current', {packages: ['corechart', 'bar']});
+        //google.charts.setOnLoadCallback(drawMultSeries);
+
+        google.load("visualization", "1", { packages: ["corechart", "table", , "view"] });
+        google.setOnLoadCallback(drawChart);
+
+
+
+        //google.load("visualization", '1.1', { packages: ['corechart'] });
+        //google.setOnLoadCallback(drawChart());
+
+    </script>
+    <style>
+        .dropbtn {
+            background-color: #318ec9;
+            color: white;
+            padding: 5px;
+            font-size: 12px;
+            border: none;
+            border-radius: 8px;
+            width: 300px;
+        }
+
+        .dropdown {
+            position: relative;
+            s display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+            .dropdown-content a {
+                color: black;
+                text-decoration: none;
+                display: block;
+            }
+
+                .dropdown-content a:hover {
+                    background-color: lightblue;
+                }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: Highlight;
+        }
+
+        .horizSpacing {
+            border: solid;
+            border-color: #f7f7f7;
+            width: 200px;
+            /*font-size:  24px;*/
+            //font-size-adjust: 0.75;
+            //#fafafa;
+        }
+
+        .DateSelectors {
+            margin: auto;
+            width: 60%;
+            // border: 3px solid #73AD21;
+            padding: 10px;
+        }
+
+        .TableDateSelector {
+            padding: 2px;
+        }
+
+        .dtSelector {
+        }
+        .headerlabel {
+            font-size:  24px;
+            font-weight: bolder;
+            font-style: italic;
+            color:   dodgerblue;
+            font-family:   'Times New Roman';
+        }
+    </style>
+</head>
+
+<body onload="Initialize()">
+    <!-- Header Start -->
+    <header>
+        <a href="index.html" class="logo">
+            <!--<img src="img/logo.png" alt="Logo" />-->
+            <label class="label headerlabel">Virtual Risk Desk</label>
+        </a>
+    </header>
+    <!-- Header End -->
+    <!-- Main Container start -->
+    <div class="dashboard-container">
+        <div class="container">
+            <!-- Top Nav Start -->
+            <!--********************************************************-->
+            <!--End of Formal Menu-->
+            <!--********************************************************-->
+
+            <div id='cssmenu'>
+                <!--<ul id="MainUL"></ul>-->
+                <ul>
+                    <li id="barDashboard" class=''>
+                        <a href='index.html'>
+                            <i class="fa fa-dashboard"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li id="barDataEntry" class=''>
+                        <a href="#">
+                            <i class="fa fa-align-justify"></i>
+                            Data Entry
+                        </a>
+                        <ul>
+                            <!--Data Entry Forms-->
+                            <li><a href='GenericUploader.html'>Generic Uploader</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('WholeSaleDealEntry');">Wholesale Deal Entry</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('RetailDealEntry');">Retail Deal Entry</a></li>
+                        </ul>
+                    </li>
+                    <li id="barPricing" class=''>
+                        <a href='#'><i class="fa fa-bar-chart-o"></i>Pricing</a>
+                        <ul>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('PricingSummary');">Summary</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('PricingMonthlyPrices');">Monthly Prices</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('PricingMonthlyVolumes');">Monthly Volumes</a></li>
+                        </ul>
+                    </li>
+                    <li id="barLoadResearch" class='active'>
+                        <a href='#'><i class="fa fa-bar-chart-o"></i>Load</a>
+                        <ul>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('Monthly');">Months</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('HourlyShapes');">Hourly Shapes</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('VolumetricRisk');">Comp. of Retail Risk</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('WeatherScenario');">Weather Scenario</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('ScatterPlot');">Scatter Plot</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('ErcotLoadAnimate');">Ercot Animation</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('PeakModel');">Peak Model</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('LoadResearchBackCast');">BackCast</a></li>
+                        </ul>
+                    </li>
+                    <li id="barRisk" class=''>
+                        <a href='#'><i class="fa fa-bar-chart-o"></i>Risk</a>
+                        <ul>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('RiskMonthlyDetail');">Monthly Detail</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('RiskMonthlyPosition');">Monthly Position</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('RiskHourlyPosition');">Hourly Position</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('RiskWholesaleTrades');">Wholesale Trades</a></li>
+                            <li><a href='#' onclick="ChangeSelectorsMemGraph('RiskWholesaleSettlmentReport');">Wholesale Settlment</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div id="DynamicRow_LoadResearch" class="row">
+                <div class="sub-nav hidden-sm hidden-xs">
+                    <ul>
+                        <li><a href="" class="heading">Graphs</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('Monthly')" class="heading-blue">Monthly</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('HourlyShapes')" class="heading-blue">Hourly Shapes</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('VolumetricRisk')" class="heading-blue">Components of Retail Risk</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('WeatherScenario')" class="heading-blue">Weather Scenario</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('ScatterPlot')" class="heading-blue">Scatter Plot</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('ErcotLoadAnimate')" class="heading-blue">Ercot Load Animate</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('PeakModel')" class="heading-blue">Peak Model</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('LoadResearchBackCast')" class="heading-blue">BackCast</a></li>
+                    </ul>
+                    <div class="custom-search hidden-sm hidden-xs">
+                        <input type="text" class="search-query" placeholder="Search here ...">
+                        <i class="fa fa-search"></i>
+                    </div>
+                </div>
+            </div>
+            <div id="DynamicRow_Risk" class="row" hidden="true">
+                <div class="sub-nav hidden-sm hidden-xs">
+                    <ul>
+                        <li><a href="" class="heading">Graphs</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('RiskMonthlyDetail')" class="heading-blue">Monthly Detail</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('RiskMonthlyPosition')" class="heading-blue">Monthly Position</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('RiskHourlyPosition')" class="heading-blue">Hourly Position</a></li>
+                    </ul>
+
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('RiskWholesaleSettlmentReport')" class="heading-blue">Wholesale Settlement</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('RiskWholesaleTrades')" class="heading-blue">Wholesale Trades</a></li>
+                    </ul>
+                    <div class="custom-search hidden-sm hidden-xs">
+                        <input type="text" class="search-query" placeholder="Search here ...">
+                        <i class="fa fa-search"></i>
+                    </div>
+                </div>
+            </div>
+            <div id="DynamicRow_Pricing" class="row" hidden="true">
+                <div class="sub-nav hidden-sm hidden-xs">
+                    <ul>
+                        <li><a href="" class="heading">Graphs</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('PricingSummary')" class="heading-blue">Summary</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('PricingMonthlyCashFlow')" class="heading-blue">Monthly Cash Flow</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('PricingMonthlyVolumes')" class="heading-blue">Monthly Volumes</a></li>
+                    </ul>
+                    <div class="custom-search hidden-sm hidden-xs">
+                        <input type="text" class="search-query" placeholder="Search here ...">
+                        <i class="fa fa-search"></i>
+                    </div>
+                </div>
+            </div>
+            <div id="DynamicRow_WholeSaleDealEntryHeader" class="row" hidden="true">
+                <div class="sub-nav hidden-sm hidden-xs">
+                    <ul>
+                        <li><a href="" class="heading">Wholesale Deal Entry</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('WholeSaleDealEntry')" class="heading-blue">Wholesale Deal Entry</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('PricingMonthlyCashFlow')" class="heading-blue">Monthly Cash Flow</a></li>
+                    </ul>
+                    <ul>
+                        <li><a href="#" onclick="ChangeSelectorsMemGraph('PricingMonthlyVolumes')" class="heading-blue">Monthly Volumes</a></li>
+                    </ul>
+                    <div class="custom-search hidden-sm hidden-xs">
+                        <input type="text" class="search-query" placeholder="Search here ...">
+                        <i class="fa fa-search"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- Sub Nav End -->
+            <div id="DynamicRow_Cust" class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="widget">
+                        <div class="widget-header">
+                            <div class="title">
+                                <lablel id="StatsPageHeaderLabel" class="label-bullet-blue">Header</lablel>
+                                <span class="mini-title">
+                                    Select Items<a id="enter-deal-single"></a>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="divFirst" class="col-lg-2 ColumnPadding">
+                                <div class="dropdown">
+                                    <button id="selFirstBtn" class="dropbtn horizSpacing">Select</button>
+                                    <div class="dropdown-content">
+                                        <ul id="selFirst">
+                                            <li><a href="#"><input type="checkbox" name="vehicle1" value="HTML" onclick="reDrawCharts()">Initial Value</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Second Column-->
+                            <div id="divSecond" class="col-lg-2 ColumnPadding">
+                                <!--<label id="lblSecond">Select Second</label>
+                        <br><br>-->
+                                <div class="dropdown">
+                                    <button id="selSecondBtn" class="dropbtn horizSpacing">Select</button>
+                                    <div class="dropdown-content">
+                                        <!--<ul>
+                                    <li><a href="#"><input type="checkbox" name="vehicle1" value="HTML" >Check All</a></li>
+                                </ul>-->
+                                        <ul id="selSecond">
+                                            <li><a href="#"><input type="checkbox" name="vehicle1" value="HTML" onclick="reDrawCharts()">Initial Value</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Third Column-->
+                            <div id="divThird" class="col-lg-2 ColumnPadding">
+                                <!--<label id="lblThird">Select Third</label>
+                        <br><br>-->
+                                <div class="dropdown">
+                                    <button id="selThirdBtn" class="dropbtn horizSpacing">Select</button>
+                                    <div class="dropdown-content">
+                                        <ul id="selThird">
+                                            <li><a href="#"><input type="checkbox" name="vehicle1" value="HTML" onclick="reDrawCharts()">Initial Value</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Fourth Column-->
+                            <div id="divFourth" class="col-lg-2 ColumnPadding">
+                                <!--<label id="lblFrth">Select Fourth</label>
+                        <br><br>-->
+                                <div class="dropdown">
+                                    <button id="selFrthBtn" class="dropbtn horizSpacing">Select</button>
+                                    <div class="dropdown-content">
+                                        <ul id="selFrth">
+                                            <li><a href="#"><input type="checkbox" name="vehicle1" value="HTML" onclick="reDrawCharts()">Initial Value</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="divFifth" class="col-lg-2" hidden="true">
+                                <!--<label id="lblFifth">Select Fifth</label>
+                        <br><br>-->
+                                <div class="dropdown">
+                                    <button id="selFifthBtn" class="dropbtn horizSpacing">Select</button>
+                                    <div class="dropdown-content">
+                                        <ul id="selFifth">
+                                            <li><a href="#"><input type="checkbox" name="vehicle1" value="HTML" onclick="reDrawCharts()">Initial Value</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="divSixth" class="col-lg-2" hidden="true">
+                                <!--<label id="lblSixth">Select Fifth</label>
+                        <br><br>-->
+                                <div class="dropdown">
+                                    <button id="selSixthBtn" class="dropbtn horizSpacing">Select</button>
+                                    <div class="dropdown-content">
+                                        <ul id="selSixth">
+                                            <li><a href="#"><input type="checkbox" name="vehicle1" value="HTML" onclick="reDrawCharts()">Initial Value</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="divSeventh" class="col-lg-2" hidden="true">
+                                <!--<label id="lblSeventh">Select Fifth</label>
+                        <br><br>-->
+                                <div class="dropdown">
+                                    <button id="selSeventhBtn" class="dropbtn horizSpacing">Select</button>
+                                    <div class="dropdown-content">
+                                        <ul id="selSeventh">
+                                            <li><a href="#"><input type="checkbox" name="vehicle1" value="HTML" onclick="reDrawCharts()">Initial Value</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="divRefreshButton" class="col-lg-2" hidden="true">
+                                <label id="lblFifth">Action Button</label>
+                                <br><br>
+                                <div class="bottom">
+                                    <button id="selRefreshBtn" class="dropbtn horizSpacing" onclick="redrawChartErcotAnimationPlot()" )>Run Animation</button>
+                                </div>
+                            </div>
+                        </div>  <!--End of Row-->
+                        <div id="row_TBL" class="row" hidden="true">
+                            <div id="div_Tbl_First" class="col-lg-2">
+                                <!--<label id="lblTbl_First">Select Fourth</label>
+                        <br><br>-->
+                                <div class="dropdown">
+                                    <button id="selTbl_FirstBtn" class="dropbtn horizSpacing">Select</button>
+                                    <div class="dropdown-content">
+                                        <ul id="selTbl_First">
+                                            <li><a href="#"><input type="checkbox" name="vehicle1" value="HTML" onclick="reDrawCharts()">Initial Value</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="divTbl_Second" class="col-lg-2">
+                                <!--<label id="lblTbl_Second">Select Fifth</label>
+                        <br><br>-->
+                                <div class="dropdown">
+                                    <button id="selTbl_SecondBtn" class="dropbtn horizSpacing">Select</button>
+                                    <div class="dropdown-content">
+                                        <ul id="selTbl_Second">
+                                            <li><a href="#"><input type="checkbox" name="vehicle1" value="HTML" onclick="reDrawCharts()">Initial Value</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Dates Column-->
+                        <div class="row" id="DateRangeSelector" hidden="true">
+                            <div id="divDateRange" class="DateSelectors">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th class="TableDateSelector">
+                                                <label id="lblStartDate">Start Date</label>
+                                            </th>
+                                            <th class="TableDateSelector">
+                                                <label id="lblEndDate">End Date</label>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tr>
+                                        <td class="TableDateSelector">
+                                            <input type="date" id="dtStartDate" class="dtSelector" onfocusout="reDrawCharts()" />
+                                        </td>
+                                        <td class="TableDateSelector">
+                                            <input type="date" id="dtEndDate" class="dtSelector" onfocusout="reDrawCharts()" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="DynamicRow_ChartChart" class="row" hidden="true">
+                <table class="columns">
+                    <tr>
+                        <td><div id="columnchart1_CT" style="border: 1px solid #ccc"></div></td>
+                        <td><div id="columnchart2_CT" style="border: 1px solid #ccc"></div></td>
+                    </tr>
+                </table>
+            </div>
+            <div id="DynamicRow_3Charts" class="row" hidden="true">
+                <table class="columns table-responsive" height="100%">
+                    <tr>
+                        <td valign="top"><div id="column3Chart1_CT" style="border: 1px solid #ccc"></div></td>
+                        <td valign="top">
+                            <div id="column3Chart2_CT" style="        border: 1px solid #ccc"></div>
+                        </td>
+                        <td valign="top"><div id="column3Chart3_CT" style="border: 1px solid #ccc "></div></td>
+                    </tr>
+                </table>
+            </div>
+            <div id="DynamicRow_ChartTableLeftChartRight" class="row" hidden="true">
+                <table class="columns">
+                    <tr>
+                        <td>
+                            <table class="columns">
+                                <tr>
+                                    <td>
+                                        <div id="TableTop_ChartTableLeftChartRight" style="border: 1px solid #ccc"></div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><div id="ChartBottom_ChartTableLeftChartRight" style=" border: 1px solid #ccc"></div></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td><div id="SideChart_ChartTableLeftChartRight" style="border: 1px solid #ccc"></div></td>
+                    </tr>
+                </table>
+                <!--</div>-->
+            </div>
+            <div id="DynamicRow_TableTableChartRight" class="row" hidden="true">
+                <table class="columns">
+                    <tr>
+                        <td>
+                            <div id="ChartBottom_TableTableChartRight1" style="border: 1px solid #ccc "></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><div id="ChartBottom_TableTableChartRight2" style="border: 1px solid #ccc"></div></td>
+                    </tr>
+                    <tr>
+                        <td><div id="ChartBottom_TableTableChartRight3" style="border: 1px solid #ccc"></div></td>
+                    </tr>
+                </table>
+                <!--</div>-->
+            </div>
+            <div id="DynamicRow_SingleChart" class="row">
+                <!--<div>-->
+                <!--<div><label class="labelTitle">Main Title</label></div>-->
+                <div id="columnchart_stacked" class="chartMain"></div>
+                <!--</div>-->
+            </div>
+            <div id="DynamicRow_SingleTable" class="row">
+                <div id="table_div" class="table-responsive"></div>">
+            </div>
+            <div id="DynamicRow_ChartTable" class="row" hidden="true">
+                <table class="CT_Tbl">
+                    <tr>
+                        <td width="50%" valign="top">
+                            <div id="table_divCT" class="table-responsive"></div>"
+                        </td>
+                        <td width="50%" valign="top">
+                            <div id="columnchart_CT" class="chartMain"></div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+
+            <!--**********************************************-->
+            <!--WholeSale  Deal Entry Form-->
+            <!--**********************************************-->
+
+            <div id="DynamicRow_WholesaleDataEntryForm" class="row" hidden="true"  style="background-color: #FAFAFA;">
+                <div class="container">
+                    <div class="col-lg-12">
+                        <div class="widget" style="width: 100%">
+                            <div class="widget-header">
+                                <div class="title">
+                                    Wholesale Deal Entry
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-body clearfix WDE_DivWidgetSpacing">
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Deal</label>
+                                <div class="dropdown">
+                                    <select id="selWDE_Deal" class="form-control" onchange="WDE_WholeSaleDealSelect(-1)">
+                                        <option value="-1">
+                                            - ISO -
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <label class="label WDE_Label">Deal Name</label>
+                                <div class="dropdown">
+                                    <input type="text" class="form-control" id="WDE_DealName" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-body clearfix WDE_DivWidgetSpacing">
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">ISO</label>
+                                <div class="dropdown">
+                                    <select id="selWDE_ISO" class="form-control">
+                                        <option value="-1">
+                                            - ISO -
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Counterparty</label>
+                                <div class="dropdown">
+                                    <select id="selWDE_CounterpartyMain" class="form-control">
+                                        <option value="-1">
+                                            - Counterparty -
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Second Counterparty</label>
+                                <div class="dropdown">
+                                    <select id="selWDE_SecondCounterParty" class="form-control">
+                                        <option value="-1">
+                                            - Counterparty -
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-body clearfix WDE_DivWidgetSpacing">
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Settlement Point</label>
+                                <div class="dropdown">
+                                    <select id="selWDE_SettlementPoint" class="form-control">
+                                        <option value="-1">
+                                            - ISO -
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Set Location</label>
+                                <div class="dropdown">
+                                    <select id="selWDE_SetLocation" class="form-control">
+                                        <option value="-1">
+                                            - Counterparty -
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Wholesale Block</label>
+                                <div class="dropdown">
+                                    <select id="selWDE_WholesaleBlock_Main" class="form-control">
+                                        <option value="-1">
+                                            - Counterparty -
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-body clearfix WDE_DivWidgetSpacing">
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Deal Date</label>
+                                <div class="dropdown">
+                                    <input type="date" id="WDE_DealDate" class="WDE_DateField" value="11/11/2020"/>
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Start Date</label>
+                                <div class="dropdown">
+                                    <input type="date" id="WDE_StartDate" class="WDE_DateField" />
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">End Date</label>
+                                <div class="dropdown">
+                                    <input type="date" id="WDE_EndDate" class="WDE_DateField" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-body clearfix WDE_DivWidgetSpacing">
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Volume MW</label>
+                                <div class="widget-body clearfix no-border">
+                                    <input type="text" class="form-control" id="WDE_VolMW" onchange="WDE_setNumberDecimal(this)">
+                                </div>
+                            </div>                       
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Price</label>
+                                <div class="widget-body clearfix no-border">
+                                    <input type="text" class="form-control" id="WDE_Price" onchange="WDE_setNumberDecimal(this)">
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Fee</label>
+                                <div class="widget-body clearfix no-border">
+                                    <input type="text" class="form-control" id="WDE_Fee" onchange="WDE_setNumberDecimal(this)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-body clearfix WDE_DivWidgetSpacing">
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Volume MWh</label>
+                                <div class="widget-body clearfix no-border">
+                                    <input class="form-control" type="text" id="WDE_VolumeMWh" name="readonly" readonly="" value="0.000">
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Cost</label>
+                                <div class="widget-body clearfix no-border">
+                                    <input class="form-control" type="text" id="WDE_Cost" name="readonly" readonly="" value="0.000">
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <label class="label WDE_Label">Committed</label>
+                                <div class="widget-body clearfix no-border">
+                                    <input class="form-control" type="text" id="WDE_Committed" name="readonly" readonly="" value="No">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-body clearfix WDE_DivWidgetSpacing">
+                            <button class="btn btn-info btn-lg" type="button" onclick="WDE_NewDeal()">New Deal</button>
+                            <button class="btn btn-info btn-lg" type="button" onclick="WDE_SaveDeal(0)">Save Deal</button>
+                            <button class="btn btn-info btn-lg" type="button" onclick="WDE_CalculateFctn()">Calculate Deal</button>
+                            <button class="btn btn-info btn-lg" type="button" onclick="WDE_SaveDeal(1)">Commit Deal</button>
+                        </div>
+                    </div>                        
+                </div>  <!--container-->
+            </div> <!--DynamicRow_WholesaleDataEntryForm-->
+
+
+            <!--**********************************************-->
+            <!--Retail Deal Entry Screen-->
+            <!--**********************************************-->
+
+            <div id="DynamicRow_RetailDataEntryForm" class="row" hidden="true" style="background-color: #FAFAFA;">
+                <div class="container">                    
+                        <div class="col-lg-12">
+                            <div class="widget" style="width: 100%">
+                                <div class="widget-header">
+                                    <div class="title">
+                                        Retail Data Entry
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--Main Portion of Site-->
+                        <div class="col-lg-12">
+                            <div class="widget" style="width: 100%">                          
+                                <div class="widget-body clearfix">
+                                    <div class="col-lg-12">
+                                        <div class="col-lg-2">
+                                            <label class="label WDE_Label">Deal</label>
+                                            <div class="dropdown">
+                                                <select id="selRDE_Deal" class="form-control" " onchange="RDE_DealSelect()">
+                                                    <option value="-1">
+                                                        - Deal -
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-7">
+                                            <label class="label WDE_Label">Deal Date </label>
+                                            <div class="dropdown">
+                                                <input type="date" id="RDE_DealDate" class="WDE_DateField" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="label WDE_Label">Deal Name</label>
+                                        <div class="widget-body clearfix no-border">
+                                            <input type="text" class="form-control" id="RDE_DealName">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <label class="label WDE_Label">Committed</label>
+                                        <div class="widget-body clearfix no-border">
+                                            <input class="form-control" type="text" id="RDE_Committed" name="readonly" readonly="" value="No">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <!--<div class="widget-body clearfix">-->
+                                        <div class="col-lg-2">
+                                            <label class="label WDE_Label">Customer Name</label>
+                                            <div class="dropdown">
+                                                <select id="selRDE_Customer" class="form-control">
+                                                    <option value="-1">
+                                                        - Customer -
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="label WDE_Label">Broker Name</label>
+                                            <div class="dropdown">
+                                                <select id="selRDE_BrokerName" class="form-control">
+                                                    <option value="-1">
+                                                        - Broker Name -
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-2">
+                                            <label class="label WDE_Label">Start Date</label>
+                                            <div class="dropdown">
+                                                <input type="date" id="RDE_StartDate" class="WDE_DateField" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--Deal Parts-->
+                            <div class="col-lg-6" style="padding-top: -30px;">
+                                <div class="widget" style="width: 100%">
+                                    <div class="widget-header">
+                                        <div class="title">
+                                            Deal Terms
+                                        </div>
+                                    </div>
+                                    <div class="widget-body clearfix">
+                                        <table class="table table-responsive table-condensed table-bordered" id="RDE_DealPartsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th><label class="RDE_TableLable">Term Date</label></th>
+                                                    <th><label class="RDE_TableLable">Term</label></th>
+                                                    <th><label class="RDE_TableLable">Broker Fee</label></th>
+                                                    <th><label class="RDE_TableLable">Deal Margin</label></th>
+                                                    <th><label class="RDE_TableLable">Risk Premium</label></th>
+                                                    <th><label class="RDE_TableLable">Select</label></th>
+                                                    <th hidden>Test</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="height: 50px;">
+                                                <tr name="RDE_Body">
+                                                    <td><input type="date" id="RDE_StartDateTerm" class="WDE_DateField" value="2020-01-01" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="RDE_Term" value="12" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="RDE_BrokerFee" value="0" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="RDE_DealMargin" value="0" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="RDE_RiskPremium" value="0" /></td>
+                                                    <td><input type="checkbox" class="checkbox RDE_CheckBox" id="RDE_CheckBox" /> </td>
+                                                    <td>1</td>
+                                                </tr>
+                                                <tr name="RDE_Body">
+                                                    <td><input type="date" id="RDE_StartDateTerm" class="WDE_DateField" value="2020-01-01" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="WDE_VolMWh" value="24" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="WDE_VolMWh" value="0" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="WDE_VolMWh" value="0" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="WDE_VolMWh" value="0" /></td>
+                                                    <td><input type="checkbox" class="checkbox RDE_CheckBox" /> </td>
+                                                    <td>2</td>
+                                                </tr>
+                                                <tr name="RDE_Body">
+                                                    <td><input type="date" id="RDE_StartDateTerm" class="WDE_DateField" value="2020-01-01" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="WDE_VolMWh" value="36" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="WDE_VolMWh" value="0" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="WDE_VolMWh" value="0" /></td>
+                                                    <td><input type="text" class="form-control RDE_TableTextBox" id="WDE_VolMWh" value="0" /></td>
+                                                    <td><input type="checkbox" class="checkbox RDE_CheckBox" /> </td>
+                                                    <td>3</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="widget-body clearfix">
+                                        <button class="btn btn-info btn-lg" type="button" onclick="RDE_Btn_AddDealTermsRow()">Add Term</button>
+                                        <button class="btn btn-danger btn-lg" type="button" onclick="RDE_Bth_DeleteRows()">Delete Term</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12" style="padding-top: 10px;">
+                                <div class="widget">                                    
+                                    <div class="widget-body">
+                                        <button class="btn btn-info btn-lg" type="button" onclick="RetailDealNew()">New Deal</button>
+                                        <button class="btn btn-info btn-lg" type="button" onclick="RDE_Btn_UpdateDeal(0)">Save Deal</button>
+                                        <!--<button class="btn btn-info btn-lg" type="button">Calculate Deal</button>-->
+                                        <button class="btn btn-success btn-lg" type="button" onclick="RDE_Btn_UpdateDeal(1)">Commit Deal</button>
+                                        <button class="btn btn-danger btn-lg" type="button"  onclick="RDE_Btn_UpdateDeal(-1)">Delete Deal</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!--End of Container-->
+                    
+                </div>
+
+            <!--**********************************************-->
+            <!--Retail Deal Entry Form-->
+            <!--**********************************************-->
+            <div class="dashboard-wrapper-lg">
+            </div>
+            <!-- Dashboard Wrapper End -->
+
+            <footer>
+                <p>© BlueMoon 2013-15</p>
+            </footer>
+
+        </div>
+    </div>
+    <!-- Main Container end -->
+
+    <script src="js/jquery.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.scrollUp.js"></script>
+
+    <script src="js/jquery.dataTables.js"></script>
+
+
+    <!-- Custom JS -->
+    <script src="js/menu.js"></script>
+
+    <!-- jQuery UI JS -->
+    <script src="js/jquery-ui-v1.10.3.js"></script>
+
+    <!-- Just Gage -->
+    <!--<script src="js/justgage/justgage.js"></script>
+    <script src="js/justgage/raphael.2.1.0.min.js"></script>-->
+    <!-- Flot Charts -->
+    <!--<script src="js/flot/jquery.flot.js"></script>
+    <script src="js/flot/jquery.flot.orderBar.min.js"></script>
+    <script src="js/flot/jquery.flot.stack.min.js"></script>
+    <script src="js/flot/jquery.flot.pie.min.js"></script>
+    <script src="js/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="js/flot/jquery.flot.resize.min.js"></script>-->
+    <!-- Custom JS -->
+    <script src="js/menu.js"></script>
+    <!--<script src="js/custom-index2.js"></script>-->
+
+    <script type="text/javascript">
+        //ScrollUp
+        $(function () {
+            $.scrollUp({
+                scrollName: 'scrollUp', // Element ID
+                topDistance: '300', // Distance from top before showing element (px)
+                topSpeed: 300, // Speed back to top (ms)
+                animation: 'fade', // Fade, slide, none
+                animationInSpeed: 400, // Animation in speed (ms)
+                animationOutSpeed: 400, // Animation out speed (ms)
+                scrollText: 'Top', // Text for element
+                activeOverlay: false, // Set CSS color to display scrollUp active point, e.g '#00FFFF'
+            });
+        });
+
+        //Tooltip
+        $('a').tooltip('hide');
+
+        //Popover
+        $('.popover-pop').popover('hide');
+
+        //Dropdown
+        $('.dropdown-toggle').dropdown();
+
+        //Data Tables
+        $(document).ready(function () {
+            $('#data-table').dataTable({
+                "sPaginationType": "full_numbers"
+            });
+        });
+    </script>
+
+
+    <!--<script>
+             $(".form_datetime").datetimepicker({
+        format: "dd MM yyyy - hh:ii"
+    });
+    </script>-->
+
+
+</body>
+</html>

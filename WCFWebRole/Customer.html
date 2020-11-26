@@ -7,7 +7,7 @@
     <meta name="description" content="Blue Moon - Responsive Admin Dashboard" />
     <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery" />
     <meta name="author" content="Bootstrap Gallery" />
-    <link rel="shortcut icon" href="img/favicon.ico">
+    <!--<link rel="shortcut icon" href="img/favicon.ico">-->
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/wysi/bootstrap-wysihtml5.css" rel="stylesheet">
@@ -22,49 +22,97 @@
 
     <link href="fonts/font-awesome.min.css" rel="stylesheet">
 
-    <!--Custom Java Script-->
-    <script type="text/javascript" src="Scripts/General.js"></script>    
-    <script type="text/javascript" src="Scripts/Customer.js"></script>
-
-    <script type="text/javascript" src="Scripts/AutoComplete.js"></script>
-
     <!--Included Scripts-->
     <!--AutoComplete Scripts-->
     <link rel="stylesheet" href="css/AutoComplete.css" />
     <!--Normal Scripts-->
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://code.jquery.com/jquery-1.7.min.js"></script>
     <script src="https://code.jquery.com/ui/1.7.0/jquery-ui.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!--AutoComplete New-->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.3/themes/hot-sneaks/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-2.1.3.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    <!--Data Table Scripts-->
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+    <!--Custom Java Script-->
+    <script type="text/javascript" src="Scripts/General.js"></script>
+    <script type="text/javascript" src="Scripts/Customer.js"></script>
+    <script type="text/javascript" src="Scripts/AutoComplete.js"></script>
+    <!--<script type="text/javascript" src="Scripts/DealEntry.js"></script>
+    <script type="text/javascript" src="Scripts/Facility.js"></script>-->
+    <script type="text/javascript" src="Scripts/GenericUploader.js"></script>
     <!--<!--Links to Azure-->-->
     <script src="Azure/azure-storage.blob.js"></script>
     <script src="Azure/AzureGeneral.js"></script>
+    <!--<![endif]-->-->
+    <style>
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid #3498db;
+            width: 120px;
+            height: 120px;
+            -webkit-animation: spin 2s linear infinite; /* Safari */
+            animation: spin 2s linear infinite;
+        }
 
-    <!--Table Scrolling-->
-    <!--<link href="TableScroll/NewStyleSheet.css" rel="stylesheet">-->
-    <!-- HTML5 shiv and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="js/html5shiv.js"></script>
-      <script src="js/respond.min.js"></script>
-    <![endif]-->
-    <script>
+        /* Safari */
+        @-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+       
+    </style>
+    <script>   
         /*An array containing all the country names in the world:*/
-        var Cities = [];
+        var LoadProfiles = [];
+        var Facilities = [];
+        var iPercent = 0;
         var FileNameUpload = "";
+        var oTable;
+        var oTableMatch;
+        var RandomNumber = "TEST";
+        var iStartRow = 1;
+        var iEndRow = 50;
+        var FileNameForImport = "N/A";
+        var vblForReturn = "N/A";
         function Initialize() {
             // Initialize the city
             try {
-                StateList_Reset('StateInfoList_Customer');
-                CityAuto_Reset('CityInfoAutoCompleteList_Customer');
-                CustomerList_Reset('CustomerInfoList_Customer');
-                $('#StateInfoList_Customer').val('TX');
-                CreateCustomerTable();
-
+                CustomerFillDropdowns();
+                //AddHeader();
+                //CreateBaseTable();
+                //DisplayRowNumbers();
+                //CreateBaseFieldsTable();
             }
             catch (e) {
                 HeaderDataErrorReport(e);
             }
         }
+
+
+
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
                 (i[r].q = i[r].q || []).push(arguments)
@@ -91,7 +139,7 @@
                     <a href="#" data-toggle="modal" data-target="#modalMd">
                         <span class="text-white">Code</span> <i class="fa fa-code"></i>
                     </a>
-                    <!-- Modal -->
+                    <!--Modal
                     <div class="modal fade" id="modalMd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -107,7 +155,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 </li>
                 <li class="list-box dropdown">
                     <a id="drop5" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
@@ -223,45 +271,27 @@
             <!-- Top Nav Start -->
             <div id='cssmenu'>
                 <ul>
-                    <li>
-                        <a href='index.html'>
+                    <li class=''>
+                        <a href='#'>
                             <i class="fa fa-dashboard"></i>
                             Dashboard
                         </a>
                     </li>
                     <li class='active'>
-                        <a href="DealEntry.html">
+                        <a href="">
                             <i class="fa fa-align-justify"></i>
                             Data Entry
                         </a>
                         <ul>
-                            <li><a href='DealEntry.html'>Line of Business</a></li>
+                            <li><a href='GenericUploader.html'>General Uploader</a></li>
                             <li><a href='Customer.html'>Customer</a></li>
-                            <li><a href='DealEntry.html'>Deal</a></li>
-                            <li><a href='FacilityDataEntry.html'>Facility</a></li>
-                            <li><a href='DealEntry.html'>Grouping</a></li>
-                            <li><a href='DealEntry.html'>Broker</a></li>
-                        </ul>
-                    </li>
-                    <li class=''>
-                        <a href='#'><i class="fa fa-thumbs-o-up"></i>Validation</a>
-                        <ul>
-                            <li><a href='index2.html'>Deal</a></li>
-                            <li><a href='index2.html'>Customer</a></li>
-                            <li><a href='index2.html'>Facility</a></li>
-                            <li><a href='index2.html'>Grouping</a></li>
-                            <li><a href='index2.html'>Broker</a></li>
-                        </ul>
-                    </li>
-                    <li class=''>
-                        <a href='#'><i class="fa fa-bar-chart-o"></i>Data Analytics</a>
-                        <ul>
-                            <li><a href='flot.html'>Origination</a></li>
-                            <li><a href='graphs.html'>Gross Margin</a></li>
-                            <li><a href='vector-maps.html'>Pricing</a></li>
-                            <li><a href='vector-maps.html'>Batch Levl Pricing</a></li>
-                            <li><a href='vector-maps.html'>Retail Pricing</a></li>
-                            <li><a href='vector-maps.html'>Weather Norm Pricing</a></li>
+                            <li><a href='Facilities.html'>Facility</a></li>
+                            <li><a href='RetailDeals.html'>Retail Deal Entry</a></li>
+                            <li><a href='WholesaleDeals.html'>Wholesale Deal Entry</a></li>
+                            <!--<li><a href='DealEntry.html'>Deal</a></li>
+    <li><a href='FacilityDataEntry.html'>Facility</a></li>
+    <li><a href='DealEntry.html'>Grouping</a></li>
+    <li><a href='DealEntry.html'>Broker</a></li>-->
                         </ul>
                     </li>
                 </ul>
@@ -270,12 +300,12 @@
             <!-- Sub Nav End -->
             <div class="sub-nav hidden-sm hidden-xs">
                 <ul>
-                    <li><a href="" class="heading">Data Entry Form</a></li>  <!--Main Form for Data Entry-->
+                    <li><a href="" class="heading">Account Uploader</a></li>  <!--Main Form for Data Entry-->
                     <li class="hidden-sm hidden-xs">
-                        <a href="#RemoveAbleDiv_Cust">Table of Customers</a>
+                        <a href="#RemoveAbleDiv_Cust">Table of Accounts</a>
                     </li>
                     <li class="hidden-sm hidden-xs">
-                        <a href="#">Upload of Data</a>
+                        <a href="#">Upload of Accounts</a>
                     </li>
                     <!--<li class="hidden-sm hidden-xs">
                       <a href="#inputs">Status of Upload</a>
@@ -289,289 +319,198 @@
             <!-- Sub Nav End -->
             <!-- Dashboard Wrapper Start -->
             <div class="dashboard-wrapper">
-
                 <!-- Left Sidebar Start -->
                 <div class="left-sidebar">
-
-                    <!-- Row Start -->
-                    <!--Manual Deal Entry-->
-                    <!--Manual Deal Entry-->
-                    <!-- Row End -->
-                    <!-- Row Start -->
-                    <!-- Row End -->
-                    <!-- Row Start -->
-                    <div id="DynamicRow_Cust" class="row">
-                        <div class="col-lg-12 col-md-12">
-                            <div class="widget">
-                                <div class="widget-header">
-                                    <div class="title">
-                                        Customer Entry
-                                        <span class="mini-title">
-                                            Enter Customers<a id="enter-deal-single"></a>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="widget-body">
-                                    <form class="form-horizontal no-margin">
-                                        <div class="form-group">
-                                            <label for="CustomerListLabel" class="col-sm-2 control-label">Customer</label>
-                                            <div class="col-md-4 col-sm-4 col-xs-4">
-                                                <select id="CustomerInfoList_Customer" name="CustomerInfoList_Customer_name" class="form-control" onchange="CustomerInfoList_Change()">
-                                                    <option>Test 1</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="userName" class="col-sm-2 control-label">Customer Name</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="CustomerName_Customer" placeholder="Name">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="Address1" class="col-sm-2 control-label">Address Line 1</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="Address1_Customer" placeholder="Address">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="Address2" class="col-sm-2 control-label">Address Line 2</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" class="form-control" id="Address2_Customer" placeholder="Address">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="pwd" class="col-sm-2 control-label">City</label>
-                                            <div class="col-sm-10">
-                                                <div class="row">
-                                                    <div class="col-md-4 col-sm-4 col-xs-4">
-                                                        <div class="autocomplete">
-                                                            <input id="CityInfoAutoCompleteList_Customer" class="form-control" type="text" name="CitiesAutoCustomer" placeholder="Cities">
-                                                        </div>
-                                                        <script>
-                                                            /*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
-                                                            autocomplete(document.getElementById("CityInfoAutoCompleteList_Customer"), Cities);
-                                                        </script>
-                                                    </div>
-                                                    <div class="col-md-4 col-sm-4 col-xs-4">
-                                                        <select id="StateInfoList_Customer" name="StateInfo_Customer" class="form-control">
-                                                            <!--Initial Value-->
-                                                            <option value="1">
-                                                                Initial Value
-                                                            </option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-4 col-sm-4 col-xs-4">
-                                                        <div class="col-sm-10">
-                                                            <input type="text" class="form-control" id="ZipCode_Customer" placeholder="Zip Code">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="checkbox col-sm-offset-2 col-sm-20">
-                                                <label>
-                                                    <input type="checkbox" id="Active_Customer" checked="checked">Is Customer Active?
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col-sm-offset-2 col-sm-10">
-                                                <button type="button" class="btn btn-default btn" onclick="CustomerUpsert('New')">New</button>
-                                                <button type="button" class="btn btn-info" onclick="CustomerUpsert('Old')">Save</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Row Start -->
                     <div id="RemoveAbleDiv_Cust" class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="widget">
                                 <div class="widget-header">
                                     <div class="title">
-                                        Customer Tables<a id="dynamic-tables"></a>
+                                        Customer Input Screen<a id="dynamic-tables"></a>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <label class="label-bullet-blue">Select Customer</label>
+                                        <select id="SelCustomer" class="form-control" onchange="CustomerSelectCustomer()"></select>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="label-bullet-blue">Customer Name</label>
+                                        <br />
+                                        <input type="text" class="form-control" id="txtCustomerName" placeholder="Customer Name">
                                     </div>
                                 </div>
-                                <div id="dtExampleWidget" class="widget-body">
-                                    <div id="dt_example" class="example_alt_pagination">
-                                        <div id="tableContainer" class="tableContainer">
-                                            <!--width:  "100%",overflow:  "scroll",class: "scrollTable" });-->
-                                            <table id="data-table" width="100%" overflow: "scroll" class="scrollTable"></table>
-                                        </div>
-                                        <div class="clearfix">
-                                        </div>
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <label class="label-bullet-blue">Billing Address 1</label>
+                                        <br />
+                                        <input type="text" class="form-control" id="BillingAdd1" placeholder="Billing Address 1">
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Row End -->
-                    <!-- Row Start -->
-                    <div id="RemoveUploadDiv_Customer" class="row">
-                        <div class="col-lg-12 col-md-12">
-                            <div class="widget">
-                                <div class="widget-header">
-                                    <div class="title">
-                                        Upload Customer Data<a id="dynamic-tables-facility-upload"></a>
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <label class="label-bullet-blue">Billing Address 2</label>
+                                        <br />
+                                        <input type="text" class="form-control" id="BillingAdd2" placeholder="Billing Address 2">
                                     </div>
                                 </div>
-                                <div id="dtExampleWidget-2" class="widget-body">
-                                    <div id="dt_example-2" class="example_alt_pagination">
-                                        <div class="form-group">
-                                            <input type="file" id="files" value="test" />
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="button" id="upload-button" value="Upload File" onclick="UploadFiles('CUST')" />
-                                            <input type="button" id="validate-button" value="Validate File" onclick="ValidateFile('CUST')" />
-                                            <input type="button" id="validate-button" value="Import Data File" onclick="ImportFile('CUST')" />
-                                        </div>
-                                        <div class="form-group">
-                                            <div> Uploaded Bytes: <font id="read"> </font> </div>
-                                            <div class="progress">
-                                                <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                                                    0%
-                                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2">
+                                        <label class="label-bullet-blue">Select State</label>
+                                        <select id="SelState" class="form-control"></select>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="label-bullet-blue">Select City</label>
+                                        <select id="SelCity" class="form-control"></select>
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label class="label-bullet-blue">Zip Code</label>
+                                        <br />
+                                        <input type="text" class="form-control" id="ZipCode" placeholder="Zip Code">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-8">
+                                        <label class="label-bullet-blue">Select Line of Business</label>
+                                        <select id="SelLineOfBusiness" class="form-control"></select>
+                                    </div>
+                                </div>
+                                <div class="row">                                 
+                                    <br />
+                                    <div class="col-lg-8">
+                                        <button type="button" class="btn btn-primary btn-group-lg" style="padding: 10px; width:  100px" onclick="CustomerNewCustomer()">New</button>
+                                        <!--<button type="button" class="btn btn-primary btn-group-lg" style="padding: 10px; width:  100px">Delete</button>-->
+                                        <button type="button" class="btn btn-primary btn-group-lg" style="padding: 10px; width:  100px" onclick="CustomerUpdateCustomer()">Save</button>
+                                    </div>                                    
+                                </div>
+                                    <div id="dtExampleWidget" class="widget-body">
+                                        <div id="dt_example" class="example_alt_pagination">
+                                            <div id="tableContainer" class="tableContainer">
+                                                <!--width:  "100%",overflow:  "scroll",class: "scrollTable" });-->
+                                                <table id="data-table" width="100%" overflow: "scroll" class="scrollTable"></table>
+                                            </div>
+                                            <div class="clearfix">
                                             </div>
                                         </div>
-                                        <div class="clearfix">
+                                    </div>
+                                </>
+                            </div>
+                    </div>
+   
+                        <!--********************************************************************-->
+                        <!--Validation and Display Portion of the Page-->
+                        <!--********************************************************************-->
+                        <div id="ListUpload_Files" class="row">
+                            <div class="col-lg-12 col-md-12">
+                                <div class="widget">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Row End -->
+                        <!--Bottom Of Left Side Bar-->
+                    </div>
+                    <!-- Left Sidebar End -->
+                    <!-- Right Sidebar Start -->
+                    <div class="right-sidebar">
+                        <div class="wrapper">
+                            <button class="btn btn-block btn-warning" type="button" onclick="CalcImportDate()">
+                                Import Date
+                            </button>
+                        </div>
+                        <div class="wrapper">
+                            <button class="btn btn-block btn-info" type="button" onclick="CalcUnitPrice()">
+                                Run Unit Price
+                            </button>
+                        </div>
+                        <div class="wrapper">
+                            <button class="btn btn-block btn-info" type="button" onclick="CalcProspectLoad()">
+                                Run Prospect Load
+                            </button>
+                        </div>
+                        <div class="wrapper">
+                            <button class="btn btn-block btn-success" type="button" onclick="CalcPricing()">
+                                Run Pricing
+                            </button>
+                        </div>
+
+                        <hr class="hr-stylish-1">
+
+                        <div class="wrapper">
+                            <ul class="progress-stats">
+                                <li>
+                                    <div class="details">
+                                        <span>Customer Count</span>
+                                        <span id="CustomersDivLabel" class="pull-right">78</span>
+                                    </div>
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" style="width: 78%">
                                         </div>
                                     </div>
+                                </li>
+                                <li>
+                                    <div class="details">
+                                        <span>Facility Count</span>
+                                        <span id="FacilityDivLabel" class="pull-right">32</span>
+                                    </div>
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="32" aria-valuemin="0" aria-valuemax="100" style="width: 32%">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="details">
+                                        <span>Deal Count</span>
+                                        <span id="DealsDivLabel" class="pull-right">84</span>
+                                    </div>
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="84" aria-valuemin="0" aria-valuemax="100" style="width: 84%">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="details">
+                                        <span>Files Count</span>
+                                        <span id="FilesDivLabel" class="pull-right">84</span>
+                                    </div>
+                                    <div class="progress progress-sm">
+                                        <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="84" aria-valuemin="0" aria-valuemax="100" style="width: 84%">
+                                        </div>
+                                    </div>
+                                </li>                        
+                            </ul>
+                        </div>
+
+                        <hr class="hr-stylish-1">
+
+                        <div class="wrapper">
+                            <div class="btn-toolbar no-margin">
+                                <div class="btn-group">
+                                    <a href="#" class="btn btn-success">
+                                        <i class="fa fa-headphones"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-warning">
+                                        <i class="fa fa-thumbs-down"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-danger">
+                                        <i class="fa fa-tasks"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-info">
+                                        <i class="fa fa-thumbs-up"></i>
+                                    </a>
+                                </div>
+                                <div class="btn-group">
+                                    <a href="#" class="btn btn-default">
+                                        <i class="fa fa-trash-o"></i>
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="ListUpload_Cust" class="row">
-                        <div class="col-lg-12 col-md-12">
-                            <div class="widget">
-                                <div class="widget-header">
-                                    <div class="title">
-                                        Data From Upload<a id="dynamic-tables"></a>
-                                    </div>
-                                </div>
-                                <div id="dtExampleWidget" class="widget-body">
-                                    <div id="dt_example" class="example_alt_pagination">
-                                        <div id="tableContainerUpload" class="tableContainer">
-                                            <!--width:  "100%",overflow:  "scroll",class: "scrollTable" });-->
-                                            <table id="data-tableUpload" width="100%" overflow: "scroll" class="scrollTable"></table>
-                                        </div>
-                                        <div class="clearfix">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Row End -->
-                    <!--Bottom Of Left Side Bar-->
+                    <!-- Right Sidebar End -->
                 </div>
-                <!-- Left Sidebar End -->
-                <!-- Right Sidebar Start -->
-                <div class="right-sidebar">
-                    <div class="wrapper">
-                        <button class="btn btn-block btn-info" type="button">
-                            Block level button
-                        </button>
-                    </div>
-                    <div class="wrapper">
-                        <button class="btn btn-block btn-success" type="button">
-                            Block level button
-                        </button>
-                    </div>
-                    <div class="wrapper">
-                        <button class="btn btn-block btn-warning" type="button">
-                            Block level button
-                        </button>
-                    </div>
 
-                    <hr class="hr-stylish-1">
-
-                    <div class="wrapper">
-                        <ul class="progress-stats">
-                            <li>
-                                <div class="details">
-                                    <span>Windows</span>
-                                    <span class="pull-right">78%</span>
-                                </div>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" style="width: 78%">
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="details">
-                                    <span>Windows 8</span>
-                                    <span class="pull-right">32%</span>
-                                </div>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="32" aria-valuemin="0" aria-valuemax="100" style="width: 32%">
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="details">
-                                    <span>Mac</span>
-                                    <span class="pull-right">84%</span>
-                                </div>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="84" aria-valuemin="0" aria-valuemax="100" style="width: 84%">
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="details">
-                                    <span>Linux</span>
-                                    <span class="pull-right">44%</span>
-                                </div>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="44" aria-valuemin="0" aria-valuemax="100" style="width: 44%">
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="details">
-                                    <span>IPhone/IPad</span>
-                                    <span class="pull-right">67%</span>
-                                </div>
-                                <div class="progress progress-sm">
-                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100" style="width: 67%">
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <hr class="hr-stylish-1">
-
-                    <div class="wrapper">
-                        <div class="btn-toolbar no-margin">
-                            <div class="btn-group">
-                                <a href="#" class="btn btn-success">
-                                    <i class="fa fa-headphones"></i>
-                                </a>
-                                <a href="#" class="btn btn-warning">
-                                    <i class="fa fa-thumbs-down"></i>
-                                </a>
-                                <a href="#" class="btn btn-danger">
-                                    <i class="fa fa-tasks"></i>
-                                </a>
-                                <a href="#" class="btn btn-info">
-                                    <i class="fa fa-thumbs-up"></i>
-                                </a>
-                            </div>
-                            <div class="btn-group">
-                                <a href="#" class="btn btn-default">
-                                    <i class="fa fa-trash-o"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Right Sidebar End -->
-            </div>
             <!-- Dashboard Wrapper End -->
 
             <footer>
@@ -609,9 +548,10 @@
                 animationOutSpeed: 400, // Animation out speed (ms)
                 scrollText: 'Top', // Text for element
                 activeOverlay: false, // Set CSS color to display scrollUp active point, e.g '#00FFFF'
+                bsort: false,
             });
         });
-
+        
         //Tooltip
         $('a').tooltip('hide');
 
@@ -649,12 +589,14 @@
 
         });
         //Data Tables
+        
+//If you want to disable the default sorting but keep the columns sortable, just use the following configuration :
+
         $(document).ready(function () {
             $('#data-table').dataTable({
                 "sPaginationType": "full_numbers"
-            });
         });
 
-    </script>    
+    </script>
 </body>
 </html>

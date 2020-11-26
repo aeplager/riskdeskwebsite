@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="WCFWebRole.Services.SharedInfo" CodeBehind="SharedInfo.svc.cs" %>
