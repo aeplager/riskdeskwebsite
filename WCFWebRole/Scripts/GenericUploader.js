@@ -469,33 +469,40 @@ function deterimine_sheet_name(file_name) {
 }
 async function set_run_checker(run_id) {
     try {
-        var x = 1;
-        $("#DataFactoryProcessing").text("Starting to check");
+        var x = 1;        
+        $("#DataProcessingGIF").show();
         var refreshId = setInterval(function () {
             var x = 1;
             var limiter = 3000
             var colorfnt = 'black';
             if (x <= limiter ) {
                 //alert(run_id);
-                $("#DataFactoryProcessing").text('Checking...');
+                //$("#DataFactoryProcessing").text('Checking...');
                 var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/runid_status/'
                 var DataMain = run_id
                 urlMain = urlMain + DataMain;
-                var ResultData = ReturnDataFromService(urlMain);                                 
-                $("#DataFactoryProcessing").text(ResultData.run_status)
-                $("#DataFactoryProcessing").css("color", colorfnt);
-                if (colorfnt == 'red') {
-                    colorfnt = 'black';
-                } else {
-                    colorfnt = 'black';
-                }
+                var ResultData = ReturnDataFromService(urlMain);                                                 
                 x = x + 1;
                 if (ResultData.run_status == "Succeeded") {
                     x = limiter;
                     clearInterval(refreshId);
-                }                
+                    $("#DataFactoryProcessing").text(ResultData.run_status)
+                    $("#DataProcessingGIF").hide();
+                } else if (ResultData.run_status == "InProgress") {
+                    $("#DataFactoryProcessing").text("Processing....")
+                } else if (ResultData.run_status == "Cancelled") {
+                    $("#DataFactoryProcessing").text("Cancelled")
+                    $("#DataProcessingGIF").hide();
+                }
+                else if (ResultData.run_status == "Failed") {
+                    $("#DataFactoryProcessing").text("Failed")
+                    $("#DataProcessingGIF").hide();
+                }
+                else {
+                    $("#DataFactoryProcessing").text(ResultData.run_status)                
+                }
             }
-        }, 15000);
+        }, 15000);        
     } catch (e) {
         HeaderDataErrorReport(e);
     }
@@ -519,6 +526,7 @@ function ImportIntoValidationTableNew() {
             oTable.fnDeleteRow(0);
         }
         if (ResultData.length > 0) {            
+            $("#DataFactoryProcessing").text("Starting to background processing");
             set_run_checker(ResultData[0].run_id);
             for (var iRows in ResultData) {
                 oTable.fnAddData([
