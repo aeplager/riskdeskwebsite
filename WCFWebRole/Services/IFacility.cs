@@ -26,11 +26,11 @@ namespace WCFWebRole
 
         
 
-        [WebGet(UriTemplate = "/FacilityGetInfo?CustomerID={CustomerID}&UtilityAccountNumber={UtilityAccountNumber}",
+        [WebGet(UriTemplate = "/FacilityGetInfo?CustomerID={CustomerID}&UtilityAccountNumber={UtilityAccountNumber}&FacilityName={FacilityName}",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
              BodyStyle = WebMessageBodyStyle.Bare)]        
-        List<FacilityInformation> FacilityGetInfo(String CustomerID, String UtilityAccountNumber);
+        List<FacilityInformation> FacilityGetInfo(String CustomerID, String UtilityAccountNumber, String FacilityName);
 
         [WebGet(UriTemplate = "/TDUGetInfo",
              RequestFormat = WebMessageFormat.Json,
@@ -85,6 +85,16 @@ namespace WCFWebRole
 
         [DataMember]
         public String UtilityAccountNumber { get; set; }
+
+        [DataMember]
+        public String FacilityName { get; set; }
+
+        [DataMember]
+        public Int64 FacilityPricingGroupID { get; set; }
+
+        [DataMember]
+        public String FacilityPricingGroup { get; set; }
+
 
         [DataMember]
         public String ServiceAddressOne { get; set; }

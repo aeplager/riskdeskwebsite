@@ -50,7 +50,26 @@ function UploadFile() {
     }
 
 }
-
+function FillDropDown(selControl, StoredProc, FirstRec) {
+    try {
+        var urlMain = '/Services/WCFWebService.svc/WebSiteDropDownSelectorGetInfo';
+        var DataUrl = '?StoredProc=' + StoredProc;
+        // Clear the Drop Down
+        urlMain = urlMain + DataUrl;
+        $('#' + selControl).empty();
+        var SelectorID = 0;
+        var SelectorText = FirstRec;
+        var ResultData = ReturnDataFromService(urlMain);
+        $('#' + selControl).append('<option value="' + SelectorID + '"> - ' + SelectorText + ' - </option>')
+        for (var i in ResultData) {
+            SelectorID = ResultData[i].SelectorID;
+            SelectorText = ResultData[i].SelectorText
+            $('#' + selControl).append('<option value="' + SelectorID + '">' + SelectorText + '</option>')
+        }
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
 function DownloadFile() {
 
     window.location("http://localhost:15849/FileUploadServ.svc/File/Custom/xls");

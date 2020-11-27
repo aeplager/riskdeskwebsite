@@ -23,7 +23,7 @@ namespace WCFWebRole
     // NOTE: In order to launch WCF Test Client for testing this service, please select Facility.svc or Facility.svc.cs at the Solution Explorer and start debugging.
     public class Facility : IFacility
     {
-        public List<FacilityInformation> FacilityGetInfo(String CustomerID, String UtilityAccountNumber)
+        public List<FacilityInformation> FacilityGetInfo(String CustomerID, String UtilityAccountNumber, String FacilityName)
         {
 
             List<FacilityInformation> SelectionItemsinfo = new List<FacilityInformation>();
@@ -41,6 +41,8 @@ namespace WCFWebRole
                         cmd.Parameters.AddWithValue("@CustomerID", CustomerIDNumber);
                     }
                     if ((UtilityAccountNumber != null) && (UtilityAccountNumber.Trim() != "")) { cmd.Parameters.AddWithValue("@UtilityAccountNumber", UtilityAccountNumber); }
+                    if ((FacilityName != null) && (FacilityName.Trim() != "")) { cmd.Parameters.AddWithValue("@FacilityName", FacilityName); }
+
                     cmd.Connection = con;
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
@@ -59,9 +61,11 @@ namespace WCFWebRole
                         {
                             i_row++;
                             SelectionItemsinfo.Add(new FacilityInformation
-                            {       
-                                //Active = Convert.ToBoolean(dr["Active"].ToString()),
+                            {
                                 BillingCyle = Convert.ToInt64(dr["BillingCycle"].ToString()),
+                                FacilityName = dr["FacilityName"].ToString(),
+                                FacilityPricingGroupID = Convert.ToInt64(dr["FacilityPricingGroupID"].ToString()),
+                                FacilityPricingGroup = dr["FacilityPricingGroup"].ToString(),
                                 CityID = Convert.ToInt64(dr["CityID"].ToString()),
                                 CityName = dr["CityName"].ToString(),
                                 CongestionZones = dr["CongestionZones"].ToString(),
