@@ -147,6 +147,7 @@
     <Content Include="Gif\gears7.gif" />
     <Content Include="img\calendar-128-Resize.png" />
     <Content Include="img\GFX-MWA-Parks-Reservations.png" />
+    <Content Include="img\LogoHeader.png" />
     <Content Include="JSFiddle.html" />
     <Content Include="js\jquery.ajax-cross-origin.min.js" />
     <Content Include="NewUploader.html" />

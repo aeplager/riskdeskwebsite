@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Risk Desk</title>
+    <link rel="icon" href="img/LogoHeader.png" type="image/x-icon" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Blue Moon - Responsive Admin Dashboard" />
@@ -89,37 +90,37 @@
         }
     </style>
     <script>
-                /*An array containing all the country names in the world:*/
-                var LoadProfiles = [];
-                var Facilities = [];
-                var iPercent = 0;
-                var FileNameUpload = "";
-                var oTable;
-                var oTableMatch;
-                var RandomNumber = "TEST";
-                var iStartRow = 1;
-                var iEndRow = 50;
-                var FileNameForImport = "N/A";
-                var vblForReturn = "N/A";
-                function Initialize() {
-                    // Initialize the city
-                    try {
-                        //AddHeader();
-                        CreateBaseTable();
-                        $("#DataProcessingGIF").hide();
-                        //DisplayRowNumbers();
-                        //CreateBaseFieldsTable();
-                    }
-                    catch (e) {
-                        HeaderDataErrorReport(e);
-                    }
-                }
+        /*An array containing all the country names in the world:*/
+        var LoadProfiles = [];
+        var Facilities = [];
+        var iPercent = 0;
+        var FileNameUpload = "";
+        var oTable;
+        var oTableMatch;
+        var RandomNumber = "TEST";
+        var iStartRow = 1;
+        var iEndRow = 50;
+        var FileNameForImport = "N/A";
+        var vblForReturn = "N/A";
+        function Initialize() {
+            // Initialize the city
+            try {
+                //AddHeader();
+                CreateBaseTable();
+                $("#DataProcessingGIF").hide();
+                //DisplayRowNumbers();
+                //CreateBaseFieldsTable();
+            }
+            catch (e) {
+                HeaderDataErrorReport(e);
+            }
+        }
 
         function showFile(input) {
             try {
                 let file = input.files[0];
                 //alert(`File name: ${file.name}`); // e.g my.png
-                UploadFiles('ICECURVE');                
+                UploadFiles('ICECURVE');
                 //alert(`Last modified: ${file.lastModified}`); // e.g 1552830408824
 
             } catch (e) {

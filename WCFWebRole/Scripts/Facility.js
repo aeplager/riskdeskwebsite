@@ -49,7 +49,7 @@ function SelCustomer_onchange() {
         Facilities = Facilities2;
         FacilitiesNames = FacilityNames2;
         FacilityUtilityAccountSetUp(CustomerID);
-        
+        facility_clear_all()
         //$("#FacilityAutoCompleteList_Facility").autocomplete({
         //    source: Facilities
         //});
@@ -84,9 +84,7 @@ function UpdateOldTables() {
     }
 }
 
-function FacilityChangeFillDropdowns() {
-    
-}
+
 function FacilityUtilityAccountSetUp(CustomerID) {
     try {        
         // Fills The Utilty Account Numbers
@@ -110,8 +108,7 @@ function FacilityUtilityAccountSetUp(CustomerID) {
             FacilitiesNames2 = FacilitiesBlank;
         }
         UtilityAccountNumberautocomplete(document.getElementById("FacilityAutoCompleteList_Facility"), Facilities2);
-        FacilityNameautocomplete(document.getElementById("facility_name"), FacilitiesNames2);
-        //alertify.success(CurrentUtilityAccountNumber);
+        FacilityNameautocomplete(document.getElementById("facility_name"), FacilitiesNames2);        
 
     } catch (e) {
         HeaderDataErrorReport(e);
@@ -163,6 +160,7 @@ function FacilityGetInfo(CurrentUtilityAccountNumber, FacilityName) {
         urlMain = urlMain + DataMain;
         var ResultData = ReturnDataFromService(urlMain);
         // Reset to Nothing
+
         $('#ServiceAdd1').val("");
         $('#ServiceAdd2').val("");
         $('#SelState').val("TX");
@@ -174,9 +172,15 @@ function FacilityGetInfo(CurrentUtilityAccountNumber, FacilityName) {
         $('#SelWeatherStation').val(0);        
         $('#SelCustomer').val(0);            
         $('#SelTDUTariff').empty();
-        $('#SelLossCode').empty();        
+        $('#SelLossCode').empty();                
+        $('#facility_name').val('');
+        $('#FacilityAutoCompleteList_Facility').val('');
         if (ResultData.length > 0) {
             var iRow = 0;
+            var UtilityAccountNumber = ResultData[iRow].UtilityAccountNumber
+            var FacilityName = ResultData[iRow].FacilityName
+            $('#facility_name').val(FacilityName);
+            $('#FacilityAutoCompleteList_Facility').val(UtilityAccountNumber);
             $('#ServiceAdd1').val(ResultData[iRow].ServiceAddressOne);
             $('#ServiceAdd2').val(ResultData[iRow].ServiceAddressTwo);
             $('#SelCity').val(ResultData[iRow].CityID);
@@ -251,78 +255,166 @@ function FacilityLossCodeGetInfo() {
         HeaderDataErrorReport(e);
     }
 }
-function FacilityUpsert() {
+//function SendStatus(sts) {
+//    modal_msg = sts;
+//    $("#myModal").modal('hide');
+//}
+function FacilityUpsert(Status) {
     try {
-        ///FacilityUpsert?UtilityAccountNew={UtilityAccountNew}&UtilityAccountNumber={UtilityAccountNumber}&CustomerID={CustomerID}&ServiceAddressOne={ServiceAddressOne}&ServiceAddressTwo={ServiceAddressTwo}&StateAbb={StateAbb}&TDUID={TDUID}&LoadProfile={LoadProfile}&CongestionZoneID={CongestionZoneID}&WeatherStationID={WeatherStationID}&BillCycle={BillCycle}&LossCodeID={LossCodeID}&TDUTariffID={TDUTariffID}
-        var UtilityAccountNew = '1';
-        if ($('#UtilityAccountStatus').html() == "Utility Account Number Exists") {
-            UtilityAccountNew = '0';
+    // Update the database
+        var CustomerID = $('#SelCustomer').val();
+        if (Status == 'New') {
+            UtilityAccountNew = 1;
+        } else {
+            UtilityAccountNew = 0;
         }
         var UtilityAccountNumber = $('#FacilityAutoCompleteList_Facility').val();
-        var message = "";
-        if (UtilityAccountNew == '0') {
-            message = "Are you sure you want to update utility account number:  " + UtilityAccountNumber + "?";
+        UtilityAccountNumber = UtilityAccountNumber.trim();
+        var FacilityName = $('#facility_name').val();
+        FacilityName = FacilityName.trim();
+        var ServiceAddressOne = $('#ServiceAdd1').val();
+        var ServiceAddressTwo = $('#ServiceAdd2').val();
+
+        var StateAbb = 'TX';
+        var CityID = $('#SelCity').val()
+        var TDUID = $('#SelTDU').val();
+        var LoadProfile = $('#FacilityAutoCompleteList_LoadProfile').val();
+        var CongestionZoneID = $('#SelCongestionZones').val();
+        var WeatherStationID = $('#SelWeatherStation').val();
+        var BillCycle = $('#BillingCycle').val();
+        var LossCodeID = $('#SelLossCode').val();
+        var TDUTariffID = $('#SelTDUTariff').val();
+        var ZipCode = $('#ZipCode').val();     
+        var urlMain = '/Services/Facility.svc/FacilityUpsert';
+        var DataMain = '?UtilityAccountNew=' + UtilityAccountNew;
+        DataMain = DataMain + '&UtilityAccountNumber=' + UtilityAccountNumber;
+        DataMain = DataMain + '&CustomerID=' + CustomerID;
+        DataMain = DataMain + '&ServiceAddressOne=' + ServiceAddressOne;
+        DataMain = DataMain + '&ServiceAddressTwo=' + ServiceAddressTwo;
+        DataMain = DataMain + '&StateAbb=' + StateAbb;
+        DataMain = DataMain + '&CityID=' + CityID;
+        DataMain = DataMain + '&ZipCode=' + ZipCode;
+        DataMain = DataMain + '&TDUID=' + TDUID;
+        DataMain = DataMain + '&LoadProfile=' + LoadProfile;
+        DataMain = DataMain + '&CongestionZoneID=' + CongestionZoneID;
+        WeatherStationID = "1";
+        DataMain = DataMain + '&WeatherStationID=' + WeatherStationID;
+        DataMain = DataMain + '&BillCycle=' + BillCycle;
+        DataMain = DataMain + '&LossCodeID=' + LossCodeID;
+        DataMain = DataMain + '&TDUTariffID=' + TDUTariffID;
+        DataMain = DataMain + '&FacilityName=' + FacilityName
+        urlMain = urlMain + DataMain;
+        var ResultData = ReturnDataFromService(urlMain);
+        if (ResultData == "SUCCESS") {
+            alertify.success(UtilityAccountNumber + ' successfully updated');
         } else {
-            message = "Are you sure you want to add utility account number:  " + UtilityAccountNumber + "?";
-        }
-        alertify.confirm(message, function (e) {
-            if (e) {
-                var CustomerID = $('#SelCustomer').val();            
-                var ServiceAddressOne = $('#ServiceAdd1').val();
-                var ServiceAddressTwo = $('#ServiceAdd2').val();
-                var StateAbb = 'TX';
-                var CityID = $('#SelCity').val()
-                var TDUID = $('#SelTDU').val();
-                var LoadProfile = $('#FacilityAutoCompleteList_LoadProfile').val();
-                var CongestionZoneID = $('#SelCongestionZones').val();
-                var WeatherStationID = $('#SelWeatherStation').val();
-                var BillCycle = $('#BillingCycle').val();
-                var LossCodeID = $('#SelLossCode').val();
-                var TDUTariffID = $('#SelTDUTariff').val();
-                var ZipCode = $('#ZipCode').val();                 
-                if (CustomerID == 0) {
-                    alertify.error("Please select a customer.   No action has been taken");
-                } else {
-                    var urlMain = '/Services/Facility.svc/FacilityUpsert';
-                    var DataMain = '?UtilityAccountNew=' + UtilityAccountNew;
-                    DataMain = DataMain + '&UtilityAccountNumber=' + UtilityAccountNumber;
-                    DataMain = DataMain + '&CustomerID=' + CustomerID;
-                    DataMain = DataMain + '&ServiceAddressOne=' + ServiceAddressOne;
-                    DataMain = DataMain + '&ServiceAddressTwo=' + ServiceAddressTwo;
-                    DataMain = DataMain + '&StateAbb=' + StateAbb;
-                    DataMain = DataMain + '&CityID=' + CityID;
-                    DataMain = DataMain + '&ZipCode=' + ZipCode;
-                    DataMain = DataMain + '&TDUID=' + TDUID;
-                    DataMain = DataMain + '&LoadProfile=' + LoadProfile;
-                    DataMain = DataMain + '&CongestionZoneID=' + CongestionZoneID;
-                    WeatherStationID = "1";
-                    DataMain = DataMain + '&WeatherStationID=' + WeatherStationID;
-                    DataMain = DataMain + '&BillCycle=' + BillCycle;
-                    DataMain = DataMain + '&LossCodeID=' + LossCodeID;
-                    DataMain = DataMain + '&TDUTariffID=' + TDUTariffID;
-                    urlMain = urlMain + DataMain;
-                    var ResultData = ReturnDataFromService(urlMain);
-                    if (ResultData == "SUCCESS") {
-                        alertify.success(UtilityAccountNumber + ' successfully updated');
-                    } else {
-                        if (ResultData == "DUPLICATE") {                            
-                            alertify.error(UtilityAccountNumber + ' already exists.   You cannot duplicate a utility account number');
-                        } else if (ResultData == "DNE") {
-                            alertify.error(UtilityAccountNumber + ' does not exist.   Please either add it or use a different utility account number');
-                        }
-                    }
-                }   
-            } else {
-                alertify.success("No change implemented");
-                return;
+            if (ResultData == "DUPLICATE") {
+                alertify.error(UtilityAccountNumber + ' already exists.   You cannot duplicate a utility account number');
+            } else if (ResultData == "DNE") {
+                alertify.error(UtilityAccountNumber + ' does not exist.   Please either add it or use a different utility account number');
             }
-        } );
+        }
+        FacilityUtilityAccountSetUp(CustomerID);
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function CheckFacilityUpsert(Status) {
+    try {
+        // Ensure Customer Is Selected
+        var CustomerID = $('#SelCustomer').val();            
+        // Check if Utility Account Number exists
+        var UtilityAccountNumber = $('#FacilityAutoCompleteList_Facility').val();
+        UtilityAccountNumber = UtilityAccountNumber.trim();
+        var FacilityName = $('#facility_name').val();                
+        FacilityName = FacilityName.trim();
+        if ((CustomerID == 0) || (CustomerID == null)) {
+            msg = "Please select a customer";
+            alertify.alert(msg);
+            return;
+        } 
+        if ((UtilityAccountNumber == null) || (UtilityAccountNumber == '')) {
+            msg = 'Please fill out the utility account number.   Please note nothing is saved';
+            alertify.error(msg); 
+            return;
+        } else if ((FacilityName == null) || (FacilityName == '')) { 
+            msg = 'Please fill out the facility name.   Please note nothing is saved';
+            alertify.error(msg);
+            return;
+        }
+        var urlMain = '/Services/Facility.svc/FacilityGetInfo';
+        var DataMain = '?UtilityAccountNumber=' + UtilityAccountNumber;        
+        urlMain = urlMain + DataMain;
+        var ResultData = ReturnDataFromService(urlMain);
+        var lnResultData = ResultData.length;
+        var FacilityName = $('#facility_name').val();                
+        // Create message and send it
+        if ((lnResultData != null) && (lnResultData != 0) && (Status == 'New')) {
+            // Facility already exists for new facility
+            var CustomerNameOld = ResultData[0].CustomerName;
+            var FacilityNameOld = ResultData[0].FacilityName;
+            if (FacilityNameOld == FacilityName) {
+                msg = 'Facility Name ' + FacilityName + ' already exists or press save.   Please choose a different facility name.  No records were saved';
+                alertify.error(msg);
+                return;
+            } else {
+                msg = 'This Utility Account Number is already tied to ' + FacilityNameOld + ' under ' + CustomerNameOld;
+                msg = msg + '.  Are you sure you want to add this facility?';
+                msg = msg + '.  Please note that this action will remove the utility account number from ' + FacilityNameOld + '?';
+                alertify.confirm(msg, function () { FacilityUpsert(Status);});
+                
+            }
+        } else if (((lnResultData == null) || (lnResultData == 0)) && (Status == 'New')) {
+            // Facility already does not exists for new facility            
+            msg = 'Are you sure you want to add ' + FacilityName + '?';
+            alertify.confirm(msg, function () { FacilityUpsert(Status); });
+        } else if (((lnResultData == null) || (lnResultData == 0)) && (Status == 'New')) {
+            // Facility does not currently exist for a save             
+            msg = 'Are you sure you want to add ' + FacilityName + '?';
+            alertify.confirm(msg, function () { FacilityUpsert(Status); });
+        } else if (((lnResultData != null) && (lnResultData != 0)) && (Status == 'Save')) {
+            // Facility already exists for currently exist for a save 
+            UtilityAccountNumberOld = ResultData[0].UtilityAccountNumber;            
+            UtilityAccountNumberOld = UtilityAccountNumberOld.trim();            
+            if (UtilityAccountNumber != UtilityAccountNumberOld) {
+                msg = 'Are you sure you want to change the utility account number for ' + FacilityName + '?';
+            } else {
+                msg = 'Are you sure you want to save the changes to ' + FacilityName + '?';
+            }            
+            alertify.confirm(msg, function () { FacilityUpsert(Status); });
+        } else if (((lnResultData == null) || (lnResultData == 0)) && (Status == 'Save')) {
+            msg = 'Are you sure you want to change the utility account number for ' + FacilityName + '?';
+            alertify.confirm(msg, function () { FacilityUpsert(Status); });
+        }       
+        
     } catch (e) {
         HeaderDataErrorReport(e);
     }   
 
 }
-
+function facility_clear_all() {
+    try {
+        // Clear Everything On The Screen
+        var blank_text = ''
+        var blank_selection = 0
+        $('#FacilityAutoCompleteList_Facility').val(blank_text);        
+        $('#facility_name').val(blank_text);        
+        $('#ServiceAdd1').val(blank_text);
+        $('#ServiceAdd2').val(blank_text);        
+        $('#SelCity').val(blank_selection)
+        $('#SelTDU').val(blank_selection);
+        $('#FacilityAutoCompleteList_LoadProfile').val(blank_selection );
+        $('#SelCongestionZones').val(blank_selection );
+        $('#SelWeatherStation').val(blank_selection );
+        $('#BillingCycle').val(blank_selection);
+        $('#SelLossCode').val(blank_selection);
+        $('#SelTDUTariff').val(blank_selection);
+        $('#ZipCode').val(blank_text);     
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }   
+}
 //*******************************************************************
 //Start AutoComplete
 //*******************************************************************

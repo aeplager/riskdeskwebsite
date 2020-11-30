@@ -69,11 +69,11 @@ namespace WCFWebRole
           BodyStyle = WebMessageBodyStyle.Bare)]
         List<LossCodeInfo> LossCodeGetInfo(String TDUID);
 
-        [WebGet(UriTemplate = "/FacilityUpsert?UtilityAccountNew={UtilityAccountNew}&UtilityAccountNumber={UtilityAccountNumber}&CustomerID={CustomerID}&ServiceAddressOne={ServiceAddressOne}&ServiceAddressTwo={ServiceAddressTwo}&StateAbb={StateAbb}&CityID={CityID}&ZipCode={ZipCode}&TDUID={TDUID}&LoadProfile={LoadProfile}&CongestionZoneID={CongestionZoneID}&WeatherStationID={WeatherStationID}&BillCycle={BillCycle}&LossCodeID={LossCodeID}&TDUTariffID={TDUTariffID}",
+        [WebGet(UriTemplate = "/FacilityUpsert?UtilityAccountNew={UtilityAccountNew}&UtilityAccountNumber={UtilityAccountNumber}&CustomerID={CustomerID}&ServiceAddressOne={ServiceAddressOne}&ServiceAddressTwo={ServiceAddressTwo}&StateAbb={StateAbb}&CityID={CityID}&ZipCode={ZipCode}&TDUID={TDUID}&LoadProfile={LoadProfile}&CongestionZoneID={CongestionZoneID}&WeatherStationID={WeatherStationID}&BillCycle={BillCycle}&LossCodeID={LossCodeID}&TDUTariffID={TDUTariffID}&FacilityName={FacilityName}",
           RequestFormat = WebMessageFormat.Json,
           ResponseFormat = WebMessageFormat.Json,
           BodyStyle = WebMessageBodyStyle.Bare)]
-        String FacilityUpsert(String UtilityAccountNew, String UtilityAccountNumber, String CustomerID, String ServiceAddressOne, String ServiceAddressTwo, String StateAbb, String CityID, String ZipCode, String TDUID, String LoadProfile, String CongestionZoneID, String WeatherStationID, String BillCycle, String LossCodeID, String TDUTariffID);
+        String FacilityUpsert(String UtilityAccountNew, String UtilityAccountNumber, String CustomerID, String ServiceAddressOne, String ServiceAddressTwo, String StateAbb, String CityID, String ZipCode, String TDUID, String LoadProfile, String CongestionZoneID, String WeatherStationID, String BillCycle, String LossCodeID, String TDUTariffID, String FacilityName);
 
     }
 

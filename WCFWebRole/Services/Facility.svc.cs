@@ -40,6 +40,10 @@ namespace WCFWebRole
                         Int64 CustomerIDNumber = Convert.ToInt64(CustomerID);
                         cmd.Parameters.AddWithValue("@CustomerID", CustomerIDNumber);
                     }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@CustomerID", 0);
+                    }
                     if ((UtilityAccountNumber != null) && (UtilityAccountNumber.Trim() != "")) { cmd.Parameters.AddWithValue("@UtilityAccountNumber", UtilityAccountNumber); }
                     if ((FacilityName != null) && (FacilityName.Trim() != "")) { cmd.Parameters.AddWithValue("@FacilityName", FacilityName); }
 
@@ -139,7 +143,7 @@ namespace WCFWebRole
             return SelectionItemsinfo;
         }
 
-        public String FacilityUpsert(String UtilityAccountNew, String UtilityAccountNumber, String CustomerID, String ServiceAddressOne, String ServiceAddressTwo, String StateAbb, String CityID, String ZipCode, String TDUID, String LoadProfile, String CongestionZoneID, String WeatherStationID, String BillCycle, String LossCodeID, String TDUTariffID)
+        public String FacilityUpsert(String UtilityAccountNew, String UtilityAccountNumber, String CustomerID, String ServiceAddressOne, String ServiceAddressTwo, String StateAbb, String CityID, String ZipCode, String TDUID, String LoadProfile, String CongestionZoneID, String WeatherStationID, String BillCycle, String LossCodeID, String TDUTariffID, String FacilityName)
         {
             String SelectionItemsinfo = "ERROR";
             DataSet ds = new DataSet();
@@ -155,6 +159,7 @@ namespace WCFWebRole
                     cmd.Parameters.AddWithValue("@UtilityAccountNew", UtilityAccountNew);
                     cmd.Parameters.AddWithValue("@UtilityAccountNumber", UtilityAccountNumber);
                     cmd.Parameters.AddWithValue("@CustomerID", CustomerID);
+                    cmd.Parameters.AddWithValue("@FacilityName", FacilityName);
                     if (ServiceAddressOne != null) { cmd.Parameters.AddWithValue("@ServiceAddress1", ServiceAddressOne); }
                     if (ServiceAddressTwo != null) { cmd.Parameters.AddWithValue("@ServiceAddress2", ServiceAddressTwo); }
 

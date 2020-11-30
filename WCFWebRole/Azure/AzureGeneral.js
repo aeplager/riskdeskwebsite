@@ -352,9 +352,9 @@ function UploadFiles(FileType) {
         HeaderDataErrorReport(e);
     }
 }
-function HeaderDataErrorReport(e) {
-    alert(e);
-}
+//function HeaderDataErrorReport(e) {
+//    alert(e);
+//}
 function ObtainAzureParams(FileType) {
     try {        
         var urlMain = "/Services/WCFWebService.svc/ObtainAzureParameters";

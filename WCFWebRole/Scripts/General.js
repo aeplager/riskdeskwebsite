@@ -10,7 +10,8 @@ function AddItemsToSelector(NameOfSelector, SelectorText, SelectorID) {
 // JavaScript source code
 function HeaderDataErrorReport(e) {
     // Used to display save message
-    alert(e);
+    alertify.error(e);
+    //alert(e);
 }
 function FunctionFailed(msg) {
     // Used for none specific error messages to be shown
