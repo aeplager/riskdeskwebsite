@@ -55,6 +55,8 @@
                 $('<th></th>').html("<select id=\"cboField8\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
                 $('<th></th>').html("<select id=\"cboField9\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
                 $('<th></th>').html("<select id=\"cboField10\"" + ">" + innerOptionHTML + "</select>").appendTo(row);                
+                $('<th></th>').html("<select id=\"cboField11\"" + ">" + innerOptionHTML + "</select>").appendTo(row);  
+                $('<th></th>').html("<select id=\"cboField12\"" + ">" + innerOptionHTML + "</select>").appendTo(row);  
 
             } else {
                 if (i == 1) {                    
@@ -74,6 +76,8 @@
                     $('<td></td>').text(ResultData[iRows].Field8).appendTo(row);
                     $('<td></td>').text(ResultData[iRows].Field9).appendTo(row);
                     $('<td></td>').text(ResultData[iRows].Field10).appendTo(row);                    
+                    $('<td></td>').text(ResultData[iRows].Field11).appendTo(row);                    
+                    $('<td></td>').text(ResultData[iRows].Field12).appendTo(row);                    
                 }
             }
         }        
@@ -165,6 +169,8 @@ function ChangePrevGenericTable() {
                 ResultData[iRows].Field8,
                 ResultData[iRows].Field9,
                 ResultData[iRows].Field10,
+                ResultData[iRows].Field11,
+                ResultData[iRows].Field12,
             ]);
         }
         var table = document.getElementById("data-table");
@@ -255,6 +261,8 @@ function ChangeNextGenericTable() {
                 ResultData[iRows].Field8,
                 ResultData[iRows].Field9,
                 ResultData[iRows].Field10,
+                ResultData[iRows].Field11,
+                ResultData[iRows].Field12,
             ]);
         }
         var table = document.getElementById("data-table");
@@ -311,8 +319,8 @@ function GenericValidationByRowsUpsert() {
                 DataMain = DataMain + "&Field8=" + row.cells[9].innerHTML;
                 DataMain = DataMain + "&Field9=" + row.cells[10].innerHTML;
                 DataMain = DataMain + "&Field10=" + row.cells[11].innerHTML;
-                DataMain = DataMain + "&Field11=" + "N/A";
-                DataMain = DataMain + "&Field12=" + "N/A";
+                DataMain = DataMain + "&Field11=" + row.cells[12].innerHTML;
+                DataMain = DataMain + "&Field12=" + row.cells[13].innerHTML
                 msg = DataMain;
                 var urlMain = urlMain + DataMain;
                 var ResultData = ReturnDataFromService(urlMain);
@@ -345,6 +353,8 @@ function ResetComboBoxesToRightText() {
         $('#cboField8').empty();
         $('#cboField9').empty();
         $('#cboField10').empty();
+        $('#cboField11').empty();
+        $('#cboField12').empty();
         var j = 0;
         for (var i in ResultData) {
             j = j + 1;
@@ -361,6 +371,8 @@ function ResetComboBoxesToRightText() {
             $('#cboField8').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
             $('#cboField9').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
             $('#cboField10').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#cboField11').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#cboField12').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
         }
         var theText = "";
         var iField = "";
@@ -544,6 +556,8 @@ function ImportIntoValidationTableNew() {
                     ResultData[iRows].Field8,
                     ResultData[iRows].Field9,
                     ResultData[iRows].Field10,
+                    ResultData[iRows].Field11,
+                    ResultData[iRows].Field12,
                 ]);
             }
         }
@@ -595,7 +609,7 @@ async function GenericValidatedDataUpsert() {
             var xmlInput = '';
             var urlMain = '/Services/CurveUploader.svc/GenericValidatedDataUpsert?';
             var DataMain = '';
-            for (var iRow = 1; iRow <= 10; iRow++) {
+            for (var iRow = 1; iRow <= 12; iRow++) {
                 if (xmlInput == '') {
                     xmlInput = '<Row><ID>' + iRow + '</ID><NM>' + $("#cboField" + iRow).find('option:selected').text() + '</NM></Row>';
                 } else {
@@ -785,6 +799,8 @@ async function PullGenericDataBack() {
             ResultData[iRows].Field8,
             ResultData[iRows].Field9,
             ResultData[iRows].Field10,
+            ResultData[iRows].Field11,
+            ResultData[iRows].Field12,
         ]);
     }
 
@@ -883,6 +899,8 @@ async function AddGenericData() {
                     ResultData[iRows].Field8,
                     ResultData[iRows].Field9,
                     ResultData[iRows].Field10,
+                    ResultData[iRows].Field11,
+                    ResultData[iRows].Field12,
                 ]);
             }
             
@@ -1206,6 +1224,12 @@ function ReturnInValidFields() {
                 cboInfoSel = document.getElementById('cboField10');
                 var Field10 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
+                cboInfoSel = document.getElementById('cboField11');
+                var Field11 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
+
+                cboInfoSel = document.getElementById('cboField12');
+                var Field12 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
+
                 var FirstLineOfDate = LineLength.options[LineLength.selectedIndex].value;
                 msg = "Updating table....";
                 alertify.success(msg);
@@ -1228,6 +1252,8 @@ function ReturnInValidFields() {
                         ResultData[iRows].Field8,
                         ResultData[iRows].Field9,
                         ResultData[iRows].Field10,
+                        ResultData[iRows].Field11,
+                        ResultData[iRows].Field12,
                     ]);
                 }
                 var table = document.getElementById("data-table");
@@ -1300,6 +1326,12 @@ function GenericTableUpload() {
 
             cboInfoSel = document.getElementById('cboField10');
             var Field10 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
+
+            cboInfoSel = document.getElementById('cboField11');
+            var Field11 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
+
+            cboInfoSel = document.getElementById('cboField12');
+            var Field12 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
             var FirstLineOfDate = LineLength.options[LineLength.selectedIndex].value;
             msg = "Updating table....";
@@ -1646,6 +1678,8 @@ async function ImportIntoValidationTable() {
                         ResultData[iRows].Field8,
                         ResultData[iRows].Field9,
                         ResultData[iRows].Field10,
+                        ResultData[iRows].Field11,
+                        ResultData[iRows].Field12,
                     ]);
                 }
                 var table = document.getElementById("data-table");

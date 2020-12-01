@@ -58,6 +58,9 @@
     <script src="Azure/AzureGeneral.js"></script>
     <!--<![endif]-->-->
     <style>
+        .datablock {
+            height:  120px;
+        }
         .loader {
             border: 16px solid #f3f3f3;
             border-radius: 50%;
@@ -87,7 +90,8 @@
             100% {
                 transform: rotate(360deg);
             }
-        }
+        } 
+
     </style>
     <script>
         /*An array containing all the country names in the world:*/
@@ -498,10 +502,10 @@
                                     <div class="title">
                                         Files Imported<a id="dynamic-tables"></a>
                                     </div>
-                                </div>
+                                </div> 
                                 <div id="dtExampleWidget" class="widget-body">
                                     <div id="dt_example" class="example_alt_pagination">
-                                        <div id="tableContainer" class="tableContainer">
+                                        <div id="tableContainer" class="tableContainer datablock">
                                             <!--width:  "100%",overflow:  "scroll",class: "scrollTable" });-->
                                             <table id="data-table" width="100%" overflow: "scroll" class="scrollTable"></table>
                                         </div>
