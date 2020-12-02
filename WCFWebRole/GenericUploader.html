@@ -455,8 +455,7 @@
                                             <div class="form-group" hidden>
                                                 <input type="file" id="files" value="test" onchange="showFile(this)" multiple>
                                             </div>
-                                            <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Upload File" onclick="BtnUploadFile()" />
-                                            <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Import Into Table" onclick="GenericValidatedDataUpsert()" />
+                                            <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Upload File" onclick="BtnUploadFile()" />                                            
                                         </div>
                                         <div class="form-group">
                                             <div> Uploaded Bytes: <font id="read"> </font> </div>
@@ -502,7 +501,7 @@
                                     <div class="title">
                                         Files Imported<a id="dynamic-tables"></a>
                                     </div>
-                                </div> 
+                                </div>
                                 <div id="dtExampleWidget" class="widget-body">
                                     <div id="dt_example" class="example_alt_pagination">
                                         <div id="tableContainer" class="tableContainer datablock">
@@ -513,16 +512,24 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="widget">
+                                    <!--<div class="widget-header">
+                                        <div class="title">
+                                            <a id="dynamic-tables-facility-upload"></a>
+                                        </div>
+                                    </div>-->
+                                    <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Import Into Table" onclick="GenericValidatedDataUpsert()" />
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div id="RemoveUploadDiv_Buttons" class="row">
+                    <!--<div id="RemoveUploadDiv_Buttons" class="row">
                         <p align="right">
                             <input type="button" id="validate-button" class="btn btn-primary btn-sm" value="Prev" onclick="ChangePrevGenericTable()" />
                             <input type="button" id="validate-button" class="btn btn-primary btn-sm" value="Next" onclick="ChangeNextGenericTable()" />
                             <input type="button" id="validate-button" class="btn btn-primary btn-sm" value="Update" onclick="GenericValidationByRowsUpsert()" />
                         </p>
-                    </div>
+                    </div>-->
                     <!-- Row End -->
                     <!-- Row Start -->
                     <!--********************************************************************-->

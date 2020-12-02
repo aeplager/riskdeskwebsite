@@ -3922,6 +3922,21 @@ namespace WCFWebRole
                 return @"Data Source=MACBOOKPRO-PC\SQLSVR2012;Trusted_Connection=True;DataBase=NOV2";
             }
         }
+        public String ReturnDockerURL()
+        {
+            try
+            {
+                string Environment = ConfigurationManager.AppSettings["Environment"];
+                string RetrievalVariable = "DockerString" + Environment;
+                string ConnectionString = ConfigurationManager.AppSettings[RetrievalVariable];
+                return ConnectionString;
+            }
+            catch (Exception ex)
+            {
+                String Error = ex.ToString();
+                return "http://vrddatafactory.southcentralus.azurecontainer.io:5000/";
+            }
+        }
         private String ReturnSASKey()
         {
             try

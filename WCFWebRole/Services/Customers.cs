@@ -76,8 +76,6 @@ namespace WCFWebRole
             }
             return SelectionItemsinfo;
         }
-
-
         public String CustomerUpsert(Int64 CustomerID, String CustomerName, String BillingAddrOne, String BillingAddrTwo, Int64 CityID, String ZipCode, Int64 LineOfBusinessID, String StateAbb)
         {
             String SelectionItemsinfo = "ERROR";

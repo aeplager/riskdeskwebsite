@@ -3,24 +3,17 @@
         var FileName = 'N/A';
         var FileTypeName = 'ACCOUNT';
         var ContainerName = 'riskaccounts';
-        var urlMain = '/Services/WCFWebService.svc/GenericFileGetInfo?';
+        
+
+
+        urlMain = '/Services/WCFWebService.svc/GenericFileGetInfo?';
         var DataMain = 'FileName=' + FileName + '&FileTypeName=' + FileTypeName + '&ContainerName=' + ContainerName + '&RowNumber=0';
         var urlMain = urlMain + DataMain;
         // Fix to read the docker container
-        var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/basedata'
-        //urlMain = 'http://localhost:32773/api/data/'
-        //urlMain = "http://localhost:32779/api/data/"
-        //var DataMain = 'BaseRecord.csv/sh'
-        //var urlMain = urlMain + DataMain;        
-        //var url2 = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/runid_status/ddf01546-1718-11eb-823d-0a580af49a61'
-        //var ResultData = ReturnDataFromService(url2);       
-        //alertify.success(ResultData);
-        //url2 = url2 = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/runid_status/be8ffbe2-191d-11eb-b8de-0242ac110002'
-        //ResultData = ReturnDataFromService(url2);
-        //alertify.success(ResultData);
-
         var ResultData = ReturnDataFromService(urlMain);       
-        
+        urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/basedata';
+        var ResultData = ReturnDataFromService(urlMain)
+
         var j = 0;
         for (var i in ResultData) {
             j = j + 1;
@@ -145,12 +138,10 @@ function ChangePrevGenericTable() {
         var urlMain = '/Services/WCFWebService.svc/GenericValidationByRowsGetInfo?';
         var DataMain = 'FileName=' + FileName + '&FileTypeName=' + FileTypeName + '&ContainerName=' + ContainerName + '&iStartRow=' + iStartRow + '&iEndRow=' + iEndRow;
         urlMain = urlMain + DataMain;
-        // Display Loading Screen                    
-        var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/data/'
-        //urlMain = 'http://localhost:32773/api/data/'
+        // Display Loading Screen                            
+        var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/data/';        
         var DataMain = 'vwFacilityUpdateAddingNew3_2020_5_31_21_40.csv/sh'
-        var urlMain = urlMain + DataMain;
-        //let ResultData = await ReturnDataFromServicePOST(urlMain);
+        var urlMain = urlMain + DataMain;        
         var ResultData = ReturnDataFromServicePOST(urlMain);
 
         //var ResultData = ReturnDataFromService(urlMain);
@@ -239,8 +230,9 @@ function ChangeNextGenericTable() {
         // Display Loading Screen                    
         //var ResultData = ReturnDataFromService(urlMain);
 
-        var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/data/'
+        //var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/data/'
         //urlMain = 'http://localhost:32773/api/data/'
+        var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/basedata';
         var DataMain = 'vwFacilityUpdateAddingNew3_2020_5_31_21_40.csv/sh'
         var urlMain = urlMain + DataMain;
         //let ResultData = await ReturnDataFromServicePOST(urlMain);
@@ -490,7 +482,8 @@ async function set_run_checker(run_id) {
             if (x <= limiter ) {
                 //alert(run_id);
                 //$("#DataFactoryProcessing").text('Checking...');
-                var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/runid_status/'
+                //var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/runid_status/'
+                var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/runid_status/';
                 var DataMain = run_id
                 urlMain = urlMain + DataMain;
                 var ResultData = ReturnDataFromService(urlMain);                                                 
@@ -529,7 +522,8 @@ function ImportIntoValidationTableNew() {
         var sheet_name = "Sheet1";
         sts = UpdateImportStatus("Beginning processing...")
         sheet_name = deterimine_sheet_name(FileName);
-        var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/datafactor_data/'
+        //var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/datafactor_data/'
+        var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/datafactor_data/';
         var DataMain = FileName + '/' + sheet_name + '/100';
         urlMain = urlMain + DataMain;
         var ResultData = ReturnDataFromService(urlMain);
@@ -778,7 +772,8 @@ async function PullGenericDataBack() {
     DataMain = 'FileName=' + FileName + '&FileTypeName=' + FileTypeName + '&ContainerName=' + ContainerName + '&RandomNumber=' + RandomNumber + '&RowNumber=50';
     urlMain = urlMain + DataMain;    
     // Display Loading Screen                    
-    var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/data/'
+    //var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/data/'
+    var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/data/';
     //urlMain = 'http://localhost:32773/api/data/'
     var DataMain = 'vwFacilityUpdateAddingNew3_2020_5_31_21_40.csv/sh'
     var urlMain = urlMain + DataMain;
@@ -877,7 +872,8 @@ async function AddGenericData() {
             urlMain = urlMain + DataMain;
             // Display Loading Screen                    
             //var ResultData = ReturnDataFromService(urlMain);
-            var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/datafactor_data/'
+            //var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/datafactor_data/'
+            var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/datafactor_data/';
             //urlMain = 'http://localhost:32773/api/data/'
             var DataMain = 'vwFacilityUpdateAddingNew3_2020_5_31_21_40.csv/sh'
             var urlMain = urlMain + DataMain;
@@ -1603,8 +1599,8 @@ async function ImportIntoValidationTable() {
             DataMain = 'FileName='+ FileName + '&FileType=' + FileTypeName;
             urlMain = urlMain + DataMain;     
 
-            var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/data/'
-
+            //var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/data/'
+            var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/data/';
             var DataMain = FileName + '/sh';
             var urlMain = urlMain + DataMain;
             var ResultData = ReturnDataFromService(urlMain);       

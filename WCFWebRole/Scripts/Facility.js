@@ -263,7 +263,7 @@ function FacilityUpsert(Status) {
     try {
     // Update the database
         var CustomerID = $('#SelCustomer').val();
-        if (Status == 'New') {
+        if (Status == 'NEW') {
             UtilityAccountNew = 1;
         } else {
             UtilityAccountNew = 0;
@@ -317,6 +317,77 @@ function FacilityUpsert(Status) {
         FacilityUtilityAccountSetUp(CustomerID);
     } catch (e) {
         HeaderDataErrorReport(e);
+    }
+}
+function FacilityCheckChangeKeyFieldsAndUpdate() {
+    try {
+        // Checking if Utility Account Number 
+        // is different from Facility Name
+        // and update if necessary
+        var CustomerID = $('#SelCustomer').val();
+        // Check if Utility Account Number exists
+        var UtilityAccountNumber = $('#FacilityAutoCompleteList_Facility').val();
+        UtilityAccountNumber = UtilityAccountNumber.trim();        
+        var FacilityName = $('#facility_name').val();      
+        if ((UtilityAccountNumber == null) || (UtilityAccountNumber == '')) {
+            msg = 'Please fill out the utility account number.   Please note nothing is saved';
+            alertify.error(msg);
+            return 'ERROR';
+        } else if ((FacilityName == null) || (FacilityName == '')) {
+            msg = 'Please fill out the facility name.   Please note nothing is saved';
+            alertify.error(msg);
+            return 'ERROR';
+        }
+        // Check if Facilty Name/Customer and Utility Account Number are equal
+        var urlMain = '/Services/Facility.svc/FacilityGetInfo';
+        var DataMain = '?UtilityAccountNumber=' + UtilityAccountNumber;
+        urlMain = urlMain + DataMain;
+        var ResultData = ReturnDataFromService(urlMain);
+        var lnResultData = ResultData.length;
+        sts = "ERROR";
+        if ((lnResultData != 0) && (lnResultData != null)) {
+            // New Utility Account Number                
+            if (FacilityName == ResultData[0].FacilityName.trim()) {
+                // Utility Acocunt Number and Facility Number Same Save
+                sts = 'SAVE';
+
+            } else {
+                sts = 'CHANGE';
+            }
+        } else {
+            var urlMain = '/Services/Facility.svc/FacilityGetInfo';
+            var DataMain = '?CustomerID=' + CustomerID + '&FacilityName=' + FacilityName;
+            urlMain = urlMain + DataMain;
+            var ResultData = ReturnDataFromService(urlMain);
+            var lnResultData = ResultData.length;
+            if ((lnResultData == 0) || (lnResultData == null)) {
+                sts = 'NEW';
+            } else {
+                sts = 'CHANGE';
+            }           
+        }
+        if (sts == 'NEW') {
+            msg = 'Are you sure you want to add a new facility?';
+            alertify.confirm(msg, function () { FacilityUpsert(sts); });
+            return;
+        } else if (sts == 'SAVE') {
+            msg = 'Are you sure you want to save the information for this facility?';
+            alertify.confirm(msg, function () { FacilityUpsert(sts); });
+            return;
+        } else if (sts == 'CHANGE') {
+            msg = 'Are you sure you want to change the facility name for this utility account number?';
+            alertify.confirm(msg, function () { FacilityUpsert(sts); });
+            return;
+        } else {
+            msg = 'You had an error in the change function.   No changes have been implemented';
+            alertify.error(msg);
+            return;
+        }
+        return;
+
+    } catch (e) {
+        HeaderDataErrorReport(e);
+        return 'ERROR'
     }
 }
 function CheckFacilityUpsert(Status) {

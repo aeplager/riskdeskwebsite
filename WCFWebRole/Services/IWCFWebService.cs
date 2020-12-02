@@ -12,6 +12,12 @@ namespace WCFWebRole
     [ServiceContract]
     public interface IWCFWebService
     {
+        [WebGet(UriTemplate = "/ReturnDockerURL",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        String ReturnDockerURL();
+
         [WebGet(UriTemplate = "/WebSiteDropDownSelectorGetInfo/?StoredProc={StoredProc}",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
@@ -76,11 +82,6 @@ namespace WCFWebRole
              BodyStyle = WebMessageBodyStyle.Bare)]
         List<RiskMonthlyDetailsGraphView> RiskMonthlyDetailsGraphsGetInfo(String BookOfBusinessString, String LineOfBusinessString, String CongestionZoneString, DateTime StartDate, DateTime EndDate, int NoBookOfBusinessInt);
 
-        //[WebGet(UriTemplate = "/RetailDealGetInfo/?sDealID={sDealID}",
-        //     RequestFormat = WebMessageFormat.Json,
-        //     ResponseFormat = WebMessageFormat.Json,
-        //     BodyStyle = WebMessageBodyStyle.Bare)]
-        //List<RetailDealInfo> RetailDealGetInfo(String sDealID);
 
         [WebGet(UriTemplate = "/RetailDealUpsert/?RetailDealID={RetailDealID}&RetailDealName={RetailDealName}&CustomerID={CustomerID}&BrokerID={BrokerID}&StartDate={StartDate}&DealDate={DealDate}&DealCommitted={DealCommitted}&DealCommittmentDate={DealCommittmentDate}&Notes={Notes}&TermRecords={TermRecords}&StatusOfRecordID={StatusOfRecordID}",
              RequestFormat = WebMessageFormat.Json,
