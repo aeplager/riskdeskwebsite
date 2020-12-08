@@ -19,11 +19,11 @@ namespace WCFWebRole
              BodyStyle = WebMessageBodyStyle.Bare)]
         List<CustomerInfo> CustomersGetInfo(Int64 CustomerID);
 
-        [WebGet(UriTemplate = "/CustomerUpsert?CustomerID={CustomerID}&CustomerName={CustomerName}&BillingAddrOne={BillingAddrOne}&BillingAddrTwo={BillingAddrTwo}&CityID={CityID}&ZipCode={ZipCode}&LineOfBusinessID={LineOfBusinessID}&StateAbb={StateAbb}",
+        [WebGet(UriTemplate = "/CustomerUpsert?CustomerID={CustomerID}&CustomerName={CustomerName}&BillingAddrOne={BillingAddrOne}&BillingAddrTwo={BillingAddrTwo}&BillingAddrThree={BillingAddrThree}&DUNSNumber={DUNSNumber}&CreditScore={CreditScore}&PhoneNumber={PhoneNumber}&CityID={CityID}&ZipCode={ZipCode}&LineOfBusinessID={LineOfBusinessID}&StateAbb={StateAbb}",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
              BodyStyle = WebMessageBodyStyle.Bare)]
-        String CustomerUpsert(Int64 CustomerID, String CustomerName, String BillingAddrOne, String BillingAddrTwo, Int64 CityID, String ZipCode, Int64 LineOfBusinessID, String StateAbb);
+        String CustomerUpsert(Int64 CustomerID, String CustomerName, String BillingAddrOne, String BillingAddrTwo, String BillingAddrThree, String DUNSNumber, String CreditScore, String PhoneNumber, Int64 CityID, String ZipCode, Int64 LineOfBusinessID, String StateAbb);
     }
 
     [DataContract]
@@ -44,6 +44,16 @@ namespace WCFWebRole
         public String BillingAdd1 { get; set; }
         [DataMember]
         public String BillingAdd2 { get; set; }
+        [DataMember]
+        public String BillingAdd3 { get; set; }
+        [DataMember]
+        public String DUNSNumber { get; set; }
+        [DataMember]
+        public Int64 CreditScore { get; set; }
+        [DataMember]
+        public String CreditScoreText { get; set; }
+        [DataMember]
+        public String PhoneNumber { get; set; }
         [DataMember]
         public Int64 CityID { get; set; }
         [DataMember]

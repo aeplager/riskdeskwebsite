@@ -357,6 +357,13 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div class="col-lg-8">
+                                        <label class="label-bullet-blue">Billing Address 3</label>
+                                        <br />
+                                        <input type="text" class="form-control" id="BillingAdd3" placeholder="Billing Address 3">
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-lg-2">
                                         <label class="label-bullet-blue">Select State</label>
                                         <select id="SelState" class="form-control"></select>
@@ -372,29 +379,41 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-8">
+                                    <div class="col-lg-2">
+                                        <label class="label-bullet-blue">Phone Number</label>
+                                        <input type="tel" class="form-control" id="PhoneNumber" placeholder="999-999-9999" onblur="FixPhoneNumber()">
+                                    </div>
+                                    <div class="col-lg-2">
                                         <label class="label-bullet-blue">Select Line of Business</label>
                                         <select id="SelLineOfBusiness" class="form-control"></select>
                                     </div>
+                                    <div class="col-lg-2">
+                                        <label class="label-bullet-blue">DUNS Number</label>
+                                        <input type="text" class="form-control" id="DUNSNumber" placeholder="N/A">
+                                    </div>
+                                    <div class="col-lg-2">
+                                        <label class="label-bullet-blue">Credit Score</label>
+                                        <input type="number" class="form-control" id="CreditScore" placeholder="0" min="200" max="900">
+                                    </div>
                                 </div>
-                                <div class="row">                                 
+                                <div class="row">
                                     <br />
                                     <div class="col-lg-8">
                                         <button type="button" class="btn btn-primary btn-group-lg" style="padding: 10px; width:  100px" onclick="CustomerNewCustomer()">New</button>
                                         <!--<button type="button" class="btn btn-primary btn-group-lg" style="padding: 10px; width:  100px">Delete</button>-->
                                         <button type="button" class="btn btn-primary btn-group-lg" style="padding: 10px; width:  100px" onclick="CustomerUpdateCustomer()">Save</button>
-                                    </div>                                    
+                                    </div>
                                 </div>
-                                    <div id="dtExampleWidget" class="widget-body">
-                                        <div id="dt_example" class="example_alt_pagination">
-                                            <div id="tableContainer" class="tableContainer">
-                                                <!--width:  "100%",overflow:  "scroll",class: "scrollTable" });-->
-                                                <table id="data-table" width="100%" overflow: "scroll" class="scrollTable"></table>
-                                            </div>
-                                            <div class="clearfix">
-                                            </div>
+                                <div id="dtExampleWidget" class="widget-body">
+                                    <div id="dt_example" class="example_alt_pagination">
+                                        <div id="tableContainer" class="tableContainer">
+                                            <!--width:  "100%",overflow:  "scroll",class: "scrollTable" });-->
+                                            <table id="data-table" width="100%" overflow: "scroll" class="scrollTable"></table>
+                                        </div>
+                                        <div class="clearfix">
                                         </div>
                                     </div>
+                                </div>
                                 </>
                             </div>
                     </div>

@@ -31,251 +31,75 @@
         if (rows <= 1) { rows = 1; }
         var cols = 2;
         var tr = [];        
-        for (var i = 0; i <= rows; i++) {
-            if (i == 0) {
-                var tHead = $('<thead></thead>').attr({}).appendTo(mytable);
-                var row = $('<tr></tr>').appendTo(tHead);
-                //$('<th></th>').text("FileID").appendTo(row);                
-                //$('<th></th>').text("ValidationID").appendTo(row);
-                //$('<th></th>').text("FileName").appendTo(row);
-                $('<th></th>').html("<select id=\"cboField1\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-                $('<th></th>').html("<select id=\"cboField2\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-                $('<th></th>').html("<select id=\"cboField3\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-                $('<th></th>').html("<select id=\"cboField4\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-                $('<th></th>').html("<select id=\"cboField5\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-                $('<th></th>').html("<select id=\"cboField6\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-                $('<th></th>').html("<select id=\"cboField7\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-                $('<th></th>').html("<select id=\"cboField8\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-                $('<th></th>').html("<select id=\"cboField9\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-                $('<th></th>').html("<select id=\"cboField10\"" + ">" + innerOptionHTML + "</select>").appendTo(row);                
-                $('<th></th>').html("<select id=\"cboField11\"" + ">" + innerOptionHTML + "</select>").appendTo(row);  
-                $('<th></th>').html("<select id=\"cboField12\"" + ">" + innerOptionHTML + "</select>").appendTo(row);  
+        var tHead = $('<thead></thead>').attr({}).appendTo(mytable);
+        var row = $('<tr></tr>').appendTo(tHead);
+        $('<th></th>').html("<select id=\"cboField1\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th></th>').html("<select id=\"cboField2\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th></th>').html("<select id=\"cboField3\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th></th>').html("<select id=\"cboField4\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th></th>').html("<select id=\"cboField5\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th></th>').html("<select id=\"cboField6\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th></th>').html("<select id=\"cboField7\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th></th>').html("<select id=\"cboField8\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th></th>').html("<select id=\"cboField9\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th></th>').html("<select id=\"cboField10\"" + ">" + innerOptionHTML + "</select>").appendTo(row);                
+        $('<th></th>').html("<select id=\"cboField11\"" + ">" + innerOptionHTML + "</select>").appendTo(row);  
+        $('<th></th>').html("<select id=\"cboField12\"" + ">" + innerOptionHTML + "</select>").appendTo(row);  
 
-            } else {
-                if (i == 1) {                    
-                    var tBody = $('<tbody></tbody>').appendTo(mytable);
-                }
-                for (var iRows in ResultData) {                    
-                    var row = $('<tr></tr>').attr({ id: "gen_" + ResultData[iRows].ValidateID, class: "gradeA success" }).appendTo(tBody);                    
-                    //$('<td></td>').text(ResultData[iRows].ValidateID).appendTo(row);
-                    //$('<td></td>').text(ResultData[iRows].FileName).appendTo(row);
-                    $('<td contenteditable="true"></td>').text(ResultData[iRows].Field1).appendTo(row);
-                    $('<td contenteditable="true"></td>').text(ResultData[iRows].Field2).appendTo(row);
-                    $('<td contenteditable="true"></td>').text(ResultData[iRows].Field3).appendTo(row);
-                    $('<td contenteditable="true"></td>').text(ResultData[iRows].Field4).appendTo(row);
-                    $('<td contenteditable="true"></td>').text(ResultData[iRows].Field5).appendTo(row);
-                    $('<td></td>').text(ResultData[iRows].Field6).appendTo(row);
-                    $('<td></td>').text(ResultData[iRows].Field7).appendTo(row);
-                    $('<td></td>').text(ResultData[iRows].Field8).appendTo(row);
-                    $('<td></td>').text(ResultData[iRows].Field9).appendTo(row);
-                    $('<td></td>').text(ResultData[iRows].Field10).appendTo(row);                    
-                    $('<td></td>').text(ResultData[iRows].Field11).appendTo(row);                    
-                    $('<td></td>').text(ResultData[iRows].Field12).appendTo(row);                    
-                }
-            }
-        }        
+        var tBody = $('<tbody></tbody>').appendTo(mytable);
+        var lnRows = ResultData.length;
+        var iCounter = 0;
+        for (iRows = 0; iRows < lnRows; iRows = iRows + 1) {            
+            var row = $('<tr></tr>').attr({ id: "gen_" + ResultData[iRows].ValidateID, class: "gradeA success" }).appendTo(tBody);
+            $('<td contenteditable="true"></td>').text(ResultData[iRows].Field1).appendTo(row);
+            $('<td contenteditable="true"></td>').text(ResultData[iRows].Field2).appendTo(row);
+            $('<td contenteditable="true"></td>').text(ResultData[iRows].Field3).appendTo(row);
+            $('<td contenteditable="true"></td>').text(ResultData[iRows].Field4).appendTo(row);
+            $('<td contenteditable="true"></td>').text(ResultData[iRows].Field5).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field6).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field7).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field8).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field9).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field10).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field11).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field12).appendTo(row);                           
+        }    
+
         mytable.appendTo("#tableContainer");
-        oTable = $('#data-table').dataTable(
+        oTable = $('#data-table').DataTable(
             {
-                "sScrollY": "300px",
+                //"columnDefs": [{
+                //    "searchable": false,
+                //    "orderable": false,
+                //    "targets": 0
+                //}],
+                "ordering": false,
+                
                 "sScrollX": "100%",
-                "sScrollXInner": "150%",
-                "paging": true,                
-                "ordering": true,
-                //"info": false  
-                "bScrollCollapse": true,
-                "bPaginate": false,
-                "bFilter": false
+                //"sScrollY": "300px",
+                //"sScrollX": "100%",
+                //"sScrollXInner": "150%",
+                ////"paging": true,                
+                ////"ordering": false,
+                ////"info": false  
+                //"order": [[3, "desc"]],
+                //"bScrollCollapse": true,
+                //"bPaginate": false,
+                ////"aaSorting": [],
+                //"bFilter": false
             });
+        var RowToAdd = [];
+        var i;
+        for (i = 0; i <= 12; i++) {
+            RowToAdd.push("");
+        }
+        oTable.add(RowToAdd)
     }
     catch (e) {
         HeaderDataErrorReport(e);
     }
 }
 
-function ChangePrevGenericTable() {
-    try {
-        // Reset the process uploader        
-        GenericClearValidation();
-        var msg = 'Processing....'
-        alertify.success(msg);
-        if (iStartRow > 50) {
-            iStartRow = iStartRow - 50;
-            if (iStartRow <= 0) { iStartRow = 1; }
-            iEndRow = iEndRow - 50;
-            if (iEndRow <= 50) { iEndRow = 50; }
-        }
-        msg = 'Starting at row ' + iStartRow + ' to row ' + iEndRow;
-        //alertify.success(msg);
-        //var files = document.getElementById('files').files;
-        var FileName = FileNameForImport;//files[0].name;
-        var FileTypeName = 'ACCOUNT';
-        var ContainerName = 'riskaccounts';
-        var currentTime = new Date()
-        // returns the month (from 0 to 11)
-        var month = currentTime.getMonth() + 1;
-        // returns the day of the month (from 1 to 31)
-        var day = currentTime.getDate();
-        // returns the year (four digits)
-        var year = currentTime.getFullYear();
-        var hr = currentTime.getHours();
-        var mn = currentTime.getMinutes();
-        var sec = currentTime.getSeconds();
-        RandomNumber = "GenDate_" + year + '-' + month + '-' + day + '-' + hr + '-' + mn + '-' + sec;
-        //var urlMain = '/Services/WCFWebService.svc/GenericValidationByRowsGetInfo?';
-        //var DataMain = 'FileName=' + FileName + '&FileTypeName=' + FileTypeName + '&ContainerName=' + ContainerName + '&iStartRow=' + iStartRow + '&iEndRow=' + iEndRow;
-        //var urlMain = urlMain + DataMain;
-        // Display Loading Screen        
-        //var ResultData = ReturnDataFromServiceAsync(urlMain);
-        //var ResultData = ReturnDataFromService(urlMain);
-        //var msg = 'Validation was sent for processing....'
-        //if (ResultData = 4) {
-        msg = 'Success';
-        //alertify.success(msg);
-        msg = 'Returning Data...';
-        ///alertify.success(msg);
-        // Adding the data to the validation screen
-        var urlMain = '/Services/WCFWebService.svc/GenericValidationByRowsGetInfo?';
-        var DataMain = 'FileName=' + FileName + '&FileTypeName=' + FileTypeName + '&ContainerName=' + ContainerName + '&iStartRow=' + iStartRow + '&iEndRow=' + iEndRow;
-        urlMain = urlMain + DataMain;
-        // Display Loading Screen                            
-        var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/data/';        
-        var DataMain = 'vwFacilityUpdateAddingNew3_2020_5_31_21_40.csv/sh'
-        var urlMain = urlMain + DataMain;        
-        var ResultData = ReturnDataFromServicePOST(urlMain);
-
-        //var ResultData = ReturnDataFromService(urlMain);
-        //msg = ResultData[1].Field1;
-        for (var iRows in ResultData) {
-            oTable.fnAddData([
-                ResultData[iRows].ValidateID,
-                ResultData[iRows].FileName,
-                ResultData[iRows].Field1,
-                ResultData[iRows].Field2,
-                ResultData[iRows].Field3,
-                ResultData[iRows].Field4,
-                ResultData[iRows].Field5,
-                ResultData[iRows].Field6,
-                ResultData[iRows].Field7,
-                ResultData[iRows].Field8,
-                ResultData[iRows].Field9,
-                ResultData[iRows].Field10,
-                ResultData[iRows].Field11,
-                ResultData[iRows].Field12,
-            ]);
-        }
-        var table = document.getElementById("data-table");
-        var r = 0;
-        while (row = table.rows[r++]) {
-            var c = 0;
-            while (cell = row.cells[c++]) {
-                if (c > 2) {
-                    var celltxt = cell.innerHTML;
-                    cell.outerHTML = '<td class="pt-3-half" contenteditable="true">' + celltxt + '</td>';
-                }
-            }
-        }
-        //table.column(2)
-        //    .data()
-        //    .sort();
-        msg = 'Successfully Updated';
-        alertify.success(msg);
-        //}
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }
-}
-function ChangeNextGenericTable() {
-    try {
-        // Reset the process uploader        
-        GenericClearValidation();
-        var msg = 'Processing....'
-        //alertify.success(msg);
-        iStartRow = iStartRow + 50;
-        iEndRow = iEndRow + 50;
-        msg = 'Starting at row ' + iStartRow + ' to row ' + iEndRow;
-        //alertify.success(msg);
-        //var files = document.getElementById('files').files;
-        var FileName = FileNameForImport;//files[0].name;
-        var FileTypeName = 'ACCOUNT';
-        var ContainerName = 'riskaccounts';
-        var currentTime = new Date()
-        // returns the month (from 0 to 11)
-        var month = currentTime.getMonth() + 1;
-        // returns the day of the month (from 1 to 31)
-        var day = currentTime.getDate();
-        // returns the year (four digits)
-        var year = currentTime.getFullYear();
-        var hr = currentTime.getHours();
-        var mn = currentTime.getMinutes();
-        var sec = currentTime.getSeconds();
-        RandomNumber = "GenDate_" + year + '-' + month + '-' + day + '-' + hr + '-' + mn + '-' + sec;
-        //var urlMain = '/Services/WCFWebService.svc/GenericValidationByRowsGetInfo?';
-        //var DataMain = 'FileName=' + FileName + '&FileTypeName=' + FileTypeName + '&ContainerName=' + ContainerName + '&iStartRow=' + iStartRow + '&iEndRow=' + iEndRow;
-        //var urlMain = urlMain + DataMain;
-        //// Display Loading Screen        
-        ////var ResultData = ReturnDataFromServiceAsync(urlMain);
-        //var ResultData = ReturnDataFromService(urlMain);
-        //var msg = 'Validation was sent for processing....'
-        //if (ResultData = 4) {
-        msg = 'Success';
-        //alertify.success(msg);
-        msg = 'Returning Data...';
-        //alertify.success(msg);
-        // Adding the data to the validation screen
-        var urlMain = '/Services/WCFWebService.svc/GenericValidationByRowsGetInfo?';
-        var DataMain = 'FileName=' + FileName + '&FileTypeName=' + FileTypeName + '&ContainerName=' + ContainerName + '&iStartRow=' + iStartRow + '&iEndRow=' + iEndRow;
-        urlMain = urlMain + DataMain;
-        // Display Loading Screen                    
-        //var ResultData = ReturnDataFromService(urlMain);
-
-        //var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/data/'
-        //urlMain = 'http://localhost:32773/api/data/'
-        var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/basedata';
-        var DataMain = 'vwFacilityUpdateAddingNew3_2020_5_31_21_40.csv/sh'
-        var urlMain = urlMain + DataMain;
-        //let ResultData = await ReturnDataFromServicePOST(urlMain);
-        var ResultData = ReturnDataFromServicePOST(urlMain);
-
-        //msg = ResultData[1].Field1;
-        for (var iRows in ResultData) {
-            oTable.fnAddData([
-                ResultData[iRows].ValidateID,
-                ResultData[iRows].FileName,
-                ResultData[iRows].Field1,
-                ResultData[iRows].Field2,
-                ResultData[iRows].Field3,
-                ResultData[iRows].Field4,
-                ResultData[iRows].Field5,
-                ResultData[iRows].Field6,
-                ResultData[iRows].Field7,
-                ResultData[iRows].Field8,
-                ResultData[iRows].Field9,
-                ResultData[iRows].Field10,
-                ResultData[iRows].Field11,
-                ResultData[iRows].Field12,
-            ]);
-        }
-        var table = document.getElementById("data-table");
-        var r = 0;
-        while (row = table.rows[r++]) {
-            var c = 0;
-            while (cell = row.cells[c++]) {
-                if (c > 2) {
-                    var celltxt = cell.innerHTML;
-                    cell.outerHTML = '<td class="pt-3-half" contenteditable="true">' + celltxt + '</td>';
-                }
-            }
-        }
-        msg = 'Successfully Updated';
-        alertify.success(msg);
-        //}
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }
-}
 function GenericValidationByRowsUpsert() {
     try {
         //var files = document.getElementById('files').files;
@@ -985,14 +809,33 @@ function CreateBaseFieldsTable() {
             }
         }
         myTable.appendTo("#tableContainerMatch");
-        oTableMatch = $('#data-tableMatch').dataTable(
+        oTableMatch = $('#data-tableMatch').DataTable(
             {
-                "sScrollY": "300px",
+                "columnDefs": [{
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": 0
+                }],
+                "order": [[1, 'asc']],
                 "sScrollX": "100%",
-                "sScrollXInner": "150%",
-                "bScrollCollapse": true,
-                "bPaginate": false,
-                "bFilter": false
+                //"sScrollY": "300px",
+                
+                //"sScrollXInner": "150%",
+                //"bScrollCollapse": true,                
+                //"bPaginate": false,
+                //"bFilter": false
+                //"sScrollY": "300px",
+                //"sScrollX": "100%",
+                //"sScrollXInner": "150%",
+                ////"paging": true,                
+                ////"ordering": false,
+                ////"info": false  
+                //"order": [[3, "desc"]],
+                //"bScrollCollapse": true,
+                //"bPaginate": false,
+                ////"aaSorting": [],
+                //"bFilter": false
+
             });
     }
     catch (e) {

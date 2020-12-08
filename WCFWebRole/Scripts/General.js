@@ -1,3 +1,6 @@
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
 function AddItemsToSelector(NameOfSelector, SelectorText, SelectorID) {
     try {
         $("#" + NameOfSelector).append(new Option(SelectorText, SelectorID));

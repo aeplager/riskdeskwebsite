@@ -57,6 +57,11 @@ namespace WCFWebRole
                                 CustomerName = dr["CustomerName"].ToString(),
                                 BillingAdd1 = dr["BillingAdd1"].ToString(),
                                 BillingAdd2 = dr["BillingAdd2"].ToString(),
+                                BillingAdd3 = dr["BillingAdd3"].ToString(),
+                                DUNSNumber = dr["DUNSNumber"].ToString(),                                
+                                CreditScore = Convert.ToInt64(dr["CreditScore"].ToString()),
+                                CreditScoreText = dr["CreditScoreText"].ToString(),
+                                PhoneNumber = dr["PhoneNumber"].ToString(),
                                 CityID = Convert.ToInt64(dr["CityID"].ToString()),
                                 CityName = dr["CityName"].ToString(),
                                 StateAbb = dr["StateAbb"].ToString(),
@@ -76,7 +81,7 @@ namespace WCFWebRole
             }
             return SelectionItemsinfo;
         }
-        public String CustomerUpsert(Int64 CustomerID, String CustomerName, String BillingAddrOne, String BillingAddrTwo, Int64 CityID, String ZipCode, Int64 LineOfBusinessID, String StateAbb)
+        public String CustomerUpsert(Int64 CustomerID, String CustomerName, String BillingAddrOne, String BillingAddrTwo, String BillingAddrThree, String DUNSNumber, String CreditScore, String PhoneNumber, Int64 CityID, String ZipCode, Int64 LineOfBusinessID, String StateAbb)
         {
             String SelectionItemsinfo = "ERROR";
             
@@ -93,6 +98,10 @@ namespace WCFWebRole
                     cmd.Parameters.AddWithValue("@CustomerName", CustomerName);
                     cmd.Parameters.AddWithValue("@BillingAddr1", BillingAddrOne);
                     cmd.Parameters.AddWithValue("@BillingAddr2", BillingAddrTwo);
+                    cmd.Parameters.AddWithValue("@BillingAddr3", BillingAddrThree);
+                    cmd.Parameters.AddWithValue("@DunsNumber", DUNSNumber);
+                    cmd.Parameters.AddWithValue("@CreditScore", CreditScore);
+                    cmd.Parameters.AddWithValue("@PhoneNumber", PhoneNumber);    
                     cmd.Parameters.AddWithValue("@CityID", CityID);
                     cmd.Parameters.AddWithValue("@ZipCode", ZipCode);
                     cmd.Parameters.AddWithValue("@LineOfBusinessID", LineOfBusinessID);
