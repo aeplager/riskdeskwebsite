@@ -6,7 +6,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Blue Moon - Responsive Admin Dashboard" />
-    <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery" />
+    <meta name="keywords" content="Notifications, Admin,s Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery" />
     <meta name="author" content="Bootstrap Gallery" />
     <!--<link rel="shortcut icon" href="img/favicon.ico">-->
 
@@ -14,6 +14,8 @@
     <link href="css/wysi/bootstrap-wysihtml5.css" rel="stylesheet">
     <!--Alert Scripts-->
     <link href="css/alertify.core.css" rel="stylesheet" id="toggleCSS">
+    <link rel="stylesheet" href="css/alertify.min.css" />
+    <script type="text/javascript" src="js/alertify.js"></script>
     <script type="text/javascript" src="js/alertify.min.js"></script>
 
     <link href="css/new.css" rel="stylesheet">
@@ -41,6 +43,14 @@
     <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+
+    <script type="text/javascript">
+        //override defaults
+        alertify.defaults.transition = "slide";
+        alertify.defaults.theme.ok = "btn btn-primary";
+        alertify.defaults.theme.cancel = "btn btn-danger";
+        alertify.defaults.theme.input = "form-control";
+    </script>
     <!--Custom Java Script-->
     <script type="text/javascript" src="Scripts/General.js"></script>
     <script type="text/javascript" src="Scripts/Customer.js"></script>
@@ -87,7 +97,7 @@
     <script>
         /*An array containing all the country names in the world:*/
         var LoadProfiles = [];
-        var Facilities = [];
+        var customers = [];
         var iPercent = 0;
         var FileNameUpload = "";
         var oTable;
@@ -100,6 +110,7 @@
         function Initialize() {
             // Initialize the city
             try {
+                customer_name_load();
                 CustomerFillDropdowns();
                 //AddHeader();
                 //CreateBaseTable();
@@ -331,15 +342,13 @@
                                     </div>
 
                                 </div>
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <label class="label-bullet-blue">Select Customer</label>
-                                        <select id="SelCustomer" class="form-control" onchange="CustomerSelectCustomer()"></select>
-                                    </div>
-                                    <div class="col-lg-4">
+                                <div class="row">                   
+                                    <div class="col-lg-12">
                                         <label class="label-bullet-blue">Customer Name</label>
                                         <br />
-                                        <input type="text" class="form-control" id="txtCustomerName" placeholder="Customer Name">
+                                        <div id="customer_name_div" class="autocomplete cd-full-width">
+                                            <input id="customer_name" class="form-control" type="text" name="customer_name_auto" placeholder="Customer Name"/>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -399,9 +408,10 @@
                                 <div class="row">
                                     <br />
                                     <div class="col-lg-8">
-                                        <button type="button" class="btn btn-primary btn-group-lg" style="padding: 10px; width:  100px" onclick="CustomerNewCustomer()">New</button>
-                                        <!--<button type="button" class="btn btn-primary btn-group-lg" style="padding: 10px; width:  100px">Delete</button>-->
-                                        <button type="button" class="btn btn-primary btn-group-lg" style="padding: 10px; width:  100px" onclick="CustomerUpdateCustomer()">Save</button>
+                                        <button type="button" class="btn btn-danger btn-group-lg" style="padding: 10px; width:  110px" onclick="ChangeCustomerName()">Change Name</button>
+                                        <button type="button" class="btn btn-success btn-group-lg" style="padding: 10px; width:  100px" onclick="CustomerNewCustomer()">New</button>
+                                        <button type="button" class="btn btn-primary btn-group-lg" style="padding: 10px; width:  100px" onclick="CustomerConfirmUpdate()">Save</button>
+
                                     </div>
                                 </div>
                                 <div id="dtExampleWidget" class="widget-body">

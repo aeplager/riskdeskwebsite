@@ -2,7 +2,7 @@
 function FacilityFillDropdowns() {
     try {
         //Fill All Dropdowns
-        CustomerDropDownFill();        
+        CustomerDropDownFill('SelCustomer');        
         CustomerStateDropDownFill();
         CustomerCityDropDownFill();
         FacilityLoadProfiles();    
@@ -70,7 +70,7 @@ function UpdateOldTables() {
             UtilityAccountNumber = "N/A";
         }
         if ((CustomerID == 0) && (UtilityAccountNumber == "N/A")) {
-            alertify.error("Please select at least a customer or a utility account number")
+            alertify.error("Please select at least a customer or a utility account number");
         } else {
             urlMain = '/Services/Facility.svc/PushDataToOldTables';
             DataMain = '?CustomerID=' + CustomerID;
@@ -167,6 +167,7 @@ function FacilityGetInfo(CurrentUtilityAccountNumber, FacilityName) {
         $('#SelCity').val(0);
         $('#ZipCode').val("");
         $('#SelTDU').val(0);
+        $('#BillingCycle').val(0);
         $('#FacilityAutoCompleteList_LoadProfile').val("");
         $('#SelCongestionZones').val(0);
         $('#SelWeatherStation').val(0);        
@@ -191,8 +192,8 @@ function FacilityGetInfo(CurrentUtilityAccountNumber, FacilityName) {
             FacilityTDUSettings();
             $('#SelTDUTariff').val(ResultData[iRow].TDUTariffID);
             $('#SelLossCode').val(ResultData[iRow].LossCodeID);
-            $('#BillingCycle').val(ResultData[iRow].LossCodeID);
-            $('#SelWeatherStation').val(ResultData[iRow].BillingCyle);
+            $('#SelWeatherStation').val(ResultData[iRow].WeatherStationID);
+            $('#BillingCycle').val(ResultData[iRow].BillingCyle);
             $('#SelCustomer').val(ResultData[iRow].CustomerID);            
         } 
         
@@ -368,23 +369,18 @@ function FacilityCheckChangeKeyFieldsAndUpdate() {
         }
         if (sts == 'NEW') {
             msg = 'Are you sure you want to add a new facility?';
-            alertify.confirm(msg, function () { FacilityUpsert(sts); });
-            return;
         } else if (sts == 'SAVE') {
             msg = 'Are you sure you want to save the information for this facility?';
-            alertify.confirm(msg, function () { FacilityUpsert(sts); });
-            return;
         } else if (sts == 'CHANGE') {
             msg = 'Are you sure you want to change the facility name for this utility account number?';
-            alertify.confirm(msg, function () { FacilityUpsert(sts); });
-            return;
         } else {
             msg = 'You had an error in the change function.   No changes have been implemented';
-            alertify.error(msg);
-            return;
+            //alertify.confirm(msg, function () {
+            //    FacilityUpsert(sts);
+            //    return
+            //}).set({ title: "Virtual Risk Desk" });
         }
-        return;
-
+        alertify.confirm(msg, function () { FacilityUpsert(sts); }).set({ title: "Virtual Risk Desk" });
     } catch (e) {
         HeaderDataErrorReport(e);
         return 'ERROR'
@@ -432,7 +428,7 @@ function CheckFacilityUpsert(Status) {
                 msg = 'This Utility Account Number is already tied to ' + FacilityNameOld + ' under ' + CustomerNameOld;
                 msg = msg + '.  Are you sure you want to add this facility?';
                 msg = msg + '.  Please note that this action will remove the utility account number from ' + FacilityNameOld + '?';
-                alertify.confirm(msg, function () { FacilityUpsert(Status);});
+                alertify.confirm(msg, function () { FacilityUpsert(Status); });
                 
             }
         } else if (((lnResultData == null) || (lnResultData == 0)) && (Status == 'New')) {

@@ -22,7 +22,7 @@ namespace WCFWebRole
     // NOTE: In order to launch WCF Test Client for testing this service, please select Contracts.svc or Contracts.svc.cs at the Solution Explorer and start debugging.
     public class Customers : ICustomers
     {
-        public List<CustomerInfo> CustomersGetInfo(Int64 CustomerID)
+        public List<CustomerInfo> CustomersGetInfo(Int64 CustomerID, String CustomerName)
         {
             List<CustomerInfo> SelectionItemsinfo = new List<CustomerInfo>();
             DataSet ds = new DataSet();
@@ -35,6 +35,7 @@ namespace WCFWebRole
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = SqlCommandText;                    
                     cmd.Parameters.AddWithValue("@CustomerID", CustomerID);
+                    cmd.Parameters.AddWithValue("@CustomerName", CustomerName); 
                     cmd.Connection = con;
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
@@ -53,7 +54,7 @@ namespace WCFWebRole
                             SelectionItemsinfo.Add(new CustomerInfo
                             {
 
-                                CustomerID = Convert.ToInt32(dr["CustomerID"].ToString()),
+                                CustomerID = Convert.ToInt32(dr["CustomerID"].ToString()),                                
                                 CustomerName = dr["CustomerName"].ToString(),
                                 BillingAdd1 = dr["BillingAdd1"].ToString(),
                                 BillingAdd2 = dr["BillingAdd2"].ToString(),
@@ -75,6 +76,44 @@ namespace WCFWebRole
                                 ModifiedDate = Convert.ToDateTime(dr["ModifiedDate"].ToString()),
                                 InsertDate = Convert.ToDateTime(dr["InsertDate"].ToString()),                      
                             });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        public String CustomerNameUpsert(String CustomerOldName, String CustomerNewName)
+        {
+            String SelectionItemsinfo = "ERROR";
+
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[CustomerNameUpsert]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Parameters.AddWithValue("@CustomerOldName", CustomerOldName);
+                    cmd.Parameters.AddWithValue("@CustomerNewName", CustomerNewName);                  
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo = dr["ResultStatus"].ToString();
                         }
                     }
                 }

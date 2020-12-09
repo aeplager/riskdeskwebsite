@@ -13,18 +13,28 @@ namespace WCFWebRole
     [ServiceContract]
     public interface ICustomers
     {
-        [WebGet(UriTemplate = "/CustomersGetInfo?CustomerID={CustomerID}",
+        [WebGet(UriTemplate = "/CustomersGetInfo?CustomerID={CustomerID}&CustomerName={CustomerName}",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
              BodyStyle = WebMessageBodyStyle.Bare)]
-        List<CustomerInfo> CustomersGetInfo(Int64 CustomerID);
+        List<CustomerInfo> CustomersGetInfo(Int64 CustomerID, String CustomerName);
 
         [WebGet(UriTemplate = "/CustomerUpsert?CustomerID={CustomerID}&CustomerName={CustomerName}&BillingAddrOne={BillingAddrOne}&BillingAddrTwo={BillingAddrTwo}&BillingAddrThree={BillingAddrThree}&DUNSNumber={DUNSNumber}&CreditScore={CreditScore}&PhoneNumber={PhoneNumber}&CityID={CityID}&ZipCode={ZipCode}&LineOfBusinessID={LineOfBusinessID}&StateAbb={StateAbb}",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
              BodyStyle = WebMessageBodyStyle.Bare)]
         String CustomerUpsert(Int64 CustomerID, String CustomerName, String BillingAddrOne, String BillingAddrTwo, String BillingAddrThree, String DUNSNumber, String CreditScore, String PhoneNumber, Int64 CityID, String ZipCode, Int64 LineOfBusinessID, String StateAbb);
+
+
+        [WebGet(UriTemplate = "/CustomerNameUpsert?CustomerOldName={CustomerOldName}&CustomerNewName={CustomerNewName}",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        String CustomerNameUpsert(String CustomerOldName, String CustomerNewName);
     }
+
+
+    
 
     [DataContract]
     public class CustomerInformation

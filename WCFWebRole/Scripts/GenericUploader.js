@@ -1565,7 +1565,7 @@ function ReturnStatus() {
 function scaryClown() {
     return new Promise(resolve => {
         setTimeout(() => {
-            resolve('SHIT');
+            resolve('TEST');
         }, 2000);
     });
 }
