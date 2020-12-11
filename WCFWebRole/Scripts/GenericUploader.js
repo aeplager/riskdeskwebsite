@@ -451,108 +451,113 @@ function run_data_factory_pull_excel() {
 }
 async function GenericValidatedDataUpsert() {
     try {
-        displayProcess(0);
-        //await DisplayModal();
-        if (FileNameForImport != "N/A") {
-            var FileNameTXT = FileNameForImport;
-            var FileName = FileNameForImport;// files[0].name;
-            var FileTypeName = 'ACCOUNT';
-            var ContainerName = 'riskaccounts';
-            var InformationType = $("#FileTypeSel :selected").val();
-            var FirstRowOfData = $("#LineLength :selected").val();
-            var currentTime = new Date()
-            // returns the month (from 0 to 11)
-            var month = currentTime.getMonth() + 1;
-            // returns the day of the month (from 1 to 31)
-            var day = currentTime.getDate();
-            // returns the year (four digits)
-            var year = currentTime.getFullYear();
-            var hr = currentTime.getHours();
-            var mn = currentTime.getMinutes();
-            var sec = currentTime.getSeconds();
-            var table = document.getElementById("data-table");
-            var FirstLineOfDate = LineLength.options[LineLength.selectedIndex].value;
-            var msg = 'Failure in processing....'
-            //GenericValidatedDataUpsert?FileName={FileName}&InformationType={InformationType}&FirstRowOfData={FirstRowOfData}&Field1={Field1}&Field2={Field2}&Field3={Field3}&Field4={Field4}&Field5={Field5}&Field6={Field6}&Field7={Field7}&Field8={Field8}&Field9={Field9}&Field10={Field10}&Field11={Field11}&Field12={Field12}",
-            var xmlInput = '';
-            var urlMain = '/Services/CurveUploader.svc/GenericValidatedDataUpsert?';
-            var DataMain = '';
-            for (var iRow = 1; iRow <= 12; iRow++) {
-                if (xmlInput == '') {
-                    xmlInput = '<Row><ID>' + iRow + '</ID><NM>' + $("#cboField" + iRow).find('option:selected').text() + '</NM></Row>';
-                } else {
-                    xmlInput = xmlInput + '<Row><ID>' + iRow + '</ID><NM>' + $("#cboField" + iRow).find('option:selected').text() + '</NM></Row>';
-                }
-            }
-            // Add Customer ID If Sending Facility Information
-            if (InformationType == 2) {
-                xmlInput = xmlInput + '<Row><CustomerID>' + $("#cboCustomerSelector").find('option:selected').val() + '</CustomerID><CustomerName>' + $("#cboCustomerSelector").find('option:selected').text() + '</CustomerName></Row>';
-            }
-            DataMain = "FileName=" + FileName + "&InformationType=" + InformationType + "&Field1=" + xmlInput
-            var urlMain = urlMain + DataMain;
-            if ((InformationType == 4) || (InformationType == 5)) {
-                var ResultData = ReturnDataFromServiceAsync(urlMain);
-                // Run
-                var FileStatus = "Processing";
-                var PercentDone = 0;
-                iWaits = 0;
-                for (var i = 0; i <= 50; i++) {
-                    const result = await resolveAfter20Seconds();
-                    urlMain = '/Services/CurveUploader.svc/FileStatusGetInfo?';
-                    DataMain = 'FileName=' + FileName + '&FileType=' + FileTypeName;
-                    urlMain = urlMain + DataMain;
-                    urlMain = '/Services/CurveUploader.svc/FileStatusGetInfo?';
-                    DataMain = 'FileName=' + FileName + '&FileType=' + FileTypeName;
-                    urlMain = urlMain + DataMain;
-                    ResultData = ReturnDataFromService(urlMain);
-                    PercentDone = ResultData.PercentDone;
-                    FileStatus = ResultData.FileStatus;
-                    if (i >= 5) {
-                        if (FileStatus == 'FAIL') {
-                            break;
-                        }
-                        if ((FileStatus == 'SUCC') && (PercentDone == 100)) {
-                            if (iWaits >= 3) {
-                                break;
-                            }
-                            iWaits++;
-                        }
-                        msg = "Percent complete " + PercentDone + "%";
-                        $('#ProgressLabel').text(msg);
+        if ($('#DataProcessingGIF').is(":hidden") == false) {
+            msg = "Please wait for the background processing to finish";
+            alertify.success(msg);            
+        } else {        
+            displayProcess(0);
+            //await DisplayModal();
+            if (FileNameForImport != "N/A") {
+                var FileNameTXT = FileNameForImport;
+                var FileName = FileNameForImport;// files[0].name;
+                var FileTypeName = 'ACCOUNT';
+                var ContainerName = 'riskaccounts';
+                var InformationType = $("#FileTypeSel :selected").val();
+                var FirstRowOfData = $("#LineLength :selected").val();
+                var currentTime = new Date()
+                // returns the month (from 0 to 11)
+                var month = currentTime.getMonth() + 1;
+                // returns the day of the month (from 1 to 31)
+                var day = currentTime.getDate();
+                // returns the year (four digits)
+                var year = currentTime.getFullYear();
+                var hr = currentTime.getHours();
+                var mn = currentTime.getMinutes();
+                var sec = currentTime.getSeconds();
+                var table = document.getElementById("data-table");
+                var FirstLineOfDate = LineLength.options[LineLength.selectedIndex].value;
+                var msg = 'Failure in processing....'
+                //GenericValidatedDataUpsert?FileName={FileName}&InformationType={InformationType}&FirstRowOfData={FirstRowOfData}&Field1={Field1}&Field2={Field2}&Field3={Field3}&Field4={Field4}&Field5={Field5}&Field6={Field6}&Field7={Field7}&Field8={Field8}&Field9={Field9}&Field10={Field10}&Field11={Field11}&Field12={Field12}",
+                var xmlInput = '';
+                var urlMain = '/Services/CurveUploader.svc/GenericValidatedDataUpsert?';
+                var DataMain = '';
+                for (var iRow = 1; iRow <= 12; iRow++) {
+                    if (xmlInput == '') {
+                        xmlInput = '<Row><ID>' + iRow + '</ID><NM>' + $("#cboField" + iRow).find('option:selected').text() + '</NM></Row>';
+                    } else {
+                        xmlInput = xmlInput + '<Row><ID>' + iRow + '</ID><NM>' + $("#cboField" + iRow).find('option:selected').text() + '</NM></Row>';
                     }
                 }
-                const result1 = await resolveAfter20Seconds();
-                const result2 = await resolveAfter20Seconds();
-                msg = "Interval data has been sent for processing, please pay attention to the progress bar";
+                // Add Customer ID If Sending Facility Information
+                if (InformationType == 2) {
+                    xmlInput = xmlInput + '<Row><CustomerID>' + $("#cboCustomerSelector").find('option:selected').val() + '</CustomerID><CustomerName>' + $("#cboCustomerSelector").find('option:selected').text() + '</CustomerName></Row>';
+                }
+                DataMain = "FileName=" + FileName + "&InformationType=" + InformationType + "&Field1=" + xmlInput
+                var urlMain = urlMain + DataMain;
+                if ((InformationType == 4) || (InformationType == 5)) {
+                    var ResultData = ReturnDataFromServiceAsync(urlMain);
+                    // Run
+                    var FileStatus = "Processing";
+                    var PercentDone = 0;
+                    iWaits = 0;
+                    for (var i = 0; i <= 50; i++) {
+                        const result = await resolveAfter20Seconds();
+                        urlMain = '/Services/CurveUploader.svc/FileStatusGetInfo?';
+                        DataMain = 'FileName=' + FileName + '&FileType=' + FileTypeName;
+                        urlMain = urlMain + DataMain;
+                        urlMain = '/Services/CurveUploader.svc/FileStatusGetInfo?';
+                        DataMain = 'FileName=' + FileName + '&FileType=' + FileTypeName;
+                        urlMain = urlMain + DataMain;
+                        ResultData = ReturnDataFromService(urlMain);
+                        PercentDone = ResultData.PercentDone;
+                        FileStatus = ResultData.FileStatus;
+                        if (i >= 5) {
+                            if (FileStatus == 'FAIL') {
+                                break;
+                            }
+                            if ((FileStatus == 'SUCC') && (PercentDone == 100)) {
+                                if (iWaits >= 3) {
+                                    break;
+                                }
+                                iWaits++;
+                            }
+                            msg = "Percent complete " + PercentDone + "%";
+                            $('#ProgressLabel').text(msg);
+                        }
+                    }
+                    const result1 = await resolveAfter20Seconds();
+                    const result2 = await resolveAfter20Seconds();
+                    msg = "Interval data has been sent for processing, please pay attention to the progress bar";
+                    alertify.success(msg);
+                    //RunModal();
+                } else if (InformationType == 2) {
+                    ReturnDataFromServiceAsync(urlMain);
+                    const result1 = await resolveAfter20Seconds();
+                    const result2 = await resolveAfter20Seconds();
+                    msg = "Interval data has been sent for processing, please pay attention to the progress bar";
+                    alertify.success(msg);
+                    //RunModal();
+                } else {
+                    ReturnDataFromServiceAsync(urlMain);
+                    const result1 = await resolveAfter20Seconds();
+                    const result2 = await resolveAfter20Seconds();
+                    msg = "Interval data has been sent for processing, please pay attention to the progress bar";
+                    alertify.success(msg);
+                }
+
+                var iLimit = oTable.fnGetData().length;
+                for (i = 1; i <= iLimit; i++) {
+                    oTable.fnDeleteRow(0);
+                }
+
+                msg = "Sent for processing";
                 alertify.success(msg);
-                //RunModal();
-            } else if (InformationType == 2) {
-                ReturnDataFromServiceAsync(urlMain);
-                const result1 = await resolveAfter20Seconds();
-                const result2 = await resolveAfter20Seconds();
-                msg = "Interval data has been sent for processing, please pay attention to the progress bar";
-                alertify.success(msg);
-                //RunModal();
             } else {
-                ReturnDataFromServiceAsync(urlMain);
-                const result1 = await resolveAfter20Seconds();
-                const result2 = await resolveAfter20Seconds();
-                msg = "Interval data has been sent for processing, please pay attention to the progress bar";
-                alertify.success(msg);
+                msg = "Please select a file before importing the file";
+                alertify.error(msg);
             }
-
-            var iLimit = oTable.fnGetData().length;
-            for (i = 1; i <= iLimit; i++) {
-                oTable.fnDeleteRow(0);
-            }
-
-            msg = "Sent for processing";
-            alertify.success(msg);
-        } else {
-            msg = "Please select a file before importing the file";
-            alertify.error(msg);
+            //await HideModal();
         }
-        await HideModal();
 
     }
     catch (e) {
