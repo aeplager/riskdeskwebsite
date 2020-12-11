@@ -452,7 +452,7 @@ function run_data_factory_pull_excel() {
 async function GenericValidatedDataUpsert() {
     try {
         displayProcess(0);
-        await DisplayModal();
+        //await DisplayModal();
         if (FileNameForImport != "N/A") {
             var FileNameTXT = FileNameForImport;
             var FileName = FileNameForImport;// files[0].name;
