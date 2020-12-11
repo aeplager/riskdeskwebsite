@@ -1,6 +1,14 @@
 function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
+function isDate(yr, mnth, day) {
+    try {
+        var d = new Date(yr, mnth, day);
+        return true;
+    } catch(e) {
+        return false
+    }
+}
 function AddItemsToSelector(NameOfSelector, SelectorText, SelectorID) {
     try {
         $("#" + NameOfSelector).append(new Option(SelectorText, SelectorID));

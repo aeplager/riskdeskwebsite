@@ -340,12 +340,8 @@ function UpdateImportStatus(Msg) {
     $("#DataFactoryProcessing").text("Beginning processing...")
     return "SUCCESS"
 }
-function ImportIntoValidationTableNew() {
+function run_data_factory_pull(FileName, sheet_name) {
     try {
-        var FileName = FileNameForImport;
-        var sheet_name = "Sheet1";
-        sts = UpdateImportStatus("Beginning processing...")
-        sheet_name = deterimine_sheet_name(FileName);
         //var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/datafactor_data/'
         var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/datafactor_data/';
         var DataMain = FileName + '/' + sheet_name + '/100';
@@ -355,7 +351,7 @@ function ImportIntoValidationTableNew() {
         for (i = 1; i <= iLimit; i++) {
             oTable.fnDeleteRow(0);
         }
-        if (ResultData.length > 0) {            
+        if (ResultData.length > 0) {
             $("#DataFactoryProcessing").text("Starting to background processing");
             set_run_checker(ResultData[0].run_id);
             for (var iRows in ResultData) {
@@ -392,9 +388,63 @@ function ImportIntoValidationTableNew() {
         }
         msg = "Filled the table";
         alertify.success(msg);
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function ImportIntoValidationTableNew() {
+    try {
+        var FileName = FileNameForImport;
+        var sheet_name = "Sheet1";
+        sts = UpdateImportStatus("Beginning processing...")
+        var file_name = FileName;
+        file_name = file_name.toLowerCase();
+        var ln = file_name.length;
+        var start = ln - 4;
+        var end = ln;
+        var short_type = file_name.substring(start, ln);
+        start = ln - 5;
+        var long_type = file_name.substring(start, ln);
+        var sheet_name = "SH";
+        if (short_type == ".xls" || short_type == ".xlm" || long_type == ".xlsx" || long_type == ".xlsm") {
+            // Obtain sheet names
+            file_name = file_name.toLowerCase();
+            var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/obtain_sheets_excel/';
+            var DataMain = FileName;
+            urlMain = urlMain + DataMain;
+            var ResultData = ReturnDataFromService(urlMain);
+            // Clear the selector
+            var selName = "selSheets";
+            $('#' + selName).empty();
+            AddItemsToSelector(selName, '- Select Sheet -', 0);
+            for (var iRows in ResultData) {
+                AddItemsToSelector(selName, ResultData[iRows].SheetName, iRows);
+            }            
+            $("#myModal").modal('show'); 
+            alertify.success(ResultData);
 
+        } else {
+            run_data_factory_pull(FileName, sheet_name);
+        }
     } catch (e) {
         $("#DataFactoryProcessing").text("Error in processing...")
+        HeaderDataErrorReport(e)
+
+    }
+}
+function run_data_factory_pull_excel() {
+    try {
+        var sheet_name = $('#selSheets option:selected').text()
+        if (sheet_name == '- Select Sheet -') {
+            alertify.error("Please select a sheet");
+        } else {
+            $("#myModal").modal('hide');
+            alertify.success("Sending the file for processing...Please wait.")
+            run_data_factory_pull(FileNameForImport, sheet_name);
+        }
+        
+
+    } catch (e) {        
         HeaderDataErrorReport(e)
 
     }

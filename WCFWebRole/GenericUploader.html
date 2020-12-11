@@ -438,10 +438,21 @@
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div style="width: 70%;padding: 10px;margin: auto;">
-                                                            <label id="ProgressLabel" class="label-bullet-blue">Please wait for processing...</label>
+                                                            <label id="ProgressLabel" class="label-bullet-blue">Excel Workbook Uploader</label>
                                                             <br />
-                                                            <div style="width: 70%;padding: 10px;margin: auto;">
-                                                                <div class="loader"></div>
+                                                            <div class="row">
+                                                                <label class="label-bullet-blue">Select a Sheet</label>
+                                                                <select id="selSheets" class="form-control">
+                                                                    <option value="0">
+                                                                        - Select Sheet -
+                                                                    </option>
+                                                                </select>
+                                                            </div>
+                                                            <div class=""></div>
+
+                                                            <div style="width: 70%;padding: 10px;margin: auto;" class="row">
+                                                                <input type="button" id="cancel_button" class="btn btn-primary btn-lg" value="Cancel" onclick="$('#myModal').modal('hide');" />
+                                                                <input type="button" id="ok_button" class="btn btn-primary btn-lg" value="OK" onclick="run_data_factory_pull_excel();" />
                                                             </div>
                                                         </div>
                                                     </div>

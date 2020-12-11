@@ -8,12 +8,14 @@
     <meta name="description" content="Blue Moon - Responsive Admin Dashboard" />
     <meta name="keywords" content="Notifications, Admin, Dashboard, Bootstrap3, Sass, transform, CSS3, HTML5, Web design, UI Design, Responsive Dashboard, Responsive Admin, Admin Theme, Best Admin UI, Bootstrap Theme, Wrapbootstrap, Bootstrap, bootstrap.gallery" />
     <meta name="author" content="Bootstrap Gallery" />
-    <link rel="shortcut icon" href="img/favicon.ico">
+    <!--<link rel="shortcut icon" href="img/favicon.ico">-->
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/wysi/bootstrap-wysihtml5.css" rel="stylesheet">
     <!--Alert Scripts-->
     <link href="css/alertify.core.css" rel="stylesheet" id="toggleCSS">
+    <link rel="stylesheet" href="css/alertify.min.css" />
+    <script type="text/javascript" src="js/alertify.js"></script>
     <script type="text/javascript" src="js/alertify.min.js"></script>
 
     <link href="css/new.css" rel="stylesheet">
@@ -23,29 +25,45 @@
 
     <link href="fonts/font-awesome.min.css" rel="stylesheet">
 
-    <!--Custom Java Script-->
-    <script type="text/javascript" src="Scripts/General.js"></script>
-    <script type="text/javascript" src="Scripts/Customer.js"></script>
-    <script type="text/javascript" src="Scripts/AutoComplete.js"></script>
-    <script type="text/javascript" src="Scripts/DealEntry.js"></script>
-
     <!--Included Scripts-->
     <!--AutoComplete Scripts-->
     <link rel="stylesheet" href="css/AutoComplete.css" />
     <!--Normal Scripts-->
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://code.jquery.com/jquery-1.7.min.js"></script>
     <script src="https://code.jquery.com/ui/1.7.0/jquery-ui.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!--<!--Links to Azure-->-->
-    <script src="Azure/azure-storage.blob.js"></script>
-    <script src="Azure/AzureGeneral.js"></script>
-    <!--Data Tables-->
 
-    <link href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
-    <script src="//cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <!--AutoComplete New-->
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.3/themes/hot-sneaks/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-2.1.3.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+    <!--Data Table Scripts-->
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
 
+    <script type="text/javascript">
+        //override defaults
+        alertify.defaults.transition = "slide";
+        alertify.defaults.theme.ok = "btn btn-primary";
+        alertify.defaults.theme.cancel = "btn btn-danger";
+        alertify.defaults.theme.input = "form-control";
+    </script>
+    <!--Data Table Scripts-->
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+    <!--Custom Java Script-->
+    <script type="text/javascript" src="Scripts/General.js"></script>
+    <script type="text/javascript" src="Scripts/Customer.js"></script>
+    <script type="text/javascript" src="Scripts/AutoComplete.js"></script>
+    <script type="text/javascript" src="Scripts/Facility.js"></script>
+    <script type="text/javascript" src="Scripts/DealEntry.js"></script>
+    <script type="text/javascript" src="Scripts/GenericUploader.js"></script>
 
+    <!--Custom Java Script-->
     <!--Table Scrolling-->
     <!--<link href="TableScroll/NewStyleSheet.css" rel="stylesheet">-->
     <!-- HTML5 shiv and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -63,7 +81,7 @@
                 AddHeader();
                 //StateList_Reset('StateInfoList_Deal');
                 //CityAuto_Reset('CityInfoAutoCompleteList_Deal')
-                CustomerDropDownFill();
+                CustomerDropDownFill('SelCustomer');
                 //SetMonths('DealStartDateMonth');
                 //SetYearsAvailable('DealStartDateYear');
                 //SetMonths('DealEndDateMonth');
@@ -239,7 +257,7 @@
             <!-- Sub Nav End -->
             <div class="sub-nav hidden-sm hidden-xs">
                 <ul>
-                    <li><a href="" class="he    ading">Data Entry Form</a></li>  <!--Main Form for Data Entry-->
+                    <li><a href="" class="he    ading">Retail Data Entry Form</a></li>  <!--Main Form for Data Entry-->
                     <li class="hidden-sm hidden-xs">
                         <a href="#RemoveAbleDiv_Cust">Table of Deals</a>
                     </li>
@@ -274,7 +292,7 @@
                             <div class="widget">
                                 <div class="widget-header">
                                     <div class="title">
-                                        Deal Entry
+                                        Retail Deal Entry
                                         <span class="mini-title">
                                             Enter Deals<a id="enter-deal-single"></a>
                                         </span>

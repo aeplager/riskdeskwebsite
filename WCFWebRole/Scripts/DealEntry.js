@@ -56,8 +56,44 @@ function DealGenericAllInfoList_Initialize() {
 //        HeaderDataErrorReport(e);
 //    }    
 //}
+
 function WholesaleDealUpsert(NewOld) {
     try {
+        // Validate Information is Filled In
+        var DealDay = $('#DealStartDateDay').val()
+        var DealMonth = $('#DealStartDateMonth').val()
+        var DealYear = $('#DealStartDateYear').val()
+        var msg = "start"
+        if ((DealDay == 0) || (DealDay == null)) {
+            alertify.error("Please select a " + msg + " day");
+            return;
+        } else if ((DealMonth == 0) || (DealDay == null)) {
+            alertify.error("Please select a " + msg + " month");
+            return;
+        } else if ((DealYear == 0) || (DealYear == null)) {
+            alertify.error("Please select a " + msg + " year");
+            return;
+        } else if (isDate(DealYear, DealMonth, DealDay) == false) {
+            alertify.error("Please select a correct " + msg + " date");
+        }
+        
+        DealDay = $('#DealEndDateDay').val()
+        DealMonth = $('#DealEndDateMonth').val()
+        DealYear = $('#DealEndDateYear').val()
+        msg = "start"
+        if ((DealDay == 0) || (DealDay == null)) {
+            alertify.error("Please select a " + msg + " day");
+            return;
+        } else if ((DealMonth == 0) || (DealDay == null)) {
+            alertify.error("Please select a " + msg + " month");
+            return;
+        } else if ((DealYear == 0) || (DealYear == null)) {
+            alertify.error("Please select a " + msg + " year");
+            return;
+        } else if (isDate(DealYear, DealMonth, DealDay) == false) {
+            alertify.error("Please select a correct " + msg + " date");
+            return
+        }
         var msg = "Please confirm that you want to save this record";
         if (NewOld == 'New') {
             msg = "Please confirm that you want to add a new record";
@@ -74,7 +110,7 @@ function WholesaleDealUpsert(NewOld) {
             } else {
                 alertify.error("Nothing completed");
             }
-        });
+        }).set({ title: "Virtual Risk Desk" });
     } catch (e) {
         HeaderDataErrorReport(e);
     } 
@@ -107,6 +143,8 @@ function WholesaleDealDataUpsert(NewOld) {
         var WholesaleBlockID = $('#selWholesaleBlock').val();
         var VolumeMW = $('#WholeSaleDealVolume').val();
         var Price = $('#WholeSaleDealPrice').val();        
+        if (VolumeMW == null) { VolumeMW = 0; }
+        if (Price == null) { Price = 0; }
         var CurrentDealActive = 1;
         if ($('#Active_Deal').is(':checked') != true) { CurrentDealActive = 0; }         
         var urlMain = '/Services/Deals.svc/WholeSaleDealUpsert';        
@@ -225,19 +263,34 @@ function RetailDealUpsert(NewOld) {
     if (NewOld == 'New') {
         msg = "Please confirm that you want to add a new record";
     }
-    alertify.confirm(msg, function (e) {
-        if (e) {
-            if (NewOld == 'New') {
-                msg = 'You have added a new record';
-            } else {
-                msg = 'You have saved this record';
-            }
-            alertify.success(msg);
-            RetailDealDataUpsert(NewOld);
-        } else {                       
-            alertify.error("Nothing completed");
-        }
-    });
+    //alertify.confirm(msg, function () {
+    //        if (NewOld == 'New') {
+    //            msg = 'You have added a new record';
+    //        } else {
+    //            msg = 'You have saved this record';
+    //        }
+    //        alertify.success(msg);
+    //    RetailDealDataUpsert(NewOld);
+
+    //    }).set({ title: "Virtual Risk Desk" });
+    //alertify.confirm(msg, function () { alert('Crapola'); }).set({ title: "Virtual Risk Desk" });
+
+    alertify.confirm('Confirm Title', 'Confirm Message', function () { alertify.success('Ok') }
+        , function () { alertify.error('Cancel') });
+    
+    //alertify.confirm(msg, function (e) {
+    //    if (e) {
+    //        if (NewOld == 'New') {
+    //            msg = 'You have added a new record';
+    //        } else {
+    //            msg = 'You have saved this record';
+    //        }
+    //        alertify.success(msg);
+    //        RetailDealDataUpsert(NewOld);
+    //    } else {                       
+    //        alertify.error("Nothing completed");
+    //    }
+    //});
 }
 function RetailDealDataUpsert(NewOld) {
     try {
