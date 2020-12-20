@@ -1,11 +1,139 @@
-﻿function CreateBaseTable() {
+﻿function generic_uploader_add_row(tab_id) {
     try {
+        var counter = 0;
+        var counter = $("#data-table_" + tab_id + " tr").length;
+        oTable.fnAddData([
+            counter + '.1',
+            counter + '.2',
+            counter + '.3',
+            counter + '.4',
+            counter + '.5',
+            counter + '.6',
+            counter + '.7',
+            counter + '.8',
+            counter + '.9',
+            counter + '.10',
+            counter + '.11',
+            counter + '.12'
+        ]);        
+        alertify.success('Finished');
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+
+}
+function generic_uploader_delete_row(tab_id) {
+    try {        
+        var counter = $("#data-table_" + tab_id + " tr").length;
+        if (counter > 2) {
+            counter = counter - 2
+        } else {
+            counter = 0;
+        }
+        oTable.fnDeleteRow(counter);
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+function generic_uploader_delete_all_rows(tab_id) {
+    try {        
+        var rowcount = $("#data-table_" + tab_id + " tr").length;
+        for (iRows = 0; iRows < rowcount + 1; iRows++) {
+            oTable.fnDeleteRow(0);
+        }
+        alertify.success("RowCount is " + rowcount);
+        
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+function generic_uploader_show_file(input) {
+    try {
+        let file = input.files[0];
+        generic_uploader_Upload_files('ICECURVE');
+ 
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function generic_uploader_FileInitialDropDowns(tab_id) {
+    GeneralSelFill('sel_generic_uploader_file_type_' + tab_id, '- File Type -', '/Services/CurveUploader.svc/FileTypeGetInfo');
+    GeneralSelFill('sel_LineLength_' + tab_id, '- Line Length -', '/Services/CurveUploader.svc/LineStartGetInfo');
+}
+//GeneralSelFill('sel_generic_uploader_file_type_' + nbrLiElem + 1, '- File Type -', '/Services/CurveUploader.svc/FileTypeGetInfo');
+//GeneralSelFill('LineLength' + nbrLiElem + 1, '- Line Length -', '/Services/CurveUploader.svc/LineStartGetInfo');
+
+function generic_uploader_Upload_files(FileType) {
+    try {
+        //alertify.success("Ok Great");
+        var files = document.getElementById('files').files;
+        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+        fileslength = files.length;
+        if (fileslength > 0) {
+            //var FileName = ObtainDateSuffix() + files[0].name;
+            var FileName = files[0].name;
+            FileNameForImport = ObtainDateSuffix(FileName);
+            files[0].name = FileNameForImport;
+            var dt = new Date();
+            AzureParms = ObtainAzureParams(FileType);
+            var UserName = ReturnUserName();
+            var AzureStorageName = AzureParms.AzureStorageName;
+            var sas = AzureParms.SASKey;
+            var blobUri = AzureParms.blobUri;
+            container = AzureParms.AzureContainer;
+            FileType = FileType.toUpperCase();
+            FileType = FileType.trim();
+            if (FileType == 'ICECURVE') {
+                FileName = files[0].name;
+                // Update DB for File Status
+                iFileCount = files.length;
+                for (iFile = 0; iFile < iFileCount; iFile++) {
+                    FileName = files[iFile].name;
+                    var FileID = LogFileUploadStatus(0, FileNameForImport, 'UPLD', FileType, UserName);
+                    // Change the files
+                    uploadBlobByStream(false, files[iFile], FileNameForImport, AzureParms);
+                }
+                msg = "Uploading proceeding";
+                alertify.success(msg);
+                FileNameUpload = FileNameForImport;
+            } else {
+                FileType = FileType.toUpperCase();
+                FileType = FileType.trim();
+                // Update DB for File Status
+                var FileID = LogFileUploadStatus(0, FileName, 'UPLD', FileType, UserName);
+                uploadBlobByStream(false, files, FileName, AzureParms);
+                msg = "Uploading proceeding";
+                alertify.success(msg);
+                FileNameUpload = FileNameForImport;
+            }
+        } else {
+            alertify.error("Please select a file before pressing upload");
+        }
+
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+
+function generic_uploader_upload_files() {
+    try {
+        document.getElementById("files").click();
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+function generic_uploader_create_base_table(tab_id) {
+    try {
+        
         var FileName = 'N/A';
         var FileTypeName = 'ACCOUNT';
         var ContainerName = 'riskaccounts';
-        
-
-
         urlMain = '/Services/WCFWebService.svc/GenericFileGetInfo?';
         var DataMain = 'FileName=' + FileName + '&FileTypeName=' + FileTypeName + '&ContainerName=' + ContainerName + '&RowNumber=0';
         var urlMain = urlMain + DataMain;
@@ -18,14 +146,14 @@
         for (var i in ResultData) {
             j = j + 1;
         }
-        $('#data-table').remove();
-        $("#tableContainer").remove("#data-table");
+        $('#data-table_' + tab_id).remove();
+        $("#tableContainer_" + tab_id).remove("#data-table_" + tab_id);
         
         //$('#data-tableUpload').remove();
         //$("#tableContainerUpload").remove("#data-table");
         var innerOptionHTML = ReturnStringForFieldsCombo('N/A');
         var totalHTML;
-        var mytable = $('<table></table>').attr({ id: "data-table", width: "100%", overflow: "scroll", class: "scrollTable table-hover" });
+        var mytable = $('<table></table>').attr({ id: "data-table_" + tab_id, width: "100%", overflow: "scroll", class: "scrollTable table-hover" });
         var rows = 5;
         if (j <= rows) { rows = j - 1; }
         if (rows <= 1) { rows = 1; }
@@ -33,29 +161,31 @@
         var tr = [];        
         var tHead = $('<thead></thead>').attr({}).appendTo(mytable);
         var row = $('<tr></tr>').appendTo(tHead);
-        $('<th></th>').html("<select id=\"cboField1\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-        $('<th></th>').html("<select id=\"cboField2\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-        $('<th></th>').html("<select id=\"cboField3\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-        $('<th></th>').html("<select id=\"cboField4\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-        $('<th></th>').html("<select id=\"cboField5\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-        $('<th></th>').html("<select id=\"cboField6\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-        $('<th></th>').html("<select id=\"cboField7\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-        $('<th></th>').html("<select id=\"cboField8\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-        $('<th></th>').html("<select id=\"cboField9\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
-        $('<th></th>').html("<select id=\"cboField10\"" + ">" + innerOptionHTML + "</select>").appendTo(row);                
-        $('<th></th>').html("<select id=\"cboField11\"" + ">" + innerOptionHTML + "</select>").appendTo(row);  
-        $('<th></th>').html("<select id=\"cboField12\"" + ">" + innerOptionHTML + "</select>").appendTo(row);  
 
+
+        //generic_uploader_' + tab_id + 'cbo_field_' + '
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_1\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_2\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_3\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_4\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_5\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_6\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_7\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_8\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_9\"" + ">" + innerOptionHTML + "</select>").appendTo(row);
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_10\"" + ">" + innerOptionHTML + "</select>").appendTo(row);                
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_11\"" + ">" + innerOptionHTML + "</select>").appendTo(row);  
+        $('<th class="generic_uploader_table_width"></th>').html("<select id=\"generic_uploader_" + tab_id + "cbo_field_12\"" + ">" + innerOptionHTML + "</select>").appendTo(row);  
         var tBody = $('<tbody></tbody>').appendTo(mytable);
         var lnRows = ResultData.length;
         var iCounter = 0;
         for (iRows = 0; iRows < lnRows; iRows = iRows + 1) {            
             var row = $('<tr></tr>').attr({ id: "gen_" + ResultData[iRows].ValidateID, class: "gradeA success" }).appendTo(tBody);
-            $('<td contenteditable="true"></td>').text(ResultData[iRows].Field1).appendTo(row);
-            $('<td contenteditable="true"></td>').text(ResultData[iRows].Field2).appendTo(row);
-            $('<td contenteditable="true"></td>').text(ResultData[iRows].Field3).appendTo(row);
-            $('<td contenteditable="true"></td>').text(ResultData[iRows].Field4).appendTo(row);
-            $('<td contenteditable="true"></td>').text(ResultData[iRows].Field5).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field1).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field2).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field3).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field4).appendTo(row);
+            $('<td></td>').text(ResultData[iRows].Field5).appendTo(row);
             $('<td></td>').text(ResultData[iRows].Field6).appendTo(row);
             $('<td></td>').text(ResultData[iRows].Field7).appendTo(row);
             $('<td></td>').text(ResultData[iRows].Field8).appendTo(row);
@@ -64,41 +194,179 @@
             $('<td></td>').text(ResultData[iRows].Field11).appendTo(row);
             $('<td></td>').text(ResultData[iRows].Field12).appendTo(row);                           
         }    
-
-        mytable.appendTo("#tableContainer");
-        oTable = $('#data-table').DataTable(
+        mytable.appendTo("#tableContainer_" + tab_id);
+        oTable = $('#data-table_' + tab_id).DataTable(
             {
-                //"columnDefs": [{
-                //    "searchable": false,
-                //    "orderable": false,
-                //    "targets": 0
-                //}],
-                "ordering": false,
-                
+                "columnDefs": [{
+                    "searchable": false,
+                    "orderable": false,
+                    "targets": 0
+                }],
+                "sPaginationType": "full_numbers",
+                "ordering": false,                
                 "sScrollX": "100%",
-                //"sScrollY": "300px",
-                //"sScrollX": "100%",
-                //"sScrollXInner": "150%",
-                ////"paging": true,                
-                ////"ordering": false,
-                ////"info": false  
-                //"order": [[3, "desc"]],
-                //"bScrollCollapse": true,
-                //"bPaginate": false,
-                ////"aaSorting": [],
-                //"bFilter": false
+                "bSort": false,
             });
-        var RowToAdd = [];
-        var i;
-        for (i = 0; i <= 12; i++) {
-            RowToAdd.push("");
-        }
-        oTable.add(RowToAdd)
-    }
+        generic_uploader_add_row(tab_id);
+        generic_uploader_delete_row(tab_id);    }
     catch (e) {
         HeaderDataErrorReport(e);
     }
 }
+
+
+function generic_uploader_reset_table_comboboxes(tab_id) {
+    try {
+        var cboInfoSel = document.getElementById('sel_generic_uploader_file_type_' + tab_id);
+        var InformationType = 'N/A';
+        if (cboInfoSel.options[cboInfoSel.selectedIndex].value != "0") { InformationType = cboInfoSel.options[cboInfoSel.selectedIndex].text; }
+        var urlMain = '/Services/WCFWebService.svc/GenericValidationFieldsGetInfo?';
+        var DataMain = 'InformationType=' + InformationType
+        var urlMain = urlMain + DataMain;
+        var ResultData = ReturnDataFromService(urlMain);
+        
+        $('#generic_uploader_' + tab_id + 'cbo_field_1').empty();
+        $('#generic_uploader_' + tab_id + 'cbo_field_2').empty();
+        $('#generic_uploader_' + tab_id + 'cbo_field_3').empty();
+        $('#generic_uploader_' + tab_id + 'cbo_field_4').empty();
+        $('#generic_uploader_' + tab_id + 'cbo_field_5').empty();
+        $('#generic_uploader_' + tab_id + 'cbo_field_6').empty();
+        $('#generic_uploader_' + tab_id + 'cbo_field_7').empty();
+        $('#generic_uploader_' + tab_id + 'cbo_field_8').empty();
+        $('#generic_uploader_' + tab_id + 'cbo_field_9').empty();
+        $('#generic_uploader_' + tab_id + 'cbo_field_10').empty();
+        $('#generic_uploader_' + tab_id + 'cbo_field_11').empty();
+        $('#generic_uploader_' + tab_id + 'cbo_field_12').empty();
+        var j = 0;
+        for (var i in ResultData) {
+            j = j + 1;
+        }
+        //var x = document.getElementById(SelectID);
+        for (var iRow in ResultData) {
+            $('#generic_uploader_' + tab_id + 'cbo_field_1').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#generic_uploader_' + tab_id + 'cbo_field_2').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#generic_uploader_' + tab_id + 'cbo_field_3').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#generic_uploader_' + tab_id + 'cbo_field_4').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#generic_uploader_' + tab_id + 'cbo_field_5').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#generic_uploader_' + tab_id + 'cbo_field_6').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#generic_uploader_' + tab_id + 'cbo_field_7').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#generic_uploader_' + tab_id + 'cbo_field_8').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#generic_uploader_' + tab_id + 'cbo_field_9').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#generic_uploader_' + tab_id + 'cbo_field_10').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#generic_uploader_' + tab_id + 'cbo_field_11').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+            $('#generic_uploader_' + tab_id + 'cbo_field_12').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
+        }
+        var theText = "";
+        var iField = "";
+        $('#CustomerSelectorDiv').hide();
+        if (InformationType == "Monthly Usage") {
+            theText = "Utility Account Number";
+            iField = 1
+            $("#generic_uploader_" + tab_id + "cbo_field_" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "Start Date";
+            iField = 2
+            $("#generic_uploader_" + tab_id + "cbo_field_" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "End Date";
+            iField = 3
+            $("#generic_uploader_" + tab_id + "cbo_field_" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "UsageData";
+            iField = 4
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+        } else if (InformationType == "Interval Data with Date And Hour") {
+            theText = "Utility Account Number";
+            iField = 1
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "Date of Usage";
+            iField = 2
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "Hour Of Usage";
+            iField = 3
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "UsageData";
+            iField = 4
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+        } else if (InformationType == "Interval Data with DateTime") {
+            theText = "Utility Account Number";
+            iField = 1
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "Date and Time of Usage";
+            iField = 2
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "UsageData";
+            iField = 3
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+        } else if (InformationType == "Facility") {
+            FillCustomerName(tab_id);
+            theText = "Utility Account Number";
+            iField = 1
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "Service Address 1";
+            iField = 2
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "Load Profile";
+            iField = 3
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "CongestionZone";
+            iField = 4
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "TDU";
+            iField = 5
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).val(42).change();
+            theText = "Bill Cycle";
+            iField = 6
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "Loss Code Name";
+            iField = 7
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "Weather Station";
+            iField = 8
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "TDU Tariff ID";
+            iField = 9
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+            theText = "CustomerName";
+            iField = 10
+            $("#generic_uploader_" + tab_id + "cbo_field_"  + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
+        }
+        // Ensure that the table has the right linkage
+        generic_uploader_add_row();
+        generic_uploader_delete_row();
+        return 1;
+
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+        return "ERROR";
+    }
+}
+
+function deterimine_sheet_name(file_name) {
+    try {
+        file_name = file_name.toLowerCase();
+        var ln = file_name.length;
+        var start = ln - 4;
+        var end = ln;
+        var short_type = file_name.substring(start, ln);
+        start = ln - 5;
+        var long_type = file_name.substring(start, ln);
+        var sheet_name = "SH";
+        if (short_type == ".xls" || short_type == ".xlm" || long_type == ".xlsx" || long_type == ".xlsm") {
+            var msg = prompt("Please Enter Sheet Name:", "Sheet1");
+            if (msg == null || msg == "") {
+                msg = "User cancelled the prompt.";
+            } else {
+                sheet_name = msg;
+            }
+            file_type = "Excel";
+        }
+        return sheet_name;
+    } catch (e) {
+        HeaderDataErrorReport(e);
+        return "ERROR";
+    }
+}
+
+
 
 function GenericValidationByRowsUpsert() {
     try {
@@ -150,155 +418,14 @@ function GenericValidationByRowsUpsert() {
     }
 }
 
-function ResetComboBoxesToRightText() {
-    try {
-        var cboInfoSel = document.getElementById('FileTypeSel');
-        var InformationType = 'N/A';
-        if (cboInfoSel.options[cboInfoSel.selectedIndex].value != "0") { InformationType = cboInfoSel.options[cboInfoSel.selectedIndex].text; }
-        var urlMain = '/Services/WCFWebService.svc/GenericValidationFieldsGetInfo?';
-        var DataMain = 'InformationType=' + InformationType
-        var urlMain = urlMain + DataMain;
-        var ResultData = ReturnDataFromService(urlMain);
-        $('#cboField1').empty();
-        $('#cboField2').empty();
-        $('#cboField3').empty();
-        $('#cboField4').empty();
-        $('#cboField5').empty();
-        $('#cboField6').empty();
-        $('#cboField7').empty();
-        $('#cboField8').empty();
-        $('#cboField9').empty();
-        $('#cboField10').empty();
-        $('#cboField11').empty();
-        $('#cboField12').empty();
-        var j = 0;
-        for (var i in ResultData) {
-            j = j + 1;
-        }
-        //var x = document.getElementById(SelectID);
-        for (var iRow in ResultData) {
-            $('#cboField1').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-            $('#cboField2').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-            $('#cboField3').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-            $('#cboField4').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-            $('#cboField5').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-            $('#cboField6').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-            $('#cboField7').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-            $('#cboField8').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-            $('#cboField9').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-            $('#cboField10').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-            $('#cboField11').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-            $('#cboField12').append(new Option(ResultData[iRow].InformationFields, ResultData[iRow].InformationFieldsID));
-        }
-        var theText = "";
-        var iField = "";
-        $('#CustomerSelectorDiv').hide();
-        if (InformationType == "Monthly Usage") {
-            theText = "Utility Account Number";
-            iField = 1
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "Start Date";
-            iField = 2
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "End Date";
-            iField = 3
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "UsageData";
-            iField = 4
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-        } else if (InformationType == "Interval Data with Date And Hour") {
-            theText = "Utility Account Number";
-            iField = 1
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "Date of Usage";
-            iField = 2
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "Hour Of Usage";
-            iField = 3
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "UsageData";
-            iField = 4
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-        } else if (InformationType == "Interval Data with DateTime") {
-            theText = "Utility Account Number";
-            iField = 1
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "Date and Time of Usage";
-            iField = 2
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "UsageData";
-            iField = 3
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-        } else if (InformationType == "Facility") {
-            FillCustomerName();
-            theText = "Utility Account Number";
-            iField = 1
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "Service Address 1";
-            iField = 2
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "Load Profile";
-            iField = 3
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "CongestionZone";
-            iField = 4
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "TDU";
-            iField = 5
-            $("#cboField" + iField).val(42).change();
-            theText = "Bill Cycle";
-            iField = 6
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "Loss Code Name";
-            iField = 7
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "Weather Station";
-            iField = 8
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "TDU Tariff ID";
-            iField = 9
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-            theText = "CustomerName";
-            iField = 10
-            $("#cboField" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-        }
-        return 1;
 
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-        return "ERROR";
-    }
-}
-function deterimine_sheet_name(file_name) {
-    try {
-        file_name = file_name.toLowerCase();
-        var ln = file_name.length;
-        var start = ln - 4;
-        var end = ln;
-        var short_type = file_name.substring(start, ln);
-        start = ln - 5;
-        var long_type = file_name.substring(start, ln);
-        var sheet_name = "SH";
-        if (short_type == ".xls" || short_type == ".xlm" || long_type == ".xlsx" || long_type == ".xlsm") {
-            var msg = prompt("Please Enter Sheet Name:", "Sheet1");
-            if (msg == null || msg == "") {
-                msg = "User cancelled the prompt.";
-            } else {
-                sheet_name = msg;
-            }                        
-            file_type = "Excel";
-        }
-        return sheet_name;
-    } catch (e) {
-        HeaderDataErrorReport(e);
-        return "ERROR";
-    }
-}
-async function set_run_checker(run_id) {
+async function set_run_checker(run_id, tab_id) {
     try {
         var x = 1;        
-        $("#DataProcessingGIF").show();
+        if (tab_id == null) {
+            tab_id = 1;
+        }
+        $("#DataProcessingGIF_" + tab_id).show();
         var refreshId = setInterval(function () {
             var x = 1;
             var limiter = 3000
@@ -316,19 +443,19 @@ async function set_run_checker(run_id) {
                     x = limiter;
                     clearInterval(refreshId);
                     $("#DataFactoryProcessing").text(ResultData.run_status)
-                    $("#DataProcessingGIF").hide();
+                    $("#DataProcessingGIF_" + tab_id).hide();
                 } else if (ResultData.run_status == "InProgress") {
                     $("#DataFactoryProcessing").text("Processing....")
                 } else if (ResultData.run_status == "Cancelled") {
                     $("#DataFactoryProcessing").text("Cancelled")
-                    $("#DataProcessingGIF").hide();
+                    $("#DataProcessingGIF_" + tab_id).hide();
                 }
                 else if (ResultData.run_status == "Failed") {
                     $("#DataFactoryProcessing").text("Failed")
-                    $("#DataProcessingGIF").hide();
+                    $("#DataProcessingGIF_" + tab_id).hide();
                 }
                 else {
-                    $("#DataFactoryProcessing").text(ResultData.run_status)                
+                    $("#DataFactoryProcessing_" + tab_id).text(ResultData.run_status)                
                 }
             }
         }, 15000);        
@@ -340,7 +467,7 @@ function UpdateImportStatus(Msg) {
     $("#DataFactoryProcessing").text("Beginning processing...")
     return "SUCCESS"
 }
-function run_data_factory_pull(FileName, sheet_name) {
+function run_data_factory_pull(FileName, sheet_name, tab_id) {
     try {
         //var urlMain = 'http://vrddatafactory.southcentralus.azurecontainer.io:5000/api/datafactor_data/'
         var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/datafactor_data/';
@@ -352,8 +479,8 @@ function run_data_factory_pull(FileName, sheet_name) {
             oTable.fnDeleteRow(0);
         }
         if (ResultData.length > 0) {
-            $("#DataFactoryProcessing").text("Starting to background processing");
-            set_run_checker(ResultData[0].run_id);
+            $("#DataFactoryProcessing").text("Starting to background processing");            
+            set_run_checker(ResultData[0].run_id, tab_id);
             for (var iRows in ResultData) {
                 oTable.fnAddData([
                     //ResultData[iRows].ValidateID,
@@ -392,7 +519,7 @@ function run_data_factory_pull(FileName, sheet_name) {
         HeaderDataErrorReport(e);
     }
 }
-function ImportIntoValidationTableNew() {
+function ImportIntoValidationTableNew(tab_id) {
     try {
         var FileName = FileNameForImport;
         var sheet_name = "Sheet1";
@@ -424,7 +551,7 @@ function ImportIntoValidationTableNew() {
             alertify.success(ResultData);
 
         } else {
-            run_data_factory_pull(FileName, sheet_name);
+            run_data_factory_pull(FileName, sheet_name, tab_id);
         }
     } catch (e) {
         $("#DataFactoryProcessing").text("Error in processing...")
@@ -432,7 +559,7 @@ function ImportIntoValidationTableNew() {
 
     }
 }
-function run_data_factory_pull_excel() {
+function run_data_factory_pull_excel(tab_id) {
     try {
         var sheet_name = $('#selSheets option:selected').text()
         if (sheet_name == '- Select Sheet -') {
@@ -440,7 +567,7 @@ function run_data_factory_pull_excel() {
         } else {
             $("#myModal").modal('hide');
             alertify.success("Sending the file for processing...Please wait.")
-            run_data_factory_pull(FileNameForImport, sheet_name);
+            run_data_factory_pull(FileNameForImport, sheet_name, tab_id);
         }
         
 
@@ -449,9 +576,9 @@ function run_data_factory_pull_excel() {
 
     }
 }
-async function GenericValidatedDataUpsert() {
+async function GenericValidatedDataUpsert(tab_id) {
     try {
-        if ($('#DataProcessingGIF').is(":hidden") == false) {
+        if ($('#DataProcessingGIF_' + tab_id).is(":hidden") == false) {
             msg = "Please wait for the background processing to finish";
             alertify.success(msg);            
         } else {        
@@ -462,8 +589,8 @@ async function GenericValidatedDataUpsert() {
                 var FileName = FileNameForImport;// files[0].name;
                 var FileTypeName = 'ACCOUNT';
                 var ContainerName = 'riskaccounts';
-                var InformationType = $("#FileTypeSel :selected").val();
-                var FirstRowOfData = $("#LineLength :selected").val();
+                var InformationType = $("#sel_generic_uploader_file_type_" + tab_id + ":selected").val();
+                var FirstRowOfData = $("#LineLength_" + tab_id + " :selected").val();
                 var currentTime = new Date()
                 // returns the month (from 0 to 11)
                 var month = currentTime.getMonth() + 1;
@@ -474,8 +601,8 @@ async function GenericValidatedDataUpsert() {
                 var hr = currentTime.getHours();
                 var mn = currentTime.getMinutes();
                 var sec = currentTime.getSeconds();
-                var table = document.getElementById("data-table");
-                var FirstLineOfDate = LineLength.options[LineLength.selectedIndex].value;
+                var table = document.getElementById("data-table_" + tab_id);
+                //var FirstLineOfDate = LineLength.options[LineLength.selectedIndex].value;
                 var msg = 'Failure in processing....'
                 //GenericValidatedDataUpsert?FileName={FileName}&InformationType={InformationType}&FirstRowOfData={FirstRowOfData}&Field1={Field1}&Field2={Field2}&Field3={Field3}&Field4={Field4}&Field5={Field5}&Field6={Field6}&Field7={Field7}&Field8={Field8}&Field9={Field9}&Field10={Field10}&Field11={Field11}&Field12={Field12}",
                 var xmlInput = '';
@@ -483,14 +610,14 @@ async function GenericValidatedDataUpsert() {
                 var DataMain = '';
                 for (var iRow = 1; iRow <= 12; iRow++) {
                     if (xmlInput == '') {
-                        xmlInput = '<Row><ID>' + iRow + '</ID><NM>' + $("#cboField" + iRow).find('option:selected').text() + '</NM></Row>';
+                        xmlInput = '<Row><ID>' + iRow + '</ID><NM>' + $("#" + "generic_uploader_" + tab_id + "cbo_field_" + iRow).find('option:selected').text() + '</NM></Row>';
                     } else {
-                        xmlInput = xmlInput + '<Row><ID>' + iRow + '</ID><NM>' + $("#cboField" + iRow).find('option:selected').text() + '</NM></Row>';
+                        xmlInput = xmlInput + '<Row><ID>' + iRow + '</ID><NM>' + $("#" + "generic_uploader_" + tab_id + "cbo_field_" + iRow).find('option:selected').text() + '</NM></Row>';
                     }
                 }
                 // Add Customer ID If Sending Facility Information
                 if (InformationType == 2) {
-                    xmlInput = xmlInput + '<Row><CustomerID>' + $("#cboCustomerSelector").find('option:selected').val() + '</CustomerID><CustomerName>' + $("#cboCustomerSelector").find('option:selected').text() + '</CustomerName></Row>';
+                    xmlInput = xmlInput + '<Row><CustomerID>' + $("#cboCustomerSelector_" + tab_id).find('option:selected').val() + '</CustomerID><CustomerName>' + $("#cboCustomerSelector_" + tab_id).find('option:selected').text() + '</CustomerName></Row>';
                 }
                 DataMain = "FileName=" + FileName + "&InformationType=" + InformationType + "&Field1=" + xmlInput
                 var urlMain = urlMain + DataMain;
@@ -577,6 +704,34 @@ async function ImportGenericDataMain() {
     //await DisplayModal();
     ImportGenericData();
     //await HideModal();    
+}
+
+function generic_uploader_add_tab(tab_id, div_id) {
+    try {
+        // Add Tab With All Underlying Objects
+        //var my_name = 'John';
+        var first = `hello ${tab_id}, how are you doing`;
+        
+        var first = '<div class="row"><div class="col-lg-12 col-md-12"><div class="widget"><div class="widget-header"><div class="title">Files Imported<a id="dynamic-tables"></a></div></div>';
+        var second = '<div id="dtExampleWidget" class="widget-body"><div id="dt_example" class="example_alt_pagination"><div class="form-group"><div>Background Processing<font id="read"> </font> </div>';
+        var third = '<div><label id="DataFactoryProcessing" class="label-bullet">Not Processing</label></br><img id="DataProcessingGIF_' + tab_id +'" src="Gif/gears7.gif" /></div></div>';
+        var fourth = '<div class="col-lg-12"><div class="col-md-2 col-sm-2 col-xs-2"><label class="label-bullet-blue">Select File Type</label>';
+        var fifth = '<select id="sel_generic_uploader_file_type_' + tab_id +'" onchange="generic_uploader_reset_table_comboboxes(' + tab_id + ')" class="form-control"></select></div><div id="CustomerSelectorDiv" class="col-md-4 col-sm-4 col-xs-4" hidden="true">';
+        var sixth = '<label class="label-bullet-blue">Customer</label><select id="cboCustomerSelector_' + tab_id +'" class="form-control"><option value="0">- Customer -</option></select></div>';
+        var seventh = '<div class="col-md-2 col-sm-2 col-xs-2"><label class="label-bullet-blue">Start Line of Data</label><select id="sel_LineLength_' + tab_id +'" class="form-control"></select></div></div>';
+        var eighth = '<div id="tableContainer_' + tab_id + '" class="tableContainer datablock"><!--width:  "100%",overflow:  "scroll",class: "scrollTable" });--><table id="data-table_' + tab_id +'" width="100%" overflow: "scroll" class="scrollTable"></table>';
+        var ninth = '</div><div class="clearfix"></div></div></div><div class="widget"><input type="button" id="validate-button_' + tab_id + '" class="btn btn-primary btn-lg" value="Import Into Table" onclick="GenericValidatedDataUpsert(' + tab_id + ')" /></div></div></div></div>';
+        var final = first + second + third + fourth + fifth + sixth + seventh + eighth + ninth;
+        $('#' + div_id).append(final);        
+        generic_uploader_create_base_table(tab_id);
+        generic_uploader_FileInitialDropDowns(tab_id);
+        $("#DataProcessingGIF_" + tab_id).hide();
+
+
+
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
 }
 function ImportGenericData() {
     try {
@@ -1057,12 +1212,12 @@ function ReturnStringForFieldsCombo(InformationType) {
     }
 }
 
-function FillCustomerName() {
+function FillCustomerName(tab_id) {
     try {        
         $('#CustomerSelectorDiv').show();
         var urlMain = '/Services/CurveUploader.svc/CustomerNameGetInfo';                
         var ResultData = ReturnDataFromService(urlMain);
-        var cboCustomerSelector = "#cboCustomerSelector";
+        var cboCustomerSelector = "#cboCustomerSelector_" + tab_id;
         $(cboCustomerSelector).empty();        
         $(cboCustomerSelector).append($('<option>', { text: "-- Customer --", value: "0"}));
         for (var iRow in ResultData) {
@@ -1088,40 +1243,40 @@ function ReturnInValidFields() {
             }
             else {
                 GenericClearValidation();
-                var cboInfoSel = document.getElementById('cboField1');
+                var cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_1');
                 var Field1 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-                cboInfoSel = document.getElementById('cboField2');
+                cboInfoSel = document.getElementById('generic_uploader_' + tab_id + '_' + 'cbo_field_2');
                 var Field2 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-                cboInfoSel = document.getElementById('cboField3');
+                cboInfoSel = document.getElementById('generic_uploader_' + tab_id + '_' + 'cbo_field_3');
                 var Field3 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-                cboInfoSel = document.getElementById('cboField4');
+                cboInfoSel = document.getElementById('generic_uploader_' + tab_id + '_' + 'cbo_field_4');
                 var Field4 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-                cboInfoSel = document.getElementById('cboField5');
+                cboInfoSel = document.getElementById('generic_uploader_' + tab_id + '_' + 'cbo_field_5');
                 var Field5 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-                cboInfoSel = document.getElementById('cboField6');
+                cboInfoSel = document.getElementById('generic_uploader_' + tab_id + '_' + 'cbo_field_6');
                 var Field6 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-                cboInfoSel = document.getElementById('cboField7');
+                cboInfoSel = document.getElementById('generic_uploader_' + tab_id + '_' + 'cbo_field_7');
                 var Field7 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-                cboInfoSel = document.getElementById('cboField8');
+                cboInfoSel = document.getElementById('generic_uploader_' + tab_id + '_' + 'cbo_field_8');
                 var Field8 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-                cboInfoSel = document.getElementById('cboField9');
+                cboInfoSel = document.getElementById('generic_uploader_' + tab_id + '_' + 'cbo_field_9');
                 var Field9 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-                cboInfoSel = document.getElementById('cboField10');
+                cboInfoSel = document.getElementById('generic_uploader_' + tab_id + '_' + 'cbo_field_10');
                 var Field10 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-                cboInfoSel = document.getElementById('cboField11');
+                cboInfoSel = document.getElementById('generic_uploader_' + tab_id + '_' + 'cbo_field_11');
                 var Field11 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-                cboInfoSel = document.getElementById('cboField12');
+                cboInfoSel = document.getElementById('generic_uploader_' + tab_id + '_' + 'cbo_field_12');
                 var Field12 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
                 var FirstLineOfDate = LineLength.options[LineLength.selectedIndex].value;
@@ -1191,40 +1346,40 @@ function GenericTableUpload() {
         }
         else {
             
-            var cboInfoSel = document.getElementById('cboField1');
+            var cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '1');
             var Field1 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-            cboInfoSel = document.getElementById('cboField2');
+            cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '2');
             var Field2 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-            cboInfoSel = document.getElementById('cboField3');
+            cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '3');
             var Field3 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-            cboInfoSel = document.getElementById('cboField4');
+            cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '4');
             var Field4 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-            cboInfoSel = document.getElementById('cboField5');
+            cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '5');
             var Field5 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-            cboInfoSel = document.getElementById('cboField6');
+            cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '6');
             var Field6 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-            cboInfoSel = document.getElementById('cboField7');
+            cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '7');
             var Field7 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-            cboInfoSel = document.getElementById('cboField8');
+            cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '8');
             var Field8 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-            cboInfoSel = document.getElementById('cboField9');
+            cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '9');
             var Field9 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-            cboInfoSel = document.getElementById('cboField10');
+            cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '10');
             var Field10 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-            cboInfoSel = document.getElementById('cboField11');
+            cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '11');
             var Field11 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
-            cboInfoSel = document.getElementById('cboField12');
+            cboInfoSel = document.getElementById('generic_uploader_' + tab_id + 'cbo_field_' + '12');
             var Field12 = cboInfoSel.options[cboInfoSel.selectedIndex].text;
 
             var FirstLineOfDate = LineLength.options[LineLength.selectedIndex].value;
@@ -1643,11 +1798,4 @@ function ReturnDataFromServicePostStatus() {
         urlMain = urlMain + DataMain;                     
         var ResultData = ReturnDataFromService(urlMain);
         return ReturnData;    
-}
-function BtnUploadFile() {
-    try {
-        document.getElementById("files").click();
-    } catch (e) {
-        HeaderDataErrorReport(e);
-    }
 }

@@ -77,9 +77,99 @@ namespace WCFWebRole.Services
             return SelectionItemsinfo;
         }
 
+        public List<SelectorType> FileTypeGetInfo(String FileTypeID)
+        {
+            List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[FileTypeGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    if (FileTypeID != null)
+                    {
+                        Int64 iFileTypeID = Convert.ToInt64(FileTypeID);
+                        cmd.Parameters.AddWithValue("@FileTypeID", iFileTypeID);
+                    }
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["FileTypeID"].ToString(),
+                                SelectorText = dr["FileType"].ToString(),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+        public List<SelectorType> LineStartGetInfo(String LineStartID)
+        {
+            List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[LineStartGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    if (LineStartID != null)
+                    {
+                        Int64 iLineStartID = Convert.ToInt64(LineStartID);
+                        cmd.Parameters.AddWithValue("@LineStartID", iLineStartID);
+                    }
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["LineStartID"].ToString(),
+                                SelectorText = dr["LineStart"].ToString(),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
         public List<SelectorType> CustomerNameGetInfo(String CustomerID)
         {
-
+            
             List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
             DataSet ds = new DataSet();
             string ConnectionString = ReturnConnectionString();

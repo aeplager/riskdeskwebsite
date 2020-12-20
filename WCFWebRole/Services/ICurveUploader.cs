@@ -76,5 +76,18 @@ namespace WCFWebRole.Services
             BodyStyle = WebMessageBodyStyle.Bare)]
         List<SelectorType> CustomerNameGetInfo(String CustomerID);
 
+        [WebGet(UriTemplate = "/FileTypeGetInfo?FileTypeID={FileTypeID}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        List<SelectorType> FileTypeGetInfo(String FileTypeID);
+
+
+        [WebGet(UriTemplate = "/LineStartGetInfo?LineStartID={LineStartID}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        List<SelectorType> LineStartGetInfo(String LineStartID);
+
     }
 }

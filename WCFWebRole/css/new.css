@@ -3156,3 +3156,8 @@ h4.panel-title {
       left: 0; } }
 .google-visualization-table-table {
   width: 100%; }
+
+
+.generic_uploader_table_width{
+    width:  8%;
+}

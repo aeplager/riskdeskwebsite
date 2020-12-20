@@ -16,7 +16,19 @@ function AddItemsToSelector(NameOfSelector, SelectorText, SelectorID) {
         HeaderDataErrorReport(e);
     }
 }
+function GeneralSelFill(selName, selInitialValue, urlMain) {
+    try {
+        $('#' + selName).empty();
+        AddItemsToSelector(selName, selInitialValue, 0);        
+        var ResultData = ReturnDataFromService(urlMain);
+        for (var iRows in ResultData) {
+            AddItemsToSelector(selName, ResultData[iRows].SelectorText, ResultData[iRows].SelectorID);
+        }        
 
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
 
 // JavaScript source code
 function HeaderDataErrorReport(e) {

@@ -14,6 +14,8 @@
     <link href="css/wysi/bootstrap-wysihtml5.css" rel="stylesheet">
     <!--Alert Scripts-->
     <link href="css/alertify.core.css" rel="stylesheet" id="toggleCSS">
+    <link rel="stylesheet" href="css/alertify.min.css" />
+    <script type="text/javascript" src="js/alertify.js"></script>
     <script type="text/javascript" src="js/alertify.min.js"></script>
 
     <link href="css/new.css" rel="stylesheet">
@@ -27,10 +29,8 @@
     <!--AutoComplete Scripts-->
     <link rel="stylesheet" href="css/AutoComplete.css" />
     <!--Normal Scripts-->
+    
 
-    <!--TESTING GIT-->
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="https://code.jquery.com/jquery-1.7.min.js"></script>
     <script src="https://code.jquery.com/ui/1.7.0/jquery-ui.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -42,12 +42,13 @@
 
     <!--AutoComplete New-->
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.3/themes/hot-sneaks/jquery-ui.css" />
-    <script src="http://code.jquery.com/jquery-2.1.3.js"></script>
+
     <script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
     <!--Data Table Scripts-->
-    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-1.10.2.js"></script>-->
+    <script src="Scripts/tuto_auto_tab_system.js"></script>
 
-    
     <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
     <link href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
     <!--Custom Java Script-->
@@ -60,8 +61,22 @@
     <!--<!--Links to Azure-->-->
     <script src="Azure/azure-storage.blob.js"></script>
     <script src="Azure/AzureGeneral.js"></script>
+
+
+
+    <script type="text/javascript">
+        //override defaults
+        alertify.defaults.transition = "slide";
+        alertify.defaults.theme.ok = "btn btn-primary";
+        alertify.defaults.theme.cancel = "btn btn-danger";
+        alertify.defaults.theme.input = "form-control";
+    </script>
+
     <!--<![endif]-->-->
     <style>
+        .hide {
+            display: none;
+        }
         .datablock {
             height: 120px;
         }
@@ -114,27 +129,18 @@
             // Initialize the city
             try {
                 //AddHeader();
-                CreateBaseTable();
-                $("#DataProcessingGIF").hide();
-                //DisplayRowNumbers();
-                //CreateBaseFieldsTable();
+                generic_uploader_create_base_table(1);
+                generic_uploader_FileInitialDropDowns(1);
+                $("#DataProcessingGIF_1").hide();
+                generic_uploader_add_tab(2, 'generic_uploader_second_tab');
+                generic_uploader_add_tab(3, 'generic_uploader_third_tab');
             }
             catch (e) {
                 HeaderDataErrorReport(e);
             }
         }
 
-        function showFile(input) {
-            try {
-                let file = input.files[0];
-                //alert(`File name: ${file.name}`); // e.g my.png
-                UploadFiles('ICECURVE');
-                //alert(`Last modified: ${file.lastModified}`); // e.g 1552830408824
 
-            } catch (e) {
-                HeaderDataErrorReport(e);
-            }
-        }
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
                 (i[r].q = i[r].q || []).push(arguments)
@@ -310,10 +316,6 @@
                             <li><a href='Facilities.html'>Facility</a></li>
                             <li><a href='RetailDeals.html'>Retail Deal Entry</a></li>
                             <li><a href='WholesaleDeals.html'>Wholesale Deal Entry</a></li>
-                            <!--<li><a href='DealEntry.html'>Deal</a></li>
-    <li><a href='FacilityDataEntry.html'>Facility</a></li>
-    <li><a href='DealEntry.html'>Grouping</a></li>
-    <li><a href='DealEntry.html'>Broker</a></li>-->
                         </ul>
                     </li>
                 </ul>
@@ -330,8 +332,8 @@
                         <a href="#">Upload of Accounts</a>
                     </li>
                     <!--<li class="hidden-sm hidden-xs">
-              <a href="#inputs">Status of Upload</a>
-            </li>-->
+                      <a href="#inputs">Status of Upload</a>
+                    </li>-->
                 </ul>
                 <div class="custom-search hidden-sm hidden-xs">
                     <input type="text" class="search-query" placeholder="Search here ...">
@@ -352,126 +354,14 @@
                                         Upload Files<a id="dynamic-tables-facility-upload"></a>
                                     </div>
                                 </div>
-
                                 <div id="dtExampleWidget-2" class="widget-body">
                                     <div id="dt_example-2" class="example_alt_pagination">
-                                        <div class="col-lg-12">
-                                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                                <label class="label-bullet-blue">Select File Type</label>
-                                                <select id="FileTypeSel" onchange="ResetComboBoxesToRightText()" class="form-control">
-                                                    <option value="0">
-                                                        - File Type -
-                                                    </option>
-                                                    <option value="2">
-                                                        Facility
-                                                    </option>
-                                                    <option value="3">
-                                                        Monthly Usage
-                                                    </option>
-                                                    <option value="4">
-                                                        Interval Data with Date And Hour
-                                                    </option>
-                                                    <option value="5">
-                                                        Interval Data with DateTime
-                                                    </option>
-                                                    <option value="6">
-                                                        Customer
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div id="CustomerSelectorDiv" class="col-md-4 col-sm-4 col-xs-4" hidden="true">
-                                                <label class="label-bullet-blue">Customer</label>
-                                                <select id="cboCustomerSelector" class="form-control">
-                                                    <option value="0">
-                                                        - Customer -
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2 col-sm-2 col-xs-2">
-                                                <label class="label-bullet-blue">Start Line of Data</label>
-                                                <select id="LineLength" class="form-control">
-                                                    <option value="0">
-                                                        - Line Length -
-                                                    </option>
-                                                    <option value="1">
-                                                        First Line
-                                                    </option>
-                                                    <option value="2">
-                                                        Second Line
-                                                    </option>
-                                                    <option value="3">
-                                                        Third Line
-                                                    </option>
-                                                    <option value="4">
-                                                        Fourth Line
-                                                    </option>
-                                                    <option value="5">
-                                                        Fifth Line
-                                                    </option>
-                                                    <option value="6">
-                                                        Sixth Line
-                                                    </option>
-                                                    <option value="7">
-                                                        Seventh Line
-                                                    </option>
-                                                    <option value="8">
-                                                        Eighth Line
-                                                    </option>
-                                                    <option value="9">
-                                                        Ninth Line
-                                                    </option>
-                                                    <option value="10">
-                                                        Tenth Line
-                                                    </option>
-                                                </select>
-                                            </div>
+                                        <div class="form-group" hidden>
+                                            <input type="file" id="files" value="test" onchange="generic_uploader_show_file(this)" multiple>
                                         </div>
-                                        </br>
-                                        </br>
+                                        <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Upload File" onclick="generic_uploader_upload_files()" />
 
-                                        <div class="form-group">
-                                            <!--Hidden Buttons-->
-                                            <!--<input type="button" id="upload-button" class="btn btn-primary btn-lg" value="Upload File" onclick="UploadFiles('ICECURVE')" />-->
-                                            <!--<input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Import File Into Table" onclick="ImportIntoValidationTableNew()" />-->
-                                            <!--<input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Return Bad Rows" onclick="ReturnInValidFields()" />-->
-                                            <!--Hidden Buttons-->
-                                            <!--<input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Test Button" onclick="RunModal()" />-->
-                                            <div class="modal fade" id="myModal">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div style="width: 70%;padding: 10px;margin: auto;">
-                                                            <label id="ProgressLabel" class="label-bullet-blue">Excel Workbook Uploader</label>
-                                                            <br />
-                                                            <div class="row">
-                                                                <label class="label-bullet-blue">Select a Sheet</label>
-                                                                <select id="selSheets" class="form-control">
-                                                                    <option value="0">
-                                                                        - Select Sheet -
-                                                                    </option>
-                                                                </select>
-                                                            </div>
-                                                            <div class=""></div>
 
-                                                            <div style="width: 70%;padding: 10px;margin: auto;" class="row">
-                                                                <input type="button" id="cancel_button" class="btn btn-primary btn-lg" value="Cancel" onclick="$('#myModal').modal('hide');" />
-                                                                <input type="button" id="ok_button" class="btn btn-primary btn-lg" value="OK" onclick="run_data_factory_pull_excel();" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--<div>-->
-                                        <!--<div class="widget">-->
-                                        <!--</div>-->
-                                        <!--</div>-->
-                                        <br />
-                                        <div class="form-group">
-                                            <div class="form-group" hidden>
-                                                <input type="file" id="files" value="test" onchange="showFile(this)" multiple>
-                                            </div>
-                                            <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Upload File" onclick="BtnUploadFile()" />                                            
-                                        </div>
                                         <div class="form-group">
                                             <div> Uploaded Bytes: <font id="read"> </font> </div>
                                             <div class="progress">
@@ -480,27 +370,111 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group">
-                                            <div>Background Processing<font id="read"> </font> </div>
-                                            <div>
-                                                <label id="DataFactoryProcessing" class="label-bullet">Not Processing</label>
-                                                </br>
-                                                <img id="DataProcessingGIF" src="Gif/gears7.gif"/>
-                                            </div>
+                                        <div class="form-group" id="MainSelection_FormSelector">
                                         </div>
-                                        <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-xl">
-                                                <div class="modal-content">
-                                                    ...
+                                    </div>
+                                    <div>
+                                        <div class="row">
+                                            <div class="col-lg-12 col-md-12">
+                                                <div class="widget">
+                                                    <div class="widget-header">
+                                                        <div class="title">
+                                                            Tab<a id="tabs">s</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="widget-body clearfix">
+                                                        <ul id="myTab" class="nav nav-tabs">
+                                                            <li class="active"><a href="#generic_uploader_first_tab" data-toggle="tab">First Tab</a></li>
+                                                            <li><a href="#generic_uploader_second_tab" data-toggle="tab">Second Tab</a></li>
+                                                            <li><a href="#generic_uploader_third_tab" data-toggle="tab">Third Tab</a></li>                                                            
+                                                            <li class="hide"><a href="#profile" data-toggle="tab">Profile Test</a></li>
+                                                            <li class="dropdown hidden-xs">
+                                                                <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                                                                <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                                                                    <li><a href="#dropdown1" tabindex="-1" data-toggle="tab">@fat</a></li>
+                                                                    <li><a href="#dropdown2" tabindex="-1" data-toggle="tab">@mdo</a></li>
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                        <div id="myTabContent" class="tab-content">
+                                                            <div class="tab-pane fade in active" id="generic_uploader_first_tab">
+                                                                <div class="row">
+                                                                    <div class="col-lg-12 col-md-12">
+                                                                        <div class="widget">
+                                                                            <div class="widget-header">
+                                                                                <div class="title">
+                                                                                    Files Imported<a id="dynamic-tables"></a>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div id="dtExampleWidget" class="widget-body">
+                                                                                <div id="dt_example" class="example_alt_pagination">
+                                                                                    <div class="form-group">
+                                                                                        <div>Background Processing<font id="read"> </font> </div>
+                                                                                        <div>
+                                                                                            <label id="DataFactoryProcessing" class="label-bullet">Not Processing</label>
+                                                                                            </br>
+                                                                                            <img id="DataProcessingGIF_1" src="Gif/gears7.gif" />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="col-lg-12">
+                                                                                        <div class="col-md-2 col-sm-2 col-xs-2">
+                                                                                            <label class="label-bullet-blue">Select File Type</label>
+                                                                                            <select id="sel_generic_uploader_file_type_1" onchange="generic_uploader_reset_table_comboboxes(1)" class="form-control"></select>
+                                                                                        </div>
+                                                                                        <div id="CustomerSelectorDiv" class="col-md-4 col-sm-4 col-xs-4" hidden="true">
+                                                                                            <label class="label-bullet-blue">Customer</label>
+                                                                                            <select id="cboCustomerSelector_1" class="form-control">
+                                                                                                <option value="0">
+                                                                                                    - Customer -
+                                                                                                </option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div class="col-md-2 col-sm-2 col-xs-2">
+                                                                                            <label class="label-bullet-blue">Start Line of Data</label>
+                                                                                            <select id="sel_LineLength_1" class="form-control"></select>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+                                                                                        <div class="modal-dialog modal-xl">
+                                                                                            <div class="modal-content">
+                                                                                                ...
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div id="tableContainer_1" class="tableContainer datablock">
+                                                                                        <!--width:  "100%",overflow:  "scroll",class: "scrollTable" });-->
+                                                                                        <table id="data-table_1" width="100%" overflow: "scroll" class="scrollTable"></table>
+                                                                                    </div>
+                                                                                    <div class="clearfix">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="widget">
+                                                                                <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Import Into Table" onclick="GenericValidatedDataUpsert(1)" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="generic_uploader_second_tab">                                                                
+                                                            </div>
+                                                            <div class="tab-pane fade" id="generic_uploader_third_tab">
+                                                                <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="dropdown1">
+                                                                <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.</p>
+                                                            </div>
+                                                            <div class="tab-pane fade" id="dropdown2">
+                                                                <p>Trust fund seitan letterpress, keytar raw denim keffiyeh etsy art party before they sold out master cleanse gluten-free squid scenester freegan cosby sweater. Fanny pack portland seitan DIY, art party locavore wolf cliche high life echo park Austin. Cred vinyl keffiyeh DIY salvia PBR, banh mi before they sold out farm-to-table VHS viral locavore cosby sweater. Lomo wolf viral, mustache readymade thundercats keffiyeh craft beer marfa ethical. Wolf salvia freegan, sartorial keffiyeh echo park vegan.</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-group" id="MainSelection_FormSelector">
-
+                                        <div id="RemoveAbleDiv_Cust" class="row">
+                                            
                                         </div>
-
-                                    </div>
-                                    <div>
                                         <div class="clearfix">
                                         </div>
                                         <div id="modelloader"></div>
@@ -508,43 +482,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div id="RemoveAbleDiv_Cust" class="row">
-                        <div class="col-lg-12 col-md-12">
-                            <div class="widget">
-                                <div class="widget-header">
-                                    <div class="title">
-                                        Files Imported<a id="dynamic-tables"></a>
-                                    </div>
-                                </div>
-                                <div id="dtExampleWidget" class="widget-body">
-                                    <div id="dt_example" class="example_alt_pagination">
-                                        <div id="tableContainer" class="tableContainer datablock">
-                                            <!--width:  "100%",overflow:  "scroll",class: "scrollTable" });-->
-                                            <table id="data-table" width="100%" overflow: "scroll" class="scrollTable"></table>
-                                        </div>
-                                        <div class="clearfix">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="widget">
-                                    <!--<div class="widget-header">
-                                        <div class="title">
-                                            <a id="dynamic-tables-facility-upload"></a>
-                                        </div>
-                                    </div>-->
-                                    <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Import Into Table" onclick="GenericValidatedDataUpsert()" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--<div id="RemoveUploadDiv_Buttons" class="row">
-                        <p align="right">
-                            <input type="button" id="validate-button" class="btn btn-primary btn-sm" value="Prev" onclick="ChangePrevGenericTable()" />
-                            <input type="button" id="validate-button" class="btn btn-primary btn-sm" value="Next" onclick="ChangeNextGenericTable()" />
-                            <input type="button" id="validate-button" class="btn btn-primary btn-sm" value="Update" onclick="GenericValidationByRowsUpsert()" />
-                        </p>
-                    </div>-->
+                    </div>                    
+                </div>
+            </div>
+                    
                     <!-- Row End -->
                     <!-- Row Start -->
                     <!--********************************************************************-->
@@ -668,14 +609,39 @@
         </div>
     </div>
     <!-- Main Container end -->
-
+    <!--Modal Screens-->
+    <div class="form-group">
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div style="width: 70%;padding: 10px;margin: auto;">
+                        <label id="ProgressLabel" class="label-bullet-blue">Excel Workbook Uploader</label>
+                        <br />
+                        <div class="row">
+                            <label class="label-bullet-blue">Select a Sheet</label>
+                            <select id="selSheets" class="form-control">
+                                <option value="0">
+                                    - Select Sheet -
+                                </option>
+                            </select>
+                        </div>
+                        <div class=""></div>
+                        <div style="width: 70%;padding: 10px;margin: auto;" class="row">
+                            <input type="button" id="cancel_button" class="btn btn-primary btn-lg" value="Cancel" onclick="$('#myModal').modal('hide');" />
+                            <input type="button" id="ok_button" class="btn btn-primary btn-lg" value="OK" onclick="run_data_factory_pull_excel(1);" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="js/wysi/wysihtml5-0.3.0.min.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/wysi/bootstrap3-wysihtml5.js"></script>
     <script src="js/jquery.scrollUp.js"></script>
     <!--Data Table Specific-->
-    <script src="js/jquery.dataTables.js"></script>
+    <script src="js/jquery.DataTables.js"></script>
 
 
     <!-- Color Picker -->
@@ -699,7 +665,7 @@
                 bsort: false,
             });
         });
-        
+
         //Tooltip
         $('a').tooltip('hide');
 
@@ -714,7 +680,6 @@
 
         //Color Pickers
         $(document).ready(function () {
-
             $('.demo').each(function () {
                 $(this).minicolors({
                     control: $(this).attr('data-control') || 'hue',
@@ -732,19 +697,8 @@
                     },
                     theme: 'bootstrap'
                 });
-
             });
-
         });
-        //Data Tables
-        
-//If you want to disable the default sorting but keep the columns sortable, just use the following configuration :
-
-        $(document).ready(function () {
-            $('#data-table').dataTable({
-                "sPaginationType": "full_numbers"
-        });
-
     </script>
 </body>
 </html>

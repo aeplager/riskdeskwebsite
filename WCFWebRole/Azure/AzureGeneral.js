@@ -300,58 +300,7 @@ function TrialTest() {
     }
 
 }
-function UploadFiles(FileType) {
-    try {
-        //alertify.success("Ok Great");
-        var files = document.getElementById('files').files;       
-        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
-        fileslength = files.length;
-        if (fileslength > 0) {
-            //var FileName = ObtainDateSuffix() + files[0].name;
-            var FileName = files[0].name;
-            FileNameForImport = ObtainDateSuffix(FileName);
-            files[0].name = FileNameForImport;
-            var dt = new Date();
-            AzureParms = ObtainAzureParams(FileType);
-            var UserName = ReturnUserName();
-            var AzureStorageName = AzureParms.AzureStorageName;
-            var sas = AzureParms.SASKey;
-            var blobUri = AzureParms.blobUri;
-            container = AzureParms.AzureContainer;
-            FileType = FileType.toUpperCase();
-            FileType = FileType.trim();
-            if (FileType == 'ICECURVE') {
-                FileName = files[0].name;
-                // Update DB for File Status
-                iFileCount = files.length;
-                for (iFile = 0; iFile < iFileCount; iFile++) {
-                    FileName = files[iFile].name;
-                    var FileID = LogFileUploadStatus(0, FileNameForImport, 'UPLD', FileType, UserName);
-                    // Change the files
-                    uploadBlobByStream(false, files[iFile], FileNameForImport, AzureParms);
-                }
-                msg = "Uploading proceeding";
-                alertify.success(msg);
-                FileNameUpload = FileNameForImport;
-            } else {
-                FileType = FileType.toUpperCase();
-                FileType = FileType.trim();
-                // Update DB for File Status
-                var FileID = LogFileUploadStatus(0, FileName, 'UPLD', FileType, UserName);
-                uploadBlobByStream(false, files, FileName, AzureParms);
-                msg = "Uploading proceeding";
-                alertify.success(msg);
-                FileNameUpload = FileNameForImport;
-            }
-        } else {
-            alertify.error("Please select a file before pressing upload");
-        }
- 
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }
-}
+
 //function HeaderDataErrorReport(e) {
 //    alert(e);
 //}

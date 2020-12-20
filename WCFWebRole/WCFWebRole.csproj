@@ -182,6 +182,7 @@
     <Content Include="Scripts\ICECurveUploader.js" />
     <Content Include="Scripts\AccountValidation.js" />
     <Content Include="Scripts\RetailDealEntry.js" />
+    <Content Include="Scripts\tuto_auto_tab_system.js" />
     <Content Include="Scripts\WholeSaleDealEntry.js" />
     <Content Include="Scripts\StatsPage.js" />
     <Content Include="Scripts\TransposeData.js" />
