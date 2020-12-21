@@ -477,7 +477,7 @@
                         <br />
                         <div class="row">
                             <label class="label-bullet-blue">Select a Sheet</label>
-                            <select id="selSheets" class="form-control">
+                            <select id="selSheets" class="form-control"  multiple="multiple">
                                 <option value="0">
                                     - Select Sheet -
                                 </option>
@@ -486,7 +486,7 @@
                         <div class=""></div>
                         <div style="width: 70%;padding: 10px;margin: auto;" class="row">
                             <input type="button" id="cancel_button" class="btn btn-primary btn-lg" value="Cancel" onclick="$('#myModal').modal('hide');" />
-                            <input type="button" id="ok_button" class="btn btn-primary btn-lg" value="OK" onclick="run_data_factory_pull_excel(1);" />
+                            <input type="button" id="ok_button" class="btn btn-primary btn-lg" value="OK" onclick="generic_uploader_run_data_factory_selected_sheets();" />  <!--run_data_factory_pull_excel(1)-->
                         </div>
                     </div>
                 </div>

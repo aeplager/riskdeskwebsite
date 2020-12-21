@@ -554,6 +554,7 @@ function ImportIntoValidationTableNew(tab_id) {
             alertify.success(ResultData);
 
         } else {
+            var tab_id = 1;
             run_data_factory_pull(FileName, sheet_name, tab_id);
         }
     } catch (e) {
@@ -562,6 +563,41 @@ function ImportIntoValidationTableNew(tab_id) {
 
     }
 }
+function getSelectValues(select) {
+    var result = [];
+    var options = select && select.options;
+    var opt;
+
+    for (var i = 0, iLen = options.length; i < iLen; i++) {
+        opt = options[i];
+
+        if (opt.selected) {
+            result.push(opt.value || opt.text);
+        }
+    }
+    return result;
+}
+function generic_uploader_run_data_factory_selected_sheets() {
+    try {
+        var multiSelect = document.getElementById("selSheets");
+        var iLimiter = 4;
+        if (multiSelect.selectedOptions.length <= iLimiter) {
+            iLimiter = multiSelect.selectedOptions.length;
+        }        
+        $("#myModal").modal('hide');
+        for (var i = 0; i < iLimiter; i++) {
+            var msg = "Running " + multiSelect.selectedOptions[i].text;            
+            var sheet_name = multiSelect.selectedOptions[i].text;
+            alertify.success(msg);
+            var tab_id = i + 1;
+            run_data_factory_pull(FileNameForImport, sheet_name, tab_id);            
+        }
+
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
 function run_data_factory_pull_excel(tab_id) {
     try {
         var sheet_name = $('#selSheets option:selected').text()
