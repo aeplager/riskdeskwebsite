@@ -3161,3 +3161,9 @@ h4.panel-title {
 .generic_uploader_table_width{
     width:  8%;
 }
+
+/*div.dataTables_wrapper {
+    width: 800px;
+    margin: 0 auto;
+}
+*/

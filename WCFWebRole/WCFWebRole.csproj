@@ -159,6 +159,7 @@
     <Content Include="Customer.html" />
     <Content Include="GenericUploader - Copy.html" />
     <Content Include="GenericUploader.html" />
+    <Content Include="GenericUploader_old.html" />
     <Content Include="GenericUploadForm.html" />
     <Content Include="Gif\gears7.gif" />
     <Content Include="img\calendar-128-Resize.png" />
@@ -175,6 +176,7 @@
     <Content Include="SampleUploader.html" />
     <Content Include="Scripts\DeletedCode.js" />
     <Content Include="Scripts\GenericUploader.js" />
+    <Content Include="Scripts\GenericUploader_old.js" />
     <Content Include="Scripts\GraphingGeneral.js" />
     <Content Include="Scripts\GraphingObtainData.js" />
     <Content Include="Scripts\GraphingSelectDropDowns.js" />

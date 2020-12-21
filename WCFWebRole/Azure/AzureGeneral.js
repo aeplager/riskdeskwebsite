@@ -215,7 +215,7 @@ function uploadBlobByStream(checkMD5, files, filename, AzureParms) {
                 } else {
                     console.log('Upload is successful');
                     //await delay(2000);
-                    setInterval(ImportIntoValidationTableNew(), 2000);
+                    setInterval(ImportIntoValidationTableNew(1), 2000);
                     //ImportIntoValidationTableNew();
                 }
             });
