@@ -16,8 +16,7 @@
             counter + '.10',
             counter + '.11',
             counter + '.12'
-        ]);        
-        alertify.success('Finished');
+        ]);                
     }
     catch (e) {
         HeaderDataErrorReport(e);
@@ -63,7 +62,7 @@ function generic_uploader_show_file(input) {
     }
 }
 function generic_uploader_FileInitialDropDowns(tab_id) {
-    GeneralSelFill('sel_generic_uploader_file_type_' + tab_id, '- File Type -', '/Services/CurveUploader.svc/FileTypeGetInfo');
+    GeneralSelFill('sel_generic_uploader_file_type_' + tab_id, '- File Type -', '/Services/CurveUploader.svc/InformationTypeGetInfo');
     GeneralSelFill('sel_LineLength_' + tab_id, '- Line Length -', '/Services/CurveUploader.svc/LineStartGetInfo');
 }
 //GeneralSelFill('sel_generic_uploader_file_type_' + nbrLiElem + 1, '- File Type -', '/Services/CurveUploader.svc/FileTypeGetInfo');
@@ -106,7 +105,7 @@ function generic_uploader_Upload_files(FileType) {
                 FileType = FileType.toUpperCase();
                 FileType = FileType.trim();
                 // Update DB for File Status
-                var FileID = LogFileUploadStatus(0, FileName, 'UPLD', FileType, UserName);
+                //var FileID = LogFileUploadStatus(0, FileName, 'UPLD', FileType, UserName);
                 uploadBlobByStream(false, files, FileName, AzureParms);
                 msg = "Uploading proceeding";
                 alertify.success(msg);
@@ -475,8 +474,7 @@ function run_data_factory_pull(FileName, sheet_name, tab_id) {
         var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/datafactor_data/';
         var DataMain = FileName + '/' + sheet_name + '/100';
         urlMain = urlMain + DataMain;
-        var ResultData = ReturnDataFromService(urlMain);
-        
+        var ResultData = ReturnDataFromService(urlMain);        
         var iLimit = oTable[tab_id].fnGetData().length;
         for (i = 1; i <= iLimit; i++) {
             oTable[tab_id].fnDeleteRow(0);
@@ -536,6 +534,8 @@ function ImportIntoValidationTableNew(tab_id) {
         start = ln - 5;
         var long_type = file_name.substring(start, ln);
         var sheet_name = "SH";
+        // Hide All But One 
+        generic_uploader_hide_all_tabs();
         if (short_type == ".xls" || short_type == ".xlm" || long_type == ".xlsx" || long_type == ".xlsm") {
             // Obtain sheet names
             file_name = file_name.toLowerCase();
@@ -577,8 +577,42 @@ function getSelectValues(select) {
     }
     return result;
 }
+function generic_uploader_hide_all_tabs() {
+    try {
+        // Hide All But First Tab
+        for (var i = 2; i < 11; i++) {
+            var hdr = "generic_uploader_tab_header_" + i.toString();
+            $("#" + hdr).hide();
+            //id = "generic_uploader_tab_header_2"
+        }
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function generic_uploader_show_all_tabs() {
+    try {
+        // Hide All But First Tab
+        for (var i = 1; i < 11; i++) {
+            var hdr = "generic_uploader_tab_header_" + i.toString();
+            $("#" + hdr).show();
+            //id = "generic_uploader_tab_header_2"
+        }
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function generic_uploader_show_tab(tab_id) {
+    try {
+        var hdr = "generic_uploader_tab_header_" + tab_id.toString();
+        $("#" + hdr).show();
+
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
 function generic_uploader_run_data_factory_selected_sheets() {
     try {
+        
         var multiSelect = document.getElementById("selSheets");
         var iLimiter = 4;
         if (multiSelect.selectedOptions.length <= iLimiter) {
@@ -590,6 +624,10 @@ function generic_uploader_run_data_factory_selected_sheets() {
             var sheet_name = multiSelect.selectedOptions[i].text;
             alertify.success(msg);
             var tab_id = i + 1;
+            if (tab_id > 1) {
+                generic_uploader_show_tab(tab_id);
+            }
+            $('#tab_header_' + tab_id.toString()).text(sheet_name);
             run_data_factory_pull(FileNameForImport, sheet_name, tab_id);            
         }
 
@@ -615,7 +653,7 @@ function run_data_factory_pull_excel(tab_id) {
 
     }
 }
-async function GenericValidatedDataUpsert(tab_id) {
+async function  generic_uploader_validated_data_upsert(tab_id) {
     try {
         if ($('#DataProcessingGIF_' + tab_id).is(":hidden") == false) {
             msg = "Please wait for the background processing to finish";
@@ -628,8 +666,9 @@ async function GenericValidatedDataUpsert(tab_id) {
                 var FileName = FileNameForImport;// files[0].name;
                 var FileTypeName = 'ACCOUNT';
                 var ContainerName = 'riskaccounts';
-                var InformationType = $("#sel_generic_uploader_file_type_" + tab_id + ":selected").val();
-                var FirstRowOfData = $("#LineLength_" + tab_id + " :selected").val();
+                var selector = $("#sel_generic_uploader_file_type_" + tab_id);
+                var InformationType = $("#sel_generic_uploader_file_type_" + tab_id).val();                
+                var FirstRowOfData = $("#LineLength_" + tab_id).val();
                 var currentTime = new Date()
                 // returns the month (from 0 to 11)
                 var month = currentTime.getMonth() + 1;
@@ -641,8 +680,11 @@ async function GenericValidatedDataUpsert(tab_id) {
                 var mn = currentTime.getMinutes();
                 var sec = currentTime.getSeconds();
                 var table = document.getElementById("data-table_" + tab_id);
+                var sheet_name = $('#tab_header_' + tab_id.toString()).text();
+                //if ((sheet_name == '') || (sheet_name == null) { sheet_name = 'CSV';}
                 //var FirstLineOfDate = LineLength.options[LineLength.selectedIndex].value;
                 var msg = 'Failure in processing....'
+                var sheet_name = $('#tab_header_' + tab_id.toString()).text();                
                 //GenericValidatedDataUpsert?FileName={FileName}&InformationType={InformationType}&FirstRowOfData={FirstRowOfData}&Field1={Field1}&Field2={Field2}&Field3={Field3}&Field4={Field4}&Field5={Field5}&Field6={Field6}&Field7={Field7}&Field8={Field8}&Field9={Field9}&Field10={Field10}&Field11={Field11}&Field12={Field12}",
                 var xmlInput = '';
                 var urlMain = '/Services/CurveUploader.svc/GenericValidatedDataUpsert?';
@@ -658,7 +700,7 @@ async function GenericValidatedDataUpsert(tab_id) {
                 if (InformationType == 2) {
                     xmlInput = xmlInput + '<Row><CustomerID>' + $("#cboCustomerSelector_" + tab_id).find('option:selected').val() + '</CustomerID><CustomerName>' + $("#cboCustomerSelector_" + tab_id).find('option:selected').text() + '</CustomerName></Row>';
                 }
-                DataMain = "FileName=" + FileName + "&InformationType=" + InformationType + "&Field1=" + xmlInput
+                DataMain = "FileName=" + FileName + "&InformationType=" + InformationType + "&SheetName=" + sheet_name + "&Field1=" + xmlInput;
                 var urlMain = urlMain + DataMain;
                 if ((InformationType == 4) || (InformationType == 5)) {
                     var ResultData = ReturnDataFromServiceAsync(urlMain);
@@ -669,10 +711,10 @@ async function GenericValidatedDataUpsert(tab_id) {
                     for (var i = 0; i <= 50; i++) {
                         const result = await resolveAfter20Seconds();
                         urlMain = '/Services/CurveUploader.svc/FileStatusGetInfo?';
-                        DataMain = 'FileName=' + FileName + '&FileType=' + FileTypeName;
+                        DataMain = 'FileName=' + FileName + '&FileType=' + FileTypeName + '&SheetName=' + sheet_name;
                         urlMain = urlMain + DataMain;
                         urlMain = '/Services/CurveUploader.svc/FileStatusGetInfo?';
-                        DataMain = 'FileName=' + FileName + '&FileType=' + FileTypeName;
+                        DataMain = 'FileName=' + FileName + '&FileType=' + FileTypeName + '&SheetName=' + sheet_name;
                         urlMain = urlMain + DataMain;
                         ResultData = ReturnDataFromService(urlMain);
                         PercentDone = ResultData.PercentDone;
@@ -711,10 +753,8 @@ async function GenericValidatedDataUpsert(tab_id) {
                     alertify.success(msg);
                 }
 
-                var iLimit = oTable.fnGetData().length;
-                for (i = 1; i <= iLimit; i++) {
-                    oTable.fnDeleteRow(0);
-                }
+                
+                generic_uploader_delete_row(tab_id);
 
                 msg = "Sent for processing";
                 alertify.success(msg);
@@ -759,7 +799,7 @@ function generic_uploader_add_tab(tab_id, div_id) {
         var sixth = '<label class="label-bullet-blue">Customer</label><select id="cboCustomerSelector_' + tab_id +'" class="form-control"><option value="0">- Customer -</option></select></div>';
         var seventh = '<div class="col-md-2 col-sm-2 col-xs-2"><label class="label-bullet-blue">Start Line of Data</label><select id="sel_LineLength_' + tab_id +'" class="form-control"></select></div></div>';
         var eighth = '</br><div id="tableContainer_' + tab_id + '" class="tableContainer datablock"><table id="data-table_' + tab_id +'"></table>';
-        var ninth = '</div><div class="clearfix"></div></div></div><div class="widget"><input type="button" id="validate-button_' + tab_id + '" class="btn btn-primary btn-lg" value="Import Into Table" onclick="GenericValidatedDataUpsert(' + tab_id + ')" /></div></div></div></div>';
+        var ninth = '</div><div class="clearfix"></div></div></div><div class="widget"><input type="button" id="validate-button_' + tab_id + '" class="btn btn-primary btn-lg" value="Import Into Table" onclick="generic_uploader_validated_data_upsert(' + tab_id + ')" /></div></div></div></div>';
         var final = first + second + third + fourth + fifth + sixth + seventh + eighth + ninth;
         $('#' + div_id).append(final);        
         generic_uploader_create_base_table(tab_id);

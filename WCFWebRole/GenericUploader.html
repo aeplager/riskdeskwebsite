@@ -74,6 +74,9 @@
 
     <!--<![endif]-->-->
     <style>
+        .lichild {
+            display: none;
+        }
         .newdatatable {
             width: 800px;
         }
@@ -141,17 +144,19 @@
             // Initialize the city
             try {
                 //AddHeader();
-                //generic_uploader_create_base_table(1);
-                //generic_uploader_FileInitialDropDowns(1);
-                //$("#DataProcessingGIF_1").hide();
+                generic_uploader_hide_all_tabs();                                                
                 for (i = 0; i < 10; i++) {
                     var tbl;
                     oTable.push(tbl);
                 }
-                generic_uploader_add_tab(1, 'generic_uploader_first_tab');
-                generic_uploader_add_tab(2, 'generic_uploader_second_tab');
-                generic_uploader_add_tab(3, 'generic_uploader_third_tab');
-                generic_uploader_add_tab(4, 'generic_uploader_fourth_tab');
+                var startDate = new Date();
+                for (i = 1; i < 11; i++) {
+                    generic_uploader_add_tab(i, 'generic_uploader_tab_' + i.toString());
+                }                
+                var endDate = new Date();
+                var seconds = (endDate.getTime() - startDate.getTime()) / 1000;
+                var msg = "The total seconds for processing the tabs is " + seconds.toString();
+                //alertify.success(msg);
             }
 
             catch (e) {
@@ -186,23 +191,6 @@
                     <a href="#" data-toggle="modal" data-target="#modalMd">
                         <span class="text-white">Code</span> <i class="fa fa-code"></i>
                     </a>
-                    <!--Modal
-                    <div class="modal fade" id="modalMd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                    <h4 class="modal-title text-danger" id="myModalLabel5">Coding Style </h4>
-                                </div>
-                                <div class="modal-body">
-                                    <img src="img/documentation.png" alt="Esquare Admin">
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>-->
                 </li>
                 <li class="list-box dropdown">
                     <a id="drop5" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">
@@ -403,22 +391,29 @@
                                                     </div>
                                                     <div class="widget-body clearfix">
                                                         <ul id="myTab" class="nav nav-tabs">
-                                                            <li class="active"><a href="#generic_uploader_first_tab" data-toggle="tab">First Tab</a></li>
-                                                            <li><a href="#generic_uploader_second_tab" data-toggle="tab">Second Tab</a></li>
-                                                            <li><a href="#generic_uploader_third_tab" data-toggle="tab">Third Tab</a></li>
-                                                            <li><a href="#generic_uploader_fourth_tab" data-toggle="tab">Fourth Tab</a></li>
-                                                            <li class="hide"><a href="#profile" data-toggle="tab">Profile Test</a></li>
+                                                            <li class="active" id="generic_uploader_tab_header_1"><a href="#generic_uploader_tab_1" data-toggle="tab"><label id="tab_header_1">First Tab</label></a></li>
+                                                            <li id="generic_uploader_tab_header_2"><a href="#generic_uploader_tab_2" data-toggle="tab"><label id="tab_header_2"></label></a></li>
+                                                            <li id="generic_uploader_tab_header_3"><a href="#generic_uploader_tab_3" data-toggle="tab"><label id="tab_header_3"></label></a></li>
+                                                            <li id="generic_uploader_tab_header_4"><a href="#generic_uploader_tab_4" data-toggle="tab"><label id="tab_header_4"></label></a></li>
+                                                            <li id="generic_uploader_tab_header_5"><a href="#generic_uploader_tab_5" data-toggle="tab"><label id="tab_header_5"></label></a></li>
+                                                            <li id="generic_uploader_tab_header_6"><a href="#generic_uploader_tab_6" data-toggle="tab"><label id="tab_header_6"></label></a></li>
+                                                            <li id="generic_uploader_tab_header_7"><a href="#generic_uploader_tab_7" data-toggle="tab"><label id="tab_header_7"></label></a></li>
+                                                            <li id="generic_uploader_tab_header_8"><a href="#generic_uploader_tab_8" data-toggle="tab"><label id="tab_header_8"></label></a></li>
+                                                            <li id="generic_uploader_tab_header_9"><a href="#generic_uploader_tab_9" data-toggle="tab"><label id="tab_header_9"></label></a></li>
+                                                            <li id="generic_uploader_tab_header_10"><a href="#generic_uploader_tab_10" data-toggle="tab"><label id="tab_header_10"></label></a></li>
+                                                            <!--<li class="hide"><a href="#profile" data-toggle="tab"><label id="tab_header_5">First Tab</label></a></li>-->
                                                         </ul>
                                                         <div id="myTabContent" class="tab-content">
-                                                            <div class="tab-pane fade in active" id="generic_uploader_first_tab">
-                                                            </div>
-                                                            <div class="tab-pane fade" id="generic_uploader_second_tab">
-                                                            </div>
-                                                            <div class="tab-pane fade" id="generic_uploader_third_tab">
-                                                            </div>
-                                                            <div class="tab-pane fade" id="generic_uploader_fourth_tab">
-                                                            </div>
-
+                                                            <div class="tab-pane fade in active" id="generic_uploader_tab_1"></div>
+                                                            <div class="tab-pane fade" id="generic_uploader_tab_2"></div>
+                                                            <div class="tab-pane fade" id="generic_uploader_tab_3"></div>
+                                                            <div class="tab-pane fade" id="generic_uploader_tab_4"></div>
+                                                            <div class="tab-pane fade" id="generic_uploader_tab_5"></div>
+                                                            <div class="tab-pane fade" id="generic_uploader_tab_6"></div>
+                                                            <div class="tab-pane fade" id="generic_uploader_tab_7"></div>
+                                                            <div class="tab-pane fade" id="generic_uploader_tab_8"></div>
+                                                            <div class="tab-pane fade" id="generic_uploader_tab_9"></div>
+                                                            <div class="tab-pane fade" id="generic_uploader_tab_10"></div>
                                                         </div>
                                                     </div>
                                                 </div>

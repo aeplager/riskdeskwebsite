@@ -14,11 +14,11 @@ namespace WCFWebRole.Services
     public interface ICurveUploader
     {
 
-        [WebGet(UriTemplate = "/GenericValidatedDataUpsert?FileName={FileName}&InformationType={InformationType}&FirstRowOfData={FirstRowOfData}&Field1={FieldString}",
+        [WebGet(UriTemplate = "/GenericValidatedDataUpsert?FileName={FileName}&InformationType={InformationType}&FirstRowOfData={FirstRowOfData}&SheetName={SheetName}&Field1={FieldString}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        String GenericValidatedDataUpsert(String FileName, String InformationType, Int32 FirstRowOfData, String FieldString);
+        String GenericValidatedDataUpsert(String FileName, String InformationType, Int32 FirstRowOfData, String SheetName, String FieldString);
 
 
         [WebGet(UriTemplate = "/StatesGetInfo",
@@ -58,11 +58,11 @@ namespace WCFWebRole.Services
             BodyStyle = WebMessageBodyStyle.Bare)]
         String GenericFileUpsert(String FileName, String FileTypeName, String ContainerName, String RandomNumber);
         
-        [WebGet(UriTemplate = "/FileStatusGetInfo?FileName={FileName}&FileType={FileType}",
+        [WebGet(UriTemplate = "/FileStatusGetInfo?FileName={FileName}&FileType={FileType}&SheetName={SheetName}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        FileInformation FileStatusGetInfo(String FileName, String FileType);
+        FileInformation FileStatusGetInfo(String FileName, String FileType, String SheetName);
 
         [WebGet(UriTemplate = "/WaitSystemSeconds?iSeconds={iSeconds}",
             RequestFormat = WebMessageFormat.Json,
@@ -75,6 +75,13 @@ namespace WCFWebRole.Services
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
         List<SelectorType> CustomerNameGetInfo(String CustomerID);
+
+
+        [WebGet(UriTemplate = "/InformationTypeGetInfo?InformationTypeID={InformationTypeID}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        List<SelectorType> InformationTypeGetInfo(String InformationTypeID);
 
         [WebGet(UriTemplate = "/FileTypeGetInfo?FileTypeID={FileTypeID}",
             RequestFormat = WebMessageFormat.Json,

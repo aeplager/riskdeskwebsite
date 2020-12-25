@@ -34,7 +34,7 @@ namespace WCFWebRole.Services
 	{
 
 
-        public String GenericValidatedDataUpsert(String FileName, String InformationType, Int32 FirstRowOfData, String FieldString)
+        public String GenericValidatedDataUpsert(String FileName, String InformationType, Int32 FirstRowOfData, String SheetName, String FieldString)
         {
             String SelectionItemsinfo;
             SelectionItemsinfo = "FAILURE";
@@ -50,9 +50,13 @@ namespace WCFWebRole.Services
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = SqlCommandText;
                     cmd.CommandTimeout = 120;
+                    if ((SheetName == null) || (SheetName == "")) {
+                        SheetName = "CSV";
+                    }
                     cmd.Parameters.AddWithValue("@FileName", FileName); 
                     cmd.Parameters.AddWithValue("@InformationTypeID", InformationTypeID); 
                     cmd.Parameters.AddWithValue("@FirstRowOfData", FirstRowOfDataID);
+                    cmd.Parameters.AddWithValue("@SheetName", SheetName);
                     cmd.Parameters.AddWithValue("@FieldString", FieldString);
                     cmd.Connection = con;
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
@@ -76,6 +80,53 @@ namespace WCFWebRole.Services
             }
             return SelectionItemsinfo;
         }
+
+        public List<SelectorType> InformationTypeGetInfo(String InformationTypeID)
+        {
+            List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[WebSite].[InformationTypeGetInfo]";
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    if (InformationTypeID != null)
+                    {
+                        Int64 iInformationTypeID = Convert.ToInt64(InformationTypeID);
+                        cmd.Parameters.AddWithValue("@InformationTypeID", iInformationTypeID);
+                    }
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["InformationTypeID"].ToString(),
+                                SelectorText = dr["InformationType"].ToString(),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
+
+
 
         public List<SelectorType> FileTypeGetInfo(String FileTypeID)
         {
@@ -562,7 +613,7 @@ namespace WCFWebRole.Services
             return "Success";
         }
 
-        public FileInformation FileStatusGetInfo(String FileName, String FileType)
+        public FileInformation FileStatusGetInfo(String FileName, String FileType, String SheetName)
         {
             FileInformation SelectionItemsinfo = new FileInformation();
             DataSet ds = new DataSet();
@@ -575,7 +626,8 @@ namespace WCFWebRole.Services
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = SqlCommandText;
                     cmd.Parameters.AddWithValue("@FileName", FileName);
-                    cmd.Parameters.AddWithValue("@FileType", FileType);                    
+                    cmd.Parameters.AddWithValue("@FileType", FileType);
+                    cmd.Parameters.AddWithValue("@SheetName", SheetName);
                     cmd.Connection = con;
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {
