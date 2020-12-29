@@ -3162,8 +3162,6 @@ h4.panel-title {
     width:  8%;
 }
 
-/*div.dataTables_wrapper {
-    width: 800px;
-    margin: 0 auto;
+.aligncenter {
+    text-align: center;
 }
-*/

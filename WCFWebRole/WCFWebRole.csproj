@@ -160,6 +160,7 @@
     <Content Include="GenericUploader.html" />
     <Content Include="GenericUploadForm.html" />
     <Content Include="Gif\gears7.gif" />
+    <Content Include="Gif\processing.gif" />
     <Content Include="img\calendar-128-Resize.png" />
     <Content Include="img\GFX-MWA-Parks-Reservations.png" />
     <Content Include="img\LogoHeader.png" />

@@ -182,30 +182,7 @@ function uploadBlobByStream(checkMD5, files, filename, AzureParms) {
         blobService.singleBlobPutThresholdInBytes = blockSize;
         var finishedOrError = false;
         var container = 'testuploadcontainer';
-        var dt = new Date();
-        //var filesuffix = dt.getFullYear() + '_' + dt.getMonth() + '_' + dt.getDate() + '_' + dt.getHours() + '_' + dt.getMinutes() + "_" + dt.getSeconds() + '_' 
-        //var filename = ObtainFileName() + file.name;
-        //Changed on 04/19/2019
-        //var speedSummary = blobService.createBlockBlobFromBrowserFile(AzureParms.AzureContainer, filename, file, options, function (error, result, response) {
-        //var speedSummary = blobService.createBlockBlobFromBrowserFile(AzureParms.AzureContainer, files[0]["fileid"], file, options, function (error, result, response) {
-        //    finishedOrError = true;
-        //    //btn.disabled = false;
-        //    //btn.innerHTML = "UploadBlob";
-        //    if (error) {
-        //        alert('Upload filed, open brower console for more detailed info.');
-        //        var msg = "Upload Failed";
-        //        alertify.error(msg);
-        //        console.log(error);
-        //        displayProcess(0);
-        //    } else {
-        //        displayProcess(100);
-        //        setTimeout(function () { // Prevent alert from stopping UI progress update
-        //            var msg = "Successful Upload";
-        //            alertify.success(msg);
-        //        }, 1000);
-        //        //refreshBlobList();
-        //    }
-        //});
+        var dt = new Date();   
         var speedSummary = blobService.createBlockBlobFromBrowserFile(AzureParms.AzureContainer,
             filename,
             file,
@@ -215,7 +192,7 @@ function uploadBlobByStream(checkMD5, files, filename, AzureParms) {
                 } else {
                     console.log('Upload is successful');
                     //await delay(2000);
-                    setInterval(ImportIntoValidationTableNew(3), 2000);
+                    setInterval(generic_uploader_import_table(), 2000);
                     //ImportIntoValidationTableNew();
                 }
             });

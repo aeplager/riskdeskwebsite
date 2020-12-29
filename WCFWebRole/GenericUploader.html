@@ -364,11 +364,9 @@
                                 <div id="dtExampleWidget-2" class="widget-body">
                                     <div id="dt_example-2" class="example_alt_pagination">
                                         <div class="form-group" hidden>
-                                            <input type="file" id="files" value="test" onchange="generic_uploader_show_file(this)" multiple>
+                                            <input type="file" id="files" value="test" onchange="generic_uploader_show_file(this)">
                                         </div>
-                                        <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Upload File" onclick="generic_uploader_upload_files()" />
-
-
+                                        <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Upload File" onclick="generic_uploader_upload_files()" />                                                                                
                                         <div class="form-group">
                                             <div> Uploaded Bytes: <font id="read"> </font> </div>
                                             <div class="progress">
@@ -420,7 +418,7 @@
                                             </div>
                                         </div>
                                         <div id="RemoveAbleDiv_Cust" class="row">
-                                            
+
                                         </div>
                                         <div class="clearfix">
                                         </div>
@@ -429,37 +427,36 @@
                                 </div>
                             </div>
                         </div>
-                    </div>                    
-                </div>
-            </div>
-                    
-                    <!-- Row End -->
-                    <!-- Row Start -->
-                    <!--********************************************************************-->
-                    <!--Validation and Display Portion of the Page-->
-                    <!--********************************************************************-->
-                    <div id="ListUpload_Files" class="row">
-                        <div class="col-lg-12 col-md-12">
-                            <div class="widget">
-                            </div>
-                        </div>
                     </div>
-                    <!-- Row End -->
-                    <!--Bottom Of Left Side Bar-->
                 </div>
-                <!-- Left Sidebar End -->
-                <!-- Right Sidebar Start -->
-                
-                <!-- Right Sidebar End -->
             </div>
 
-            <!-- Dashboard Wrapper End -->
-
-            <footer>
-                <p>© BlueMoon 2013-14</p>
-            </footer>
-
+            <!-- Row End -->
+            <!-- Row Start -->
+            <!--********************************************************************-->
+            <!--Validation and Display Portion of the Page-->
+            <!--********************************************************************-->
+            <div id="ListUpload_Files" class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="widget">
+                    </div>
+                </div>
+            </div>
+            <!-- Row End -->
+            <!--Bottom Of Left Side Bar-->
         </div>
+        <!-- Left Sidebar End -->
+        <!-- Right Sidebar Start -->
+        <!-- Right Sidebar End -->
+    </div>
+
+    <!-- Dashboard Wrapper End -->
+
+    <footer>
+        <p>© BlueMoon 2013-14</p>
+    </footer>
+
+    </div>
     </div>
     <!-- Main Container end -->
     <!--Modal Screens-->
@@ -472,7 +469,7 @@
                         <br />
                         <div class="row">
                             <label class="label-bullet-blue">Select a Sheet</label>
-                            <select id="selSheets" class="form-control"  multiple="multiple">
+                            <select id="selSheets" class="form-control" multiple="multiple">
                                 <option value="0">
                                     - Select Sheet -
                                 </option>
@@ -480,7 +477,7 @@
                         </div>
                         <div class=""></div>
                         <div style="width: 70%;padding: 10px;margin: auto;" class="row">
-                            <input type="button" id="cancel_button" class="btn btn-primary btn-lg" value="Cancel" onclick="$('#myModal').modal('hide');" />
+                            <input type="button" id="cancel_button" class="btn btn-primary btn-lg" value="Cancel" onclick="$('#myModal').modal('hide');" />                            
                             <input type="button" id="ok_button" class="btn btn-primary btn-lg" value="OK" onclick="generic_uploader_run_data_factory_selected_sheets();" />  <!--run_data_factory_pull_excel(1)-->
                         </div>
                     </div>
@@ -488,6 +485,20 @@
             </div>
         </div>
     </div>
+    <div class="form-group">
+        <div class="modal fade" id="modalSpinner">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div style="width: 60%;margin: auto;" class="align-center">
+                        <!--<label id="generic_uploader_spinner" class="label-bullet-blue">Please wait, this process could take few minutes....</label>-->
+                        <!--<br />-->                        
+                        <img src="Gif/processing.gif" alt="Processing" class="aligncenter">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/wysi/wysihtml5-0.3.0.min.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.min.js"></script>
