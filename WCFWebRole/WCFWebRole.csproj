@@ -183,10 +183,11 @@
     <Content Include="Scripts\AccountValidation.js" />
     <Content Include="Scripts\RetailDealEntry.js" />
     <Content Include="Scripts\tuto_auto_tab_system.js" />
+    <Content Include="Scripts\VRDGraphing.js" />
     <Content Include="Scripts\WholeSaleDealEntry.js" />
     <Content Include="Scripts\StatsPage.js" />
     <Content Include="Scripts\TransposeData.js" />
-    <Content Include="Services\Contracts.svc" />
+    <Content Include="Services\Graphing.svc" />
     <Content Include="css\alertify.core.css" />
     <Content Include="css\AutoComplete.css" />
     <Content Include="css\blog.css" />
@@ -395,11 +396,12 @@
     <Content Include="vector-maps.html" />
     <Content Include="Services\WCFAjax.svc" />
     <Content Include="Services\WCFWebService.svc" />
+    <Content Include="VRDGraphs.html" />
     <Content Include="WholesaleDeals.html" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Services\Contracts.svc.cs">
-      <DependentUpon>Contracts.svc</DependentUpon>
+    <Compile Include="Services\Graphing.svc.cs">
+      <DependentUpon>Graphing.svc</DependentUpon>
     </Compile>
     <Compile Include="Services\CurveUploader.svc.cs">
       <DependentUpon>CurveUploader.svc</DependentUpon>
@@ -411,7 +413,7 @@
     <Compile Include="Services\Facility.svc.cs">
       <DependentUpon>Facility.svc</DependentUpon>
     </Compile>
-    <Compile Include="Services\IContracts.cs" />
+    <Compile Include="Services\IGraphing.cs" />
     <Compile Include="Services\ICurveUploader.cs" />
     <Compile Include="Services\ICustomers.cs" />
     <Compile Include="Services\IDeals.cs" />
@@ -478,7 +480,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>17475</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:17475/</IISUrl>
+          <IISUrl>http://localhost:17470/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -806,3 +806,7 @@ function SelectorFindByText(SelectorName, SelectorText) {
         HeaderDataErrorReport(e);
     }
 }
+function GeneralgetCurentFileName() {
+    var pagePathName = window.location.pathname;
+    return pagePathName.substring(pagePathName.lastIndexOf("/") + 1);
+}

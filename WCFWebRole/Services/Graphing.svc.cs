@@ -20,19 +20,22 @@ namespace WCFWebRole
 {
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "Contracts" in code, svc and config file together.
     // NOTE: In order to launch WCF Test Client for testing this service, please select Contracts.svc or Contracts.svc.cs at the Solution Explorer and start debugging.
-    public class Contracts : IContracts
+    public class Graphing : IGraphing
     {
-        public List<StateInfo> StatesGetInfo()
+        public GraphMonthly MonthlyEnergyUsageGetInfo()            
         {
 
-            List<StateInfo> SelectionItemsinfo = new List<StateInfo>();
+            List<GraphMonthlyData> GraphingData = new List<GraphMonthlyData>();
+            List<SelectorType> SelectorItem = new List<SelectorType>();
+            List<MonthDef> MonthlyItem = new List<MonthDef>();
+
             DataSet ds = new DataSet();
             string ConnectionString = ReturnConnectionString();
             using (SqlConnection con = new SqlConnection(ConnectionString))
             {
                 using (SqlCommand cmd = new SqlCommand())
                 {
-                    string SqlCommandText = "[WebSite].[StateGetInfo]";
+                    string SqlCommandText = "[Graphing].[MonthlyEnergyUsageGetInfo]";
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = SqlCommandText;
                     cmd.Connection = con;
@@ -46,22 +49,61 @@ namespace WCFWebRole
             {
                 if (ds.Tables.Count > 0)
                 {
-                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    // Graph Monthly
+                    if (ds.Tables[0].Rows.Count > 0)
                     {
-                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        foreach (DataRow dr in ds.Tables[0].Rows)
                         {
-                            SelectionItemsinfo.Add(new StateInfo
+                            GraphingData.Add(new GraphMonthlyData
                             {
 
-                                StateAbb = dr["stateabb"].ToString(),
-                                StateName = dr["Statename"].ToString(),
+                                WholesaleBlock = dr["WholeSaleBlocks"].ToString(),
+                                Month = dr["MonthsShortName"].ToString(),
+                                MonthlyUsageMWH = Convert.ToDouble(dr["MonthlyUsageMWH"].ToString()),
                             });
                         }
+
+                    }
+                    // Whole Sale Blocks
+                    if (ds.Tables[1].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[1].Rows)
+                        {
+                            SelectorItem.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["WholeSaleBlocksID"].ToString(),
+                                SelectorText= dr["WholeSaleBlocks"].ToString(),
+                                Color= dr["Color"].ToString(),
+                            });
+                        }
+
+                    }
+                    // Months
+                    if (ds.Tables[2].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[2].Rows)
+                        {
+                            MonthlyItem.Add(new MonthDef
+                            {
+
+                                MonthID = dr["MonthsID"].ToString(),
+                                MonthShortName = dr["MonthsShortName"].ToString(),                                
+                            });
+                        }
+
                     }
                 }
             }
+            GraphMonthly SelectionItemsinfo = new GraphMonthly();
+            SelectionItemsinfo.GraphMonthlyData = GraphingData;
+            SelectionItemsinfo.MonthDef = MonthlyItem;
+            SelectionItemsinfo.WholeSaleBlocks = SelectorItem;
+
             return SelectionItemsinfo;
         }
+
+
         private String ReturnConnectionString()
         {
             try

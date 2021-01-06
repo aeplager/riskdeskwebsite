@@ -29,7 +29,7 @@
     <!--AutoComplete Scripts-->
     <link rel="stylesheet" href="css/AutoComplete.css" />
     <!--Normal Scripts-->
-    
+
 
     <script src="https://code.jquery.com/jquery-1.7.min.js"></script>
     <script src="https://code.jquery.com/ui/1.7.0/jquery-ui.js"></script>
@@ -55,9 +55,8 @@
     <script type="text/javascript" src="Scripts/General.js"></script>
     <script type="text/javascript" src="Scripts/Customer.js"></script>
     <script type="text/javascript" src="Scripts/AutoComplete.js"></script>
-    <!--<script type="text/javascript" src="Scripts/DealEntry.js"></script>
-    <script type="text/javascript" src="Scripts/Facility.js"></script>-->
     <script type="text/javascript" src="Scripts/GenericUploader.js"></script>
+    <script type="text/javascript" src="Scripts/VRDGraphing.js"></script>
     <!--<!--Links to Azure-->-->
     <script src="Azure/azure-storage.blob.js"></script>
     <script src="Azure/AzureGeneral.js"></script>
@@ -77,18 +76,21 @@
         .lichild {
             display: none;
         }
+
         .newdatatable {
             width: 800px;
         }
+
         .hide {
             display: none;
         }
+
         .datablock {
             height: 120px;
         }
-        .tableContainer{
-            width:  800px%;            
 
+        .tableContainer {
+            width: 800px%;
         }
         /*.qkss_datatable{
             overflow-x: auto;
@@ -124,41 +126,30 @@
                 transform: rotate(360deg);
             }
         }
-
-        
     </style>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
     <script>
         /*An array containing all the country names in the world:*/
-        var LoadProfiles = [];
-        var Facilities = [];
-        var iPercent = 0;
-        var FileNameUpload = "";
+        // Load the Visualization API and the corechart package.
+        google.charts.load('current', { 'packages': ['corechart', 'table'] });
+
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.charts.setOnLoadCallback(drawChart);
+
+        // Callback that creates and populates a data table,
+        // instantiates the pie chart, passes in the data and
+        // draws it.
+
         var oTable = [];
-        var oTableMatch;
-        var RandomNumber = "TEST";
-        var iStartRow = 1;
-        var iEndRow = 50;
-        var FileNameForImport = "N/A";
-        var vblForReturn = "N/A";
         function Initialize() {
             // Initialize the city
             try {
-                //AddHeader();
-                generic_uploader_hide_all_tabs();                                                
-                for (i = 0; i < 10; i++) {
-                    var tbl;
-                    oTable.push(tbl);
-                }
-                var startDate = new Date();
-                for (i = 1; i < 11; i++) {
-                    generic_uploader_add_tab(i, 'generic_uploader_tab_' + i.toString());
-                }                
-                var endDate = new Date();
-                var seconds = (endDate.getTime() - startDate.getTime()) / 1000;
-                var msg = "The total seconds for processing the tabs is " + seconds.toString();
-                //alertify.success(msg);
-                generic_uploader_show_tab(2);
-                generic_uploader_show_tab(3);
+
+
+
             }
 
             catch (e) {
@@ -314,7 +305,7 @@
                             Dashboard
                         </a>
                     </li>
-                    <li class='active'>
+                    <li>
                         <a href="">
                             <i class="fa fa-align-justify"></i>
                             Data Entry
@@ -327,23 +318,36 @@
                             <li><a href='WholesaleDeals.html'>Wholesale Deal Entry</a></li>
                         </ul>
                     </li>
+                    <li class='active'>
+                        <a href="">
+                            <i class="fa fa-bar-chart-o"></i>
+                            Graphing
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="">Monthly</a>
+                                <ul>
+                                    <li><a onclick="VRDGraphing('MonthlyPricing')">Monthly Pricing</a></li>
+                                    <li><a onclick="VRDGraphing('HourlyShapes')">Hourly Shapes</a></li>
+                                    <li><a onclick="VRDGraphing('RetailRisk')">Retail Risk</a></li>
+                                    <li><a onclick="VRDGraphing('PeakModel')">Peak Model</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="">Pricing</a>
+                                <ul>
+                                    <li><a onclick="VRDGraphing('PricingSummary')">Pricing Summary</a></li>
+                                    <li><a onclick="VRDGraphing('MonthlyPrices')">Monthly Prices</a></li>
+                                    <li><a onclick="VRDGraphing('PriceComparison')">Price Comparison</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <!-- Top Nav End -->
             <!-- Sub Nav End -->
             <div class="sub-nav hidden-sm hidden-xs">
-                <ul>
-                    <li><a href="" class="heading">Account Uploader</a></li>  <!--Main Form for Data Entry-->
-                    <li class="hidden-sm hidden-xs">
-                        <a href="#RemoveAbleDiv_Cust">Table of Accounts</a>
-                    </li>
-                    <li class="hidden-sm hidden-xs">
-                        <a href="#">Upload of Accounts</a>
-                    </li>
-                    <!--<li class="hidden-sm hidden-xs">
-                      <a href="#inputs">Status of Upload</a>
-                    </li>-->
-                </ul>
                 <div class="custom-search hidden-sm hidden-xs">
                     <input type="text" class="search-query" placeholder="Search here ...">
                     <i class="fa fa-search"></i>
@@ -351,79 +355,112 @@
             </div>
             <!-- Sub Nav End -->
             <!-- Dashboard Wrapper Start -->
+
+            <div id="div_selector_groups" class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="widget">
+                        <div class="widget-header">
+                            <div class="title">
+                                Graphs
+                                <span class="mini-title">
+                                    Select Parameters for Graphs<a id="enter-deal-single"></a>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="widget-body">
+                            <form class="form-horizontal no-margin">
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <div id="div_month" class="col-lg-3">
+                                            <label class="control-label">Select Months</label>
+                                            <br />
+                                            <select id="SelMonths" name="CustomerInfoList_Deal_name" class="form-control" onclick="vrd_graphing_selector(this)">
+                                                <option>-Months-</option>
+                                            </select>
+                                        </div>
+                                        <div id="div_congestion_zone" class="col-lg-3">
+                                            <label class="control-label">Select Congestion Zone</label>
+                                            <br />
+                                            <select id="SelCongestionZones" name="CustomerInfoList_Deal_name" class="form-control" onclick="vrd_graphing_selector(this)">
+                                                <option>-Congestion Zone-</option>
+                                            </select>
+                                        </div>
+                                        <div id="div_facility" class="col-lg-3">
+                                            <label class="control-label">Select Facility</label>
+                                            <br />
+                                            <select id="SelFacility" class="form-control" onclick="vrd_graphing_selector(this)">
+                                                <option>-Facility-</option>
+                                            </select>
+                                        </div>
+                                        <div id="div_customer" class="col-lg-3">
+                                            <label class="control-label">Select Customer</label>
+                                            <br />
+                                            <select id="SelCustomer" class="form-control" onclick="vrd_graphing_selector(this)">
+                                                <option>-Customer-</option>
+                                            </select>
+                                        </div>
+                                        <div id="div_weather_scenario" class="col-lg-3">
+                                            <label class="control-label">Select Weather Scenario</label>
+                                            <br />
+                                            <select id="SelWeatherScenario" class="form-control" onclick="vrd_graphing_selector(this)">
+                                                <option>-Customer-</option>
+                                            </select>
+                                        </div>
+                                        <div id="div_catagory" class="col-lg-3">
+                                            <label class="control-label">Select Catagory</label>
+                                            <br />
+                                            <select id="SelCatagory" class="form-control" onclick="vrd_graphing_selector(this)">
+                                                <option>-Catagory-</option>
+                                            </select>
+                                        </div>
+                                        <div id="div_sub_catagory" class="col-lg-3">
+                                            <label class="control-label">Select Catagory</label>
+                                            <br />
+                                            <select id="SelSubCatagory" class="form-control" onclick="vrd_graphing_selector(this)">
+                                                <option>-Sub Catagory-</option>
+                                            </select>
+                                        </div>
+                                        <div id="div_deal" class="col-lg-3">
+                                            <label class="control-label">Select Deal</label>
+                                            <br />
+                                            <select id="SelDeal" class="form-control" onclick="vrd_graphing_selector(this)">
+                                                <option>-Deal-</option>
+                                            </select>
+                                        </div>
+                                        <div id="div_term" class="col-lg-3">
+                                            <label class="control-label">Select Term</label>
+                                            <br />
+                                            <select id="SelTerm" class="form-control" onclick="vrd_graphing_selector(this)">
+                                                <option>-Term-</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="dashboard-wrapper">
                 <!-- Left Sidebar Start -->
                 <div class="left-sidebar">
                     <!-- Row Start -->
-                    <div id="RemoveUploadDiv_Facility" class="row">
+                    <div id="graphs_top_graph_bottom_table" class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="widget">
                                 <div class="widget-header">
                                     <div class="title">
-                                        Upload Files<a id="dynamic-tables-facility-upload"></a>
+                                        Graph Above Data Below<a id="dynamic-tables-facility-upload"></a>
                                     </div>
                                 </div>
                                 <div id="dtExampleWidget-2" class="widget-body">
-                                    <div id="dt_example-2" class="example_alt_pagination">
-                                        <div class="form-group" hidden>
-                                            <input type="file" id="files" value="test" onchange="generic_uploader_show_file(this)">
-                                        </div>
-                                        <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Upload File" onclick="generic_uploader_upload_files()" />                                        
-                                        <!--<input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Change Tab1" onclick="generic_uploader_change_specific_value(1)" />
-                                        <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Change Tab2" onclick="generic_uploader_change_specific_value(2)" />
-                                        <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Change Tab3" onclick="generic_uploader_change_specific_value(3)" />-->
-                                        <div class="form-group">
-                                            <div> Uploaded Bytes: <font id="read"> </font> </div>
-                                            <div class="progress">
-                                                <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                                                    0%
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group" id="MainSelection_FormSelector">
-                                        </div>
-                                    </div>
                                     <div>
                                         <div class="row">
-                                            <div class="col-lg-12 col-md-12">
-                                                <div class="widget">
-                                                    <div class="widget-header">
-                                                        <div class="title">
-                                                            Tab<a id="tabs">s</a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="widget-body clearfix">
-                                                        <ul id="myTab" class="nav nav-tabs">
-                                                            <li class="active" id="generic_uploader_tab_header_1"><a href="#generic_uploader_tab_1" data-toggle="tab"><label id="tab_header_1">First Tab</label></a></li>
-                                                            <li id="generic_uploader_tab_header_2"><a href="#generic_uploader_tab_2" data-toggle="tab" ><label id="tab_header_2"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_3"><a href="#generic_uploader_tab_3" data-toggle="tab" ><label id="tab_header_3"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_4"><a href="#generic_uploader_tab_4" data-toggle="tab"><label id="tab_header_4"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_5"><a href="#generic_uploader_tab_5" data-toggle="tab"><label id="tab_header_5"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_6"><a href="#generic_uploader_tab_6" data-toggle="tab"><label id="tab_header_6"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_7"><a href="#generic_uploader_tab_7" data-toggle="tab"><label id="tab_header_7"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_8"><a href="#generic_uploader_tab_8" data-toggle="tab"><label id="tab_header_8"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_9"><a href="#generic_uploader_tab_9" data-toggle="tab"><label id="tab_header_9"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_10"><a href="#generic_uploader_tab_10" data-toggle="tab"><label id="tab_header_10"></label></a></li>
-                                                            <!--<li class="hide"><a href="#profile" data-toggle="tab"><label id="tab_header_5">First Tab</label></a></li>-->
-                                                        </ul>
-                                                        <div id="myTabContent" class="tab-content">
-                                                            <div class="tab-pane fade in active" id="generic_uploader_tab_1"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_2"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_3"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_4"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_5"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_6"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_7"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_8"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_9"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_10"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <div id="chart_div"></div>
                                         </div>
-                                        <div id="RemoveAbleDiv_Cust" class="row">
-
+                                        <div class="row">                                            
+                                            <div id="table_div"></div>
                                         </div>
                                         <div class="clearfix">
                                         </div>
@@ -436,6 +473,12 @@
                 </div>
             </div>
 
+            <div class="dashboard-wrapper">
+                <!-- Left Sidebar Start -->
+                <div class="left-sidebar">
+                    <!-- Row Start -->
+                </div>
+            </div>
             <!-- Row End -->
             <!-- Row Start -->
             <!--********************************************************************-->
@@ -450,10 +493,10 @@
             <!-- Row End -->
             <!--Bottom Of Left Side Bar-->
         </div>
-        <!-- Left Sidebar End -->
-        <!-- Right Sidebar Start -->
-        <!-- Right Sidebar End -->
-    </div>
+                <!-- Left Sidebar End -->
+                <!-- Right Sidebar Start -->
+                <!-- Right Sidebar End -->
+            </div>
 
     <!-- Dashboard Wrapper End -->
 

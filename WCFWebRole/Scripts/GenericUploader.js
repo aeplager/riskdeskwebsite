@@ -1,4 +1,30 @@
-﻿function generic_uploader_show_tab(tab_id) {
+﻿function generic_uploader_change_all_value() {
+    try {
+        // Change Value of Tag
+        //var cboInfoSel = document.getElementById('sel_generic_uploader_file_type_' + tab_id);        
+        for (var tab_id = 2; tab_id < 11; tab_id++) {
+            $('#sel_generic_uploader_file_type_' + tab_id).val(1);
+            generic_uploader_reset_table_comboboxes(tab_id, "Facility");
+            //$('#sel_generic_uploader_file_type_' + tab_id).val(2);
+            //generic_uploader_reset_table_comboboxes(tab_id, "Customer");
+        }        
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function generic_uploader_change_specific_value(tab_id) {
+    try {
+        $("#sel_generic_uploader_file_type_" + tab_id + ":first");
+        generic_uploader_reset_table_comboboxes(tab_id, "Facility");
+        $("#sel_generic_uploader_file_type_" + tab_id + ":last");
+        generic_uploader_reset_table_comboboxes(tab_id, "Customer");
+
+
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function generic_uploader_show_tab(tab_id) {
     try {
         var hdr = "generic_uploader_tab_header_" + tab_id.toString();
         $("#" + hdr).show();
@@ -200,7 +226,7 @@ function generic_uploader_run_data_factory_selected_sheets() {
     try {
         //$('#modalSpinner').modal('show');
         var multiSelect = document.getElementById("selSheets");
-        var iLimiter = 4;
+        var iLimiter = 10;
         if (multiSelect.selectedOptions.length <= iLimiter) {
             iLimiter = multiSelect.selectedOptions.length;
         }
@@ -233,7 +259,13 @@ function generic_uploader_run_data_factory_selected_sheets() {
             }
         }        
         // Sending everything to check for runs
-        set_run_checkerV2(run_id_arr, tab_id_arr, iLimiter);
+        set_run_checkerV2(run_id_arr, tab_id_arr, iLimiter);              
+        var tab_id = 2;
+        generic_uploader_reset_table_comboboxes(tab_id, "Customer");
+        tab_id = 3;
+        generic_uploader_reset_table_comboboxes(tab_id, "Customer");
+        tab_id = 4;
+        generic_uploader_reset_table_comboboxes(tab_id, "Customer");
         //$('#modalSpinner').modal('hide');
     } catch (e) {
         $('#modalSpinner').modal('hide');
@@ -384,6 +416,19 @@ function generic_uploader_hide_all_tabs() {
         HeaderDataErrorReport(e);
     }
 }
+function generic_uploader_show_all_tabs() {
+    try {
+        // Hide All But First Tab
+        for (var i = 2; i < 11; i++) {
+            var hdr = "generic_uploader_tab_header_" + i.toString();
+            $("#" + hdr).show();
+            //id = "generic_uploader_tab_header_2"
+        }
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
 function generic_uploader_import_table() {
     try {
         var FileName = FileNameForImport;
@@ -490,7 +535,7 @@ function generic_uploader_Upload_files(FileType) {
     }
 }
 function generic_uploader_show_file(input) {
-    try {
+    try {        
         let file = input.files[0];
         generic_uploader_Upload_files('ICECURVE');
 
@@ -549,11 +594,15 @@ function generic_uploader_add_row(tab_id) {
 
 }
 
-function generic_uploader_reset_table_comboboxes(tab_id) {
+function generic_uploader_reset_table_comboboxes(tab_id, val_selector) {
     try {
         var cboInfoSel = document.getElementById('sel_generic_uploader_file_type_' + tab_id);
         var InformationType = 'N/A';
-        if (cboInfoSel.options[cboInfoSel.selectedIndex].value != "0") { InformationType = cboInfoSel.options[cboInfoSel.selectedIndex].text; }
+        if (val_selector == "N/A") {
+            if (cboInfoSel.options[cboInfoSel.selectedIndex].value != "0") { InformationType = cboInfoSel.options[cboInfoSel.selectedIndex].text; }
+        } else {
+            InformationType = val_selector;
+        }        
         var urlMain = '/Services/WCFWebService.svc/GenericValidationFieldsGetInfo?';
         var DataMain = 'InformationType=' + InformationType
         var urlMain = urlMain + DataMain;
@@ -592,7 +641,8 @@ function generic_uploader_reset_table_comboboxes(tab_id) {
         }
         var theText = "";
         var iField = "";
-        $('#CustomerSelectorDiv').hide();
+        selName = 'cboCustomerSelector_' + tab_id;
+        $('#' + selName).hide();
         if (InformationType == "Monthly Usage") {
             theText = "Utility Account Number";
             iField = 1
@@ -629,9 +679,12 @@ function generic_uploader_reset_table_comboboxes(tab_id) {
             theText = "UsageData";
             iField = 3
             $("#generic_uploader_" + tab_id + "cbo_field_" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
-        } else if (InformationType == "Facility") {
-            FillCustomerName(tab_id);
+        } else if (InformationType == "Facility") {                        
+            selName = 'cboCustomerSelector_' + tab_id;
+            CustomerDropDownFill(selName);            
+            $('#cboCustomerSelector_' + tab_id).show();
             theText = "Utility Account Number";
+
             iField = 1
             $("#generic_uploader_" + tab_id + "cbo_field_" + iField).find("option:contains(" + theText + ")").attr('selected', 'selected');
             theText = "Service Address 1";
@@ -813,13 +866,13 @@ function generic_uploader_add_tab(tab_id, div_id) {
         // Add Tab With All Underlying Objects
         //var my_name = 'John';
         var first = `hello ${tab_id}, how are you doing`;
-        
+        var selector_select = "'Customer'";
         var first = '<div class="row"><div class="col-lg-12 col-md-12"><div class="widget"><div class="widget-header"><div class="title">Files Imported<a id="dynamic-tables"></a></div></div>';
         var second = '<div id="dtExampleWidget" class="widget-body"><div id="dt_example" class="example_alt_pagination"><div class="form-group"><div>Background Processing<font id="read"> </font> </div>';
         var third = '<div><label id="DataFactoryProcessing_' + tab_id + '" class="label-bullet">Not Processing</label></br><img id="DataProcessingGIF_' + tab_id + '" src="Gif/gears7.gif" /></div></div>';
         //var third_2 = '<div><label id="StoredProcedureProcessing_' + tab_id + '" class="label-bullet">Not Processing Import to Table</label></br><img id="StoredProcedureProcessingGIF_' + tab_id + '" src="Gif/gears7.gif" /></div></div>';
         var fourth = '<div class="col-lg-12"><div class="col-md-2 col-sm-2 col-xs-2"><label class="label-bullet-blue">Select File Type</label>';
-        var fifth = '<select id="sel_generic_uploader_file_type_' + tab_id + '" onchange="generic_uploader_reset_table_comboboxes(' + tab_id + ')" class="form-control"></select></div><div id="CustomerSelectorDiv" class="col-md-4 col-sm-4 col-xs-4" hidden="true">';
+        var fifth = '<select id="sel_generic_uploader_file_type_' + tab_id + '" onchange="generic_uploader_change_specific_value(' + tab_id + ')" class="form-control"></select></div><div id="CustomerSelectorDiv" class="col-md-4 col-sm-4 col-xs-4" hidden="true">';
         var sixth = '<label class="label-bullet-blue">Customer</label><select id="cboCustomerSelector_' + tab_id + '" class="form-control"><option value="0">- Customer -</option></select></div>';
         var seventh = '<div class="col-md-2 col-sm-2 col-xs-2"><label class="label-bullet-blue">Start Line of Data</label><select id="sel_LineLength_' + tab_id + '" class="form-control"></select></div></div>';
         var eighth = '</br><div id="tableContainer_' + tab_id + '" class="tableContainer datablock"><table id="data-table_' + tab_id + '"></table>';
