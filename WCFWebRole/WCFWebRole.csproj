@@ -142,6 +142,8 @@
     <Content Include="css\alertify.rtl.css" />
     <Content Include="css\alertify.rtl.min.css" />
     <Content Include="css\jquery-ui.css" />
+    <Content Include="css\MultiSelectDropDown\bootstrap-multiselect.css" />
+    <Content Include="css\MultiSelectDropDown\bootstrap-multiselect.min.css" />
     <Content Include="css\themes\bootstrap.css" />
     <Content Include="css\themes\bootstrap.min.css" />
     <Content Include="css\themes\bootstrap.rtl.css" />
@@ -167,6 +169,8 @@
     <Content Include="JSFiddle.html" />
     <Content Include="js\alertify.js" />
     <Content Include="js\jquery.ajax-cross-origin.min.js" />
+    <Content Include="js\MultiSelectDropDown\bootstrap-multiselect.js" />
+    <Content Include="js\MultiSelectDropDown\bootstrap-multiselect.min.js" />
     <Content Include="NewUploader.html" />
     <Content Include="ICECurveUploader.html" />
     <Content Include="index.html" />

@@ -22,7 +22,7 @@ namespace WCFWebRole
     // NOTE: In order to launch WCF Test Client for testing this service, please select Contracts.svc or Contracts.svc.cs at the Solution Explorer and start debugging.
     public class Graphing : IGraphing
     {
-        public GraphMonthly MonthlyEnergyUsageGetInfo()            
+        public GraphMonthly MonthlyEnergyUsageGetInfo(String FieldString)            
         {
 
             List<GraphMonthlyData> GraphingData = new List<GraphMonthlyData>();
@@ -36,6 +36,7 @@ namespace WCFWebRole
                 using (SqlCommand cmd = new SqlCommand())
                 {
                     string SqlCommandText = "[Graphing].[MonthlyEnergyUsageGetInfo]";
+                    cmd.Parameters.AddWithValue("@FieldString", FieldString);
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.CommandText = SqlCommandText;
                     cmd.Connection = con;
@@ -103,6 +104,121 @@ namespace WCFWebRole
             return SelectionItemsinfo;
         }
 
+        public List<SelectorType> DealsGetInfo()
+        {
+            String SqlCommandText = "[WebSite].[GraphingDealsGetInfo]";
+            List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
+            String SelectorIDField = "SelectorID";
+            String SelectorTextField = "SelectorText";
+            SelectionItemsinfo = GenericSelectorReturn(SqlCommandText, SelectorIDField, SelectorTextField);
+            return SelectionItemsinfo;
+        }
+
+
+        public List<SelectorType> TermsGetInfo()
+        {
+            String SqlCommandText = "[WebSite].[GraphingTermsGetInfo]";
+            List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
+            String SelectorIDField = "SelectorID";
+            String SelectorTextField = "SelectorText";
+            SelectionItemsinfo = GenericSelectorReturn(SqlCommandText, SelectorIDField, SelectorTextField);
+            return SelectionItemsinfo;
+        }
+
+        public List<SelectorType> SubCategoryGetInfo()
+        {
+            String SqlCommandText = "[WebSite].[GraphingSubCategoryGetInfo]";
+            List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
+            String SelectorIDField = "SubCategoryID";
+            String SelectorTextField = "SubCategory";
+            SelectionItemsinfo = GenericSelectorReturn(SqlCommandText, SelectorIDField, SelectorTextField);
+            return SelectionItemsinfo;
+        }
+
+        public List<SelectorType> CategoriesGetInfo()
+        {
+            String SqlCommandText = "[WebSite].[GraphingCategoryGetInfo]";
+            List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
+            String SelectorIDField = "CategoryID";
+            String SelectorTextField = "Category";
+            SelectionItemsinfo = GenericSelectorReturn(SqlCommandText, SelectorIDField, SelectorTextField);
+            return SelectionItemsinfo;
+        }
+
+
+
+        public List<SelectorType> FacilitiesGetInfo()
+        {
+
+            String SqlCommandText = "[WebSite].[GraphingFacilityGetInfo]";
+            List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
+            String SelectorIDField = "SelectorID";
+            String SelectorTextField = "SelectorText";
+            SelectionItemsinfo = GenericSelectorReturn(SqlCommandText, SelectorIDField, SelectorTextField);
+            return SelectionItemsinfo;
+
+        }
+        public List<SelectorType> CustomersGetInfo()
+        {
+            String SqlCommandText = "[WebSite].[GraphingCustomerGetInfo]";
+            List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
+            String SelectorIDField = "SelectorID";
+            String SelectorTextField = "SelectorText";
+            SelectionItemsinfo = GenericSelectorReturn(SqlCommandText, SelectorIDField, SelectorTextField);
+            return SelectionItemsinfo;
+        }
+        
+        public List<SelectorType> AllWeatherScenariosGetInfo()
+        {
+
+            String SqlCommandText = "[WebSite].[WeatherScenarioAllGetInfo]";
+            List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
+            String SelectorIDField = "SelectorID";
+            String SelectorTextField = "SelectorText";
+            SelectionItemsinfo = GenericSelectorReturn(SqlCommandText, SelectorIDField, SelectorTextField);
+            return SelectionItemsinfo;
+        }
+
+        // Private Functions
+        private List<SelectorType> GenericSelectorReturn(String StoredProcedure, String SelectorIDField, String SelectorTextField)
+        {
+            List<SelectorType> SelectionItemsinfo = new List<SelectorType>();
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = StoredProcedure;
+
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables["SelectionItems"].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables["SelectionItems"].Rows)
+                        {
+                            SelectionItemsinfo.Add(new SelectorType
+                            {
+                                SelectorID = dr[SelectorIDField].ToString(),
+                                SelectorText = dr[SelectorTextField].ToString(),
+                            });
+                        }
+                    }
+                }
+            }
+            return SelectionItemsinfo;
+        }
 
         private String ReturnConnectionString()
         {

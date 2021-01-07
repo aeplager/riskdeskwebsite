@@ -29,6 +29,14 @@
     <!--AutoComplete Scripts-->
     <link rel="stylesheet" href="css/AutoComplete.css" />
     <!--Normal Scripts-->
+    <!--DropDown Extras-->
+    <!--<script type="text/javascript" src="js/MultiSelectDropDown/bootstrap-multiselect.js"></script>
+    <script type="text/javascript" src="js/MultiSelectDropDown/bootstrap-multiselect.min.js"></script>
+    <link rel="stylesheet" href="css/MultiSelectDropDown/bootstrap-multiselect.css" />
+    <link rel="stylesheet" href="css/MultiSelectDropDown/bootstrap-multiselect.min.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>-->
+    <!--DropDown Extras-->
 
 
     <script src="https://code.jquery.com/jquery-1.7.min.js"></script>
@@ -73,6 +81,66 @@
 
     <!--<![endif]-->-->
     <style>
+        /*DropDown*/
+        .dropdown-check-list {
+            display: inline-block;
+        }
+
+            .dropdown-check-list .anchor {
+                position: relative;
+                cursor: pointer;
+                display: inline-block;
+                padding: 5px 50px 5px 10px;
+                border: 1px solid #ccc;
+            }
+
+                .dropdown-check-list .anchor:after {
+                    position: absolute;
+                    content: "";
+                    border-left: 2px solid black;
+                    border-top: 2px solid black;
+                    padding: 5px;
+                    right: 10px;
+                    top: 20%;
+                    -moz-transform: rotate(-135deg);
+                    -ms-transform: rotate(-135deg);
+                    -o-transform: rotate(-135deg);
+                    -webkit-transform: rotate(-135deg);
+                    transform: rotate(-135deg);
+                }
+
+                .dropdown-check-list .anchor:active:after {
+                    right: 8px;
+                    top: 21%;
+                }
+
+            .dropdown-check-list ul.items {
+                padding: 2px;
+                display: none;
+                margin: 0;
+                border: 1px solid #ccc;
+                border-top: none;
+            }
+
+                .dropdown-check-list ul.items li {
+                    list-style: none;
+                }
+
+            .dropdown-check-list.visible .anchor {
+                color: #0094ff;
+            }
+
+            .dropdown-check-list.visible .items {
+                display: block;
+            }
+            
+        /*DropDown*/
+
+        /*Google Charts*/
+        .bold-font {
+            font-weight: bolder;
+        }
+        /*Google Charts*/
         .lichild {
             display: none;
         }
@@ -137,7 +205,7 @@
         google.charts.load('current', { 'packages': ['corechart', 'table'] });
 
         // Set a callback to run when the Google Visualization API is loaded.
-        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(vrd_graphing_drawChart);
 
         // Callback that creates and populates a data table,
         // instantiates the pie chart, passes in the data and
@@ -147,10 +215,41 @@
         function Initialize() {
             // Initialize the city
             try {
+                //GeneralSelFill('SelMonths', '- Line Length -', '/Services/CurveUploader.svc/LineStartGetInfo');
+                VRDGraphing('MonthlyPricing');
+                vrd_graphing_dropdown_initialize('selMonths');
+                vrd_graphing_dropdown_initialize('selCongestionZones');
+                vrd_graphing_dropdown_initialize('selCustomers');
+                vrd_graphing_dropdown_initialize('selFacilities');
+                vrd_graphing_dropdown_initialize('selWeatherScenario');
 
+                vrd_graphing_dropdown_initialize('selCategory');
+                vrd_graphing_dropdown_initialize('selSubCategory');
+                vrd_graphing_dropdown_initialize('selTerm');
+                vrd_graphing_dropdown_initialize('selDeal');
+                
+                var urlMain = '/Services/WCFWebService.svc/AllMonthsGetInfo';
+                vrd_graphing_dropdown_fill_records('selMonths', urlMain);
+                urlMain = '/Services/Facility.svc/CongestionZonesGetInfo';
+                vrd_graphing_dropdown_fill_records('selCongestionZones', urlMain);
+                urlMain = '/Services/Graphing.svc/CustomersGetInfo';
+                vrd_graphing_dropdown_fill_records('selCustomers', urlMain);                                
+                urlMain = '/Services/Graphing.svc/FacilitiesGetInfo';
+                vrd_graphing_dropdown_fill_records('selFacilities', urlMain);
+                urlMain = '/Services/Graphing.svc/AllWeatherScenariosGetInfo';
+                vrd_graphing_dropdown_fill_records('selWeatherScenario', urlMain);
 
+                urlMain = '/Services/Graphing.svc/CategoriesGetInfo';
+                vrd_graphing_dropdown_fill_records('selCategory', urlMain);
+                urlMain = '/Services/Graphing.svc/SubCategoryGetInfo';
+                vrd_graphing_dropdown_fill_records('selSubCategory', urlMain);
+                urlMain = '/Services/Graphing.svc/TermsGetInfo';
+                vrd_graphing_dropdown_fill_records('selTerm', urlMain);
+                urlMain = '/Services/Graphing.svc/DealsGetInfo';
+                vrd_graphing_dropdown_fill_records('selDeal', urlMain);
 
             }
+
 
             catch (e) {
                 HeaderDataErrorReport(e);
@@ -360,8 +459,8 @@
                 <div class="col-lg-12 col-md-12">
                     <div class="widget">
                         <div class="widget-header">
-                            <div class="title">
-                                Graphs
+                            <div class="title">                                
+                                <label id="TypeOfGraph">Monthly</label>
                                 <span class="mini-title">
                                     Select Parameters for Graphs<a id="enter-deal-single"></a>
                                 </span>
@@ -371,68 +470,82 @@
                             <form class="form-horizontal no-margin">
                                 <div class="form-group">
                                     <div class="col-lg-12">
-                                        <div id="div_month" class="col-lg-3">
-                                            <label class="control-label">Select Months</label>
-                                            <br />
-                                            <select id="SelMonths" name="CustomerInfoList_Deal_name" class="form-control" onclick="vrd_graphing_selector(this)">
-                                                <option>-Months-</option>
-                                            </select>
+                                        <div id="div_Refresh" class="col-lg-3" >
+                                            <input type="button" class="btn-info" onclick="vrd_graphing_refresh()" value="Refresh Graph" />                                            
                                         </div>
-                                        <div id="div_congestion_zone" class="col-lg-3">
-                                            <label class="control-label">Select Congestion Zone</label>
+                                        <div id="div_months" class="col-lg-3"  hidden>
+                                            <!--<label class="control-label">Select Months</label>-->
                                             <br />
-                                            <select id="SelCongestionZones" name="CustomerInfoList_Deal_name" class="form-control" onclick="vrd_graphing_selector(this)">
-                                                <option>-Congestion Zone-</option>
-                                            </select>
+                                            <div id="selMonths" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Months</span>
+                                                <ul class="items" id="selMonths_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selMonths')" />Select All</li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                        <div id="div_facility" class="col-lg-3">
-                                            <label class="control-label">Select Facility</label>
-                                            <br />
-                                            <select id="SelFacility" class="form-control" onclick="vrd_graphing_selector(this)">
-                                                <option>-Facility-</option>
-                                            </select>
+                                        <div id="div_congestion_zone" class="col-lg-3"  hidden>
+                                            <div id="selCongestionZones" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Congestion Zones</span>
+                                                <ul class="items" id="selCongestionZones_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selCongestionZones')" />Select All</li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                        <div id="div_customer" class="col-lg-3">
-                                            <label class="control-label">Select Customer</label>
-                                            <br />
-                                            <select id="SelCustomer" class="form-control" onclick="vrd_graphing_selector(this)">
-                                                <option>-Customer-</option>
-                                            </select>
+                                        <div id="div_Facilities" class="col-lg-3"  hidden>
+                                            <div id="selFacilities" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Facilities</span>
+                                                <ul class="items" id="selFacilities_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selFacilities')" />Select All</li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                        <div id="div_weather_scenario" class="col-lg-3">
-                                            <label class="control-label">Select Weather Scenario</label>
-                                            <br />
-                                            <select id="SelWeatherScenario" class="form-control" onclick="vrd_graphing_selector(this)">
-                                                <option>-Customer-</option>
-                                            </select>
+                                        <div id="div_Customers" class="col-lg-3"  hidden>
+                                            <div id="selCustomers" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Customers</span>
+                                                <ul class="items" id="selCustomers_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selCustomers')" />Select All</li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                        <div id="div_catagory" class="col-lg-3">
-                                            <label class="control-label">Select Catagory</label>
-                                            <br />
-                                            <select id="SelCatagory" class="form-control" onclick="vrd_graphing_selector(this)">
-                                                <option>-Catagory-</option>
-                                            </select>
+                                        <div id="div_weather_scenario" class="col-lg-3"  hidden>
+                                            <div id="selWeatherScenario" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Weather Scenario</span>
+                                                <ul class="items" id="selWeatherScenario_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selWeatherScenario')" />Select All</li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                        <div id="div_sub_catagory" class="col-lg-3">
-                                            <label class="control-label">Select Catagory</label>
-                                            <br />
-                                            <select id="SelSubCatagory" class="form-control" onclick="vrd_graphing_selector(this)">
-                                                <option>-Sub Catagory-</option>
-                                            </select>
+                                        <div id="div_Category" class="col-lg-3"  hidden>
+                                            <div id="selCategory" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Category</span>
+                                                <ul class="items" id="selCategory_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selCategory')" />Select All</li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                        <div id="div_deal" class="col-lg-3">
-                                            <label class="control-label">Select Deal</label>
-                                            <br />
-                                            <select id="SelDeal" class="form-control" onclick="vrd_graphing_selector(this)">
-                                                <option>-Deal-</option>
-                                            </select>
+                                        <div id="div_SubCategory" class="col-lg-3"  hidden>
+                                            <div id="selSubCategory" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select SubCategory</span>
+                                                <ul class="items" id="SubCategory_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selSubCategory')" />Select All</li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                        <div id="div_term" class="col-lg-3">
-                                            <label class="control-label">Select Term</label>
-                                            <br />
-                                            <select id="SelTerm" class="form-control" onclick="vrd_graphing_selector(this)">
-                                                <option>-Term-</option>
-                                            </select>
+                                        <div id="div_Term" class="col-lg-3"  hidden>
+                                            <div id="selTerm" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Term</span>
+                                                <ul class="items" id="selTerm_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selTerm')" />Select All</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="div_Deal" class="col-lg-3"  hidden>
+                                            <div id="selDeal" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Deal</span>
+                                                <ul class="items" id="selDeal_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selDeal')" />Select All</li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -591,7 +704,8 @@
         $('.textarea').wysihtml5();
 
         //Color Pickers
-        $(document).ready(function () {
+        $(document).ready(function () {            
+            //$('#SelMonths').multiselect();
             $('.demo').each(function () {
                 $(this).minicolors({
                     control: $(this).attr('data-control') || 'hue',

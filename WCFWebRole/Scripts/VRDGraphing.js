@@ -1,25 +1,66 @@
-﻿function VRDGraphing(PageType) {
+﻿
+function vrd_graphing_dropdowns_hide_all() {
     try {
-        // Setting Up the Initial Graph
+        // Hide All Selectors
+        $('#div_months').hide();
+        $('#div_congestion_zone').hide();
+        $('#div_Facilities').hide();
+        $('#div_Customers').hide();
+        $('#div_congestion_zone').hide();
+        $('#div_weather_scenario').hide();
+        $('#div_Category').hide();
+        $('#div_SubCategory').hide();
+        $('#div_Term').hide();
+        $('#div_Deal').hide();
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+    
+}
+
+function VRDGraphing(PageType) {
+    try {
+        // Selecting the Graph Type and Setting Up Which Selectors Are Shown
         var base_file_name = 'VRDGraphs.html';
         var file_name = GeneralgetCurentFileName();
         if (file_name != base_file_name) {
             $(location).attr("href", base_file_name);
-        } else {
-            // 
+        } 
+        vrd_graphing_dropdowns_hide_all();
+        switch (PageType) {
+            case "MonthlyPricing":
+                $('#div_congestion_zone').show();
+                $('#div_Facilities').show();
+                $('#div_Customers').show();
+                break;
+            case "HourlyShapes":
+                day = "Monday";
+                break;
+            case "RetailRisk":
+                day = "Tuesday";
+                break;
+            case "PeakModel":
+                day = "Wednesday";
+                break;
+            case "PricingSummary":
+                day = "Thursday";
+                break;
+            case "MonthlyPrices":
+                day = "Friday";
+                break;
+            case "PriceComparison":
+                day = "Saturday";
+                break;
         }
 
-        alert(file_name);
+        file_name = file_name + ' at ' + PageType;
+        alertify.success(file_name);
     } catch (e) {
         HeaderDataErrorReport(e);
     }
 }
 function VRDSelectorsSetup() {
     try {
-
-
-
-
         //Months
         //Congestion Zone
         //Facility
@@ -34,53 +75,195 @@ function VRDSelectorsSetup() {
         HeaderDataErrorReport(e);
     }
 }
+function SelectAll(selector_name) {
+    try {        
+        var i_limit = $("#" + selector_name + " ul li").length;
+        var ul = document.getElementById(selector_name + "_ul");
+        var items = ul.getElementsByTagName("li");
+        var all = ul.getElementsByTagName("input");
+        chk_vl = all[0].checked;
+        for (var i = 1; i < all.length; i++) {
+            all[i].checked = chk_vl;
+        }
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function review_all(selector_name) {
+    try {
+        var i_limit = $("#" + selector_name + " ul li").length;
+        var ul = document.getElementById(selector_name + "_ul");
+        var items = ul.getElementsByTagName("li");
+        var all = ul.getElementsByTagName("input");
+        chk_vl = all[0].checked;
+        for (var i = 1; i < all.length; i++) {            
+            all[i].checked = chk_vl;
+        }
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function vrd_graphing_dropdown_fill_records(selector_name, urlMain) {
+    try {        
+        // Fix to read the docker container
+        var ResultData = ReturnDataFromService(urlMain)
+        vrd_graphing_dropdown_remove_all(selector_name);
+        ResultData.forEach(function (row) {
+            vrd_graphing_dropdown_add_record(selector_name, row.SelectorID, row.SelectorText);
+        });
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function vrd_graphing_dropdown_initialize(selector_name) {
+    try {
+    var checkList = document.getElementById(selector_name);
+    checkList.getElementsByClassName('anchor')[0].onclick = function (evt) {
+        if (checkList.classList.contains('visible'))
+            checkList.classList.remove('visible');
+        else
+            checkList.classList.add('visible');
+    }
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function vrd_graphing_dropdown_add_record(selector_name, checkbox_id, checkbox_text) {
+    try {
+        //var selector_name = "selMonths";
+        var ln = $("#" + selector_name + " ul li").length;
+        $("#" + selector_name + " ul li:last").append('<li><a href="#"><input type="checkbox" id="' + selector_name + '_' + checkbox_id + '"/>  ' + checkbox_text + '</a ></a></li>');
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function vrd_graphing_dropdown_remove_all(selector_name) {
+    try {
+        var i_limit = $("#" + selector_name + " ul li").length;
+        if (i_limit > 1) {
+            for (i_row = 2; i_row <= i_limit; i_row++) {
+                $("#" + selector_name + " ul li:last").remove();
+            }
+        }
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+function RemoveRecord() {
+    try {
+        var selector_name = "selMonths";
+        var ln = $("#" + selector_name + " ul li").length;
+        if (ln > 1) {
+            $("#" + selector_name + " ul li:last").remove();
+        }       
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
 function vrd_graphing_selector(selector) {
     try {
         var id_selector = selector.id;
-        alert(id_selector);
+        var selector_name = "SelMonths";
+        var i_count = $("#" + selector_name + " ul li").length;
+        alertify.success(i_count);
+        var text = $("#" + selector_name + " li:first").text();        
+        $("#" + selector_name + " li:last").remove();
+        $("#" + selector_name + " li:last").remove();
+        $("#" + selector_name + " li:last").append('<li><a href="#"><input type="checkbox" />  Test 1</a ></a></li>');
+        $("#" + selector_name + " li:last").append('<li><a href="#"><input type="checkbox" />  Test 2</a ></a></li>');
+        $("#" + selector_name + " li:last").append('<li><a href="#"><input type="checkbox" />  Test 3</a ></a></li>');        
+        document.getElementById("SelMonths").classList.toggle("show");
+        alertify.success(id_selector);
     } 
     catch (e) {
         HeaderDataErrorReport(e);
     }
 }
-// Graph 
-function drawChart() {
+function vrd_graphing_refresh() {
     try {
+        var xml_cz = vrd_graphing_produce_selector_return_xml('selCongestionZones', 'CZ');
+        var xml_fc = vrd_graphing_produce_selector_return_xml('selFacilities', 'FC');
+        var xml_cu = vrd_graphing_produce_selector_return_xml('selCustomers', 'CU');
+        var xml_complete = xml_cz + xml_fc + xml_cu;
+        vrd_graphing_drawChart();
 
-    
-        // Create the data table.
-        //var data = google.visualization.arrayToDataTable([
-        //    ['Genre', 'Fantasy & Sci Fi', 'Romance', 'Mystery/Crime', 'General',
-        //        'Western', 'Literature', { role: 'annotation' }],
-        //    ['2010', 10, 24, 20, 32, 18, 5, ''],
-        //    ['2020', 16, 22, 23, 30, 16, 9, ''],
-        //    ['2030', 28, 19, 29, 30, 12, 13, '']
-        //]);
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
 
-        var dataTable = new google.visualization.DataTable();
-        dataTable.addColumn('string', 'Month');
-        dataTable.addColumn('string', 'WholesaleBlock');
-        dataTable.addColumn('number', 'MonthlyUsageMWH');
+function vrd_graphing_produce_selector_return_xml(selector_name, tp){
+    try {
+        var i_limit = $("#" + selector_name + " ul li").length;
+        var ul = document.getElementById(selector_name + "_ul");
+        var items = ul.getElementsByTagName("li");
+        var all = ul.getElementsByTagName("input");
+        //chk_vl = all[0].checked;
+        var xml_dom = '';
+        for (var i = 1; i < all.length; i++) {
+            if (all[i].checked == true) {
+                var chk_box_id = all[i].id.substr(selector_name.length+1, all[i].id.length);
+                xml_dom = xml_dom + '<Row><TP>' + tp + '</TP><VL>' + chk_box_id  + '</VL></Row>';
+            }            
+        }
+        return xml_dom;
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+        var xml_dom = 'ERROR';
+        return xml_dom;
+    }
+}
+// Graph 
+function vrd_graphing_drawChart() {
+    try {
+        // Obtain Data   
+        var xml_cz = vrd_graphing_produce_selector_return_xml('selCongestionZones', 'CZ');
+        var xml_fc = vrd_graphing_produce_selector_return_xml('selFacilities', 'FC');
+        var xml_cu = vrd_graphing_produce_selector_return_xml('selCustomers', 'CU');
+        var xml_complete = xml_cz + xml_fc + xml_cu;
 
         var DataMain = '';
-        var urlMain = urlMain + DataMain;
-        urlMain = '/Services/Graphing.svc/MonthlyEnergyUsageGetInfo';
+        if (xml_complete != '') {
+            DataMain = '?FieldString=' + xml_complete;
+        }        
+        var urlMain = '/Services/Graphing.svc/MonthlyEnergyUsageGetInfo';
+        urlMain = urlMain + DataMain;
         // Fix to read the docker container
         var ResultData = ReturnDataFromService(urlMain)
+        
+        if (ResultData.GraphMonthlyData.length == 0) {
+            alertify.error("No data was received");
+            $('#chart_div').hide();
+            $('#table_div').hide();
+            return;
+        }
+        $('#chart_div').show();
+        $('#table_div').show();
         // Establish Tables of Data
         var MonthDef = ResultData.MonthDef;
         var WholeSaleBlocks = ResultData.WholeSaleBlocks;
         var GraphMonthlyData = ResultData.GraphMonthlyData;        
-        // Esatablish Graphing Tables
-        var dataTableWH_Month = new google.visualization.DataTable();
-        var dataTableMonth_WH = new google.visualization.DataTable();
 
-        dataTableWH_Month.addColumn('string', 'WholeSaleBlock');
+        
+
+        // Establish Graphing Tables
+        var dataTable_table = new google.visualization.DataTable();
+        var dataTable_chart = new google.visualization.DataTable();
+        // Filling In Data For Table
+        dataTable_table.addColumn('string', 'WholeSaleBlock');
         MonthDef.forEach(function (row) {
-            dataTableWH_Month.addColumn('number', row.MonthShortName);
+            dataTable_table.addColumn('number', row.MonthShortName);
         });
         blFirstRecord = 0;
-        dataTableWH_Month.addColumn('number', "Total");
+        dataTable_table.addColumn('number', "Total");
         var Total = 0;
         WholeSaleBlocks.forEach(function (rowMain) {
             arrAppend = [];
@@ -93,12 +276,30 @@ function drawChart() {
                 }
             });
             arrAppend.push(Total);
-            dataTableWH_Month.addRow(arrAppend);
+            dataTable_table.addRow(arrAppend);
+        });        
+        // Add SubTotal at Bottom
+        arrAppend = [];
+        arrAppend.push('Total');
+        var SubTotal = 0;
+        var TotalColsTable = 0;
+        MonthDef.forEach(function (rowMain) {            
+            Total = 0;            
+            GraphMonthlyData.forEach(function (row) {
+                if (rowMain.MonthShortName == row.Month) {
+                    Total = Total + row.MonthlyUsageMWH;
+                }
+            });
+            SubTotal = SubTotal + Total;
+            TotalColsTable = TotalColsTable + 1;
+            arrAppend.push(Total);
         });
-        
-        dataTableMonth_WH.addColumn('string', 'Months');
+        arrAppend.push(SubTotal);
+        dataTable_table.addRow(arrAppend);
+        // Establish Data for Chart
+        dataTable_chart.addColumn('string', 'Months');
         WholeSaleBlocks.forEach(function (row) {
-            dataTableMonth_WH.addColumn('number', row.WholeSaleBlock);
+            dataTable_chart.addColumn('number', row.SelectorText);
         });
 
         MonthDef.forEach(function (rowMain) {
@@ -111,11 +312,11 @@ function drawChart() {
                     
                 }
             });            
-            dataTableMonth_WH.addRow(arrAppend);
+            dataTable_chart.addRow(arrAppend);
         });
 
         
-        var view = new google.visualization.DataView(dataTableWH_Month);
+        var view = new google.visualization.DataView(dataTable_table);
         view.setColumns([0, 1,
             {
                 calc: "stringify",
@@ -124,23 +325,48 @@ function drawChart() {
                 role: "annotation"
             },
             2, 3]);
-
+        // Colors:
+        var Colors = [];
+        var TotalRowsTable = 0;
+        WholeSaleBlocks.forEach(function (row) {
+            Colors.push(row.Color);
+            TotalRowsTable = TotalRowsTable+1;
+        });        
+        var Title = 'Weather Normal Monthly Energy Use (MWH)';
         var options = {
             //width: 600,
             height: 400,
             legend: { position: 'top', maxLines: 3 },
             bar: { groupWidth: '75%' },
+            colors: Colors,
+            title: Title,             
+            allowHtml: true,            
+            titleTextStyle: {
+                color: 'Black',
+                fontName: 'Arial',
+                fontSize: 20,                
+                
+            },
             isStacked: true,
         };
+        var number_formatter = new google.visualization.NumberFormat({ pattern: '#,###.##'});
 
         var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
-        chart.draw(dataTableMonth_WH, options);
+        chart.draw(dataTable_chart, options);
+        
 
         var table = new google.visualization.Table(document.getElementById('table_div'));
-
-        table.draw(dataTableWH_Month, { showRowNumber: true, width: '100%', height: '100%' });
+        var i_col_number = dataTable_table.getNumberOfColumns();
+        for (i_col = 0; i_col < i_col_number; i_col++) {
+            number_formatter.format(dataTable_table, i_col);
+        }        
+        
+        dataTable_table.setRowProperties(TotalRowsTable, { 'className': 'bold-font' });
+        dataTable_table.setColumnProperties(TotalColsTable+1, { 'className': 'bold-font' });
+        table.draw(dataTable_table, { showRowNumber: true, width: '100%', height: '100%' });
     }
     catch (e) {
         HeaderDataErrorReport(e);
     }
 }
+

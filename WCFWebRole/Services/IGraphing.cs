@@ -13,11 +13,54 @@ namespace WCFWebRole
     [ServiceContract]
     public interface IGraphing
     {
-        [WebGet(UriTemplate = "/MonthlyEnergyUsageGetInfo",
+        [WebGet(UriTemplate = "/MonthlyEnergyUsageGetInfo?FieldString={FieldString}",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
              BodyStyle = WebMessageBodyStyle.Bare)]
-        GraphMonthly MonthlyEnergyUsageGetInfo();
+        GraphMonthly MonthlyEnergyUsageGetInfo(String FieldString);
+
+        [WebGet(UriTemplate = "/FacilitiesGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<SelectorType> FacilitiesGetInfo();
+
+        [WebGet(UriTemplate = "/CustomersGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<SelectorType> CustomersGetInfo();
+
+        [WebGet(UriTemplate = "/AllWeatherScenariosGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<SelectorType> AllWeatherScenariosGetInfo();
+
+
+        [WebGet(UriTemplate = "/DealsGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<SelectorType> DealsGetInfo();
+
+        [WebGet(UriTemplate = "/TermsGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<SelectorType> TermsGetInfo();
+
+        [WebGet(UriTemplate = "/SubCategoryGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<SelectorType> SubCategoryGetInfo();
+
+        [WebGet(UriTemplate = "/CategoriesGetInfo",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        List<SelectorType> CategoriesGetInfo();
     }
 
 
