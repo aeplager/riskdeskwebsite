@@ -32,6 +32,11 @@ namespace WCFWebRole
              BodyStyle = WebMessageBodyStyle.Bare)]
         GraphIntegerTimeData GraphRetailRisk(String FieldString);
 
+        [WebGet(UriTemplate = "/GraphPeakModel?FieldString={FieldString}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        GraphIntegerTimeData GraphPeakModel(String FieldString);
 
 
         [WebGet(UriTemplate = "/FacilitiesGetInfo",

@@ -31,7 +31,12 @@ namespace WCFWebRole
             ReturnValue = GraphIntTimeFctn("[Graphing].[RetailRiskGetInfo]", FieldString);
             return ReturnValue;
         }
-
+        public GraphIntegerTimeData GraphPeakModel(String FieldString)
+        {
+            GraphIntegerTimeData ReturnValue = new GraphIntegerTimeData();
+            ReturnValue = GraphIntTimeFctn("[Graphing].[PeakModelGetInfo]", FieldString);
+            return ReturnValue;
+        }
         private GraphIntegerTimeData GraphIntTimeFctn(String StoredProcedure, String FieldString)
         {
                      

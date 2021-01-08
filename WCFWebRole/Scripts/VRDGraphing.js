@@ -50,7 +50,12 @@ function VRDGraphing(PageType) {
                 vrd_graphing_drawChart_RetailRisk();
                 break;
             case "PeakModel":
-                day = "Wednesday";
+                $('#div_Facilities').show();
+                $('#div_Customers').show();
+                $('#div_months').show();
+                $('#div_weather_scenario').show();
+                $('#TypeOfGraph').text('Peak Model');
+                vrd_graphing_drawChart_PeakModel();
                 break;
             case "PricingSummary":
                 day = "Thursday";
@@ -227,6 +232,8 @@ function vrd_graphing_refresh() {
             vrd_graphing_drawChart_hourlyshapes();
         } else if (graph_type == "Retail Risk") {
             vrd_graphing_drawChart_RetailRisk();
+        } else if ("Peak Model") {
+            vrd_graphing_drawChart_PeakModel();
         }
         
 
@@ -244,6 +251,56 @@ function vrd_graphing_drawChart() {
         HeaderDataErrorReport(e);
     }
 }
+
+function vrd_graphing_drawChart_PeakModel() {
+    try {
+        var xml_mn = vrd_graphing_produce_selector_return_xml('selMonths', 'MN');
+        var xml_ws = vrd_graphing_produce_selector_return_xml('selWeatherScenario', 'WS');
+        var xml_fc = vrd_graphing_produce_selector_return_xml('selFacilities', 'FC');
+        var xml_cu = vrd_graphing_produce_selector_return_xml('selCustomers', 'CU');
+        var xml_complete = xml_mn + xml_ws + xml_fc + xml_cu;
+        var DataMain = '';
+        if (xml_complete != '') {
+            DataMain = '?FieldString=' + xml_complete;
+        }
+        var urlMain = '/Services/Graphing.svc/GraphPeakModel';
+        urlMain = urlMain + DataMain;
+        
+        var ResultData = ReturnDataFromService(urlMain);        
+        var Title = "Coincident Peak and None Coincident Peak by Month";        
+
+        var number_formatter = new google.visualization.NumberFormat({ pattern: '#,###.##' });
+        // Colors:
+        ColumnName = ResultData.ColumnName;
+        var Colors = [];
+        ColumnName.forEach(function (row) {
+            Colors.push(row.Color);
+        });        
+        var options = {
+            //width: 600,
+            height: 400,
+            legend: 'top',
+            bar: { groupWidth: '75%' },
+            colors: Colors,
+            title: Title,
+            allowHtml: true,
+            titleTextStyle: {
+                color: 'Black',
+                fontName: 'Arial',
+                fontSize: 20,
+
+            },
+            vAxis: {  title: "Coincident Peak and Non Coincident Peak" },
+            isStacked: false,
+        };
+        vrd_graphing_drawChart_ColumnChartTable(ResultData, options, number_formatter, false);
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+
+}
+
 function vrd_graphing_drawChart_RetailRisk() {
     try {
         var xml_mn = vrd_graphing_produce_selector_return_xml('selMonths', 'MN');
@@ -688,8 +745,7 @@ function vrd_graphing_drawChart_ColumnChartTable(ResultData, options, number_for
             sourceColumn: 1,
             type: "string",
             role: "annotation"
-        },
-        2, 3]);
+        }]);
     // Colors:
     var Colors = [];
     var TotalRowsTable = 0;

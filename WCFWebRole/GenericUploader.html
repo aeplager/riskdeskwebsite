@@ -29,7 +29,7 @@
     <!--AutoComplete Scripts-->
     <link rel="stylesheet" href="css/AutoComplete.css" />
     <!--Normal Scripts-->
-    
+
 
     <script src="https://code.jquery.com/jquery-1.7.min.js"></script>
     <script src="https://code.jquery.com/ui/1.7.0/jquery-ui.js"></script>
@@ -58,6 +58,7 @@
     <!--<script type="text/javascript" src="Scripts/DealEntry.js"></script>
     <script type="text/javascript" src="Scripts/Facility.js"></script>-->
     <script type="text/javascript" src="Scripts/GenericUploader.js"></script>
+    <script type="text/javascript" src="Scripts/VRDGraphing.js"></script>
     <!--<!--Links to Azure-->-->
     <script src="Azure/azure-storage.blob.js"></script>
     <script src="Azure/AzureGeneral.js"></script>
@@ -77,18 +78,21 @@
         .lichild {
             display: none;
         }
+
         .newdatatable {
             width: 800px;
         }
+
         .hide {
             display: none;
         }
+
         .datablock {
             height: 120px;
         }
-        .tableContainer{
-            width:  800px%;            
 
+        .tableContainer {
+            width: 800px%;
         }
         /*.qkss_datatable{
             overflow-x: auto;
@@ -124,8 +128,6 @@
                 transform: rotate(360deg);
             }
         }
-
-        
     </style>
     <script>
         /*An array containing all the country names in the world:*/
@@ -144,7 +146,7 @@
             // Initialize the city
             try {
                 //AddHeader();
-                generic_uploader_hide_all_tabs();                                                
+                generic_uploader_hide_all_tabs();
                 for (i = 0; i < 10; i++) {
                     var tbl;
                     oTable.push(tbl);
@@ -152,7 +154,7 @@
                 var startDate = new Date();
                 for (i = 1; i < 11; i++) {
                     generic_uploader_add_tab(i, 'generic_uploader_tab_' + i.toString());
-                }                
+                }
                 var endDate = new Date();
                 var seconds = (endDate.getTime() - startDate.getTime()) / 1000;
                 var msg = "The total seconds for processing the tabs is " + seconds.toString();
@@ -325,6 +327,31 @@
                             <li><a href='Facilities.html'>Facility</a></li>
                             <li><a href='RetailDeals.html'>Retail Deal Entry</a></li>
                             <li><a href='WholesaleDeals.html'>Wholesale Deal Entry</a></li>
+                        </ul>
+                    </li>
+                    <li class='active'>
+                        <a href="">
+                            <i class="fa fa-bar-chart-o"></i>
+                            Graphing
+                        </a>
+                        <ul>
+                            <li>
+                                <a href="">Monthly</a>
+                                <ul>
+                                    <li><a onclick="VRDGraphing('MonthlyPricing')">Monthly Pricing</a></li>
+                                    <li><a onclick="VRDGraphing('HourlyShapes')">Hourly Shapes</a></li>
+                                    <li><a onclick="VRDGraphing('RetailRisk')">Retail Risk</a></li>
+                                    <li><a onclick="VRDGraphing('PeakModel')">Peak Model</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="">Pricing</a>
+                                <ul>
+                                    <li><a onclick="VRDGraphing('PricingSummary')">Pricing Summary</a></li>
+                                    <li><a onclick="VRDGraphing('MonthlyPrices')">Monthly Prices</a></li>
+                                    <li><a onclick="VRDGraphing('PriceComparison')">Price Comparison</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                 </ul>
