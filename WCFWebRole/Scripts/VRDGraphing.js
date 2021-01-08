@@ -44,7 +44,10 @@ function VRDGraphing(PageType) {
                 vrd_graphing_drawChart_hourlyshapes();
                 break;
             case "RetailRisk":
-                day = "Tuesday";
+                $('#div_congestion_zone').show();
+                $('#div_Customers').show();
+                $('#TypeOfGraph').text('Retail Risk');
+                vrd_graphing_drawChart_RetailRisk();
                 break;
             case "PeakModel":
                 day = "Wednesday";
@@ -222,6 +225,8 @@ function vrd_graphing_refresh() {
             vrd_graphing_drawChart_monthlyprices();
         } else if (graph_type == 'Hourly Shapes') {
             vrd_graphing_drawChart_hourlyshapes();
+        } else if (graph_type == "Retail Risk") {
+            vrd_graphing_drawChart_RetailRisk();
         }
         
 
@@ -239,6 +244,58 @@ function vrd_graphing_drawChart() {
         HeaderDataErrorReport(e);
     }
 }
+function vrd_graphing_drawChart_RetailRisk() {
+    try {
+        var xml_mn = vrd_graphing_produce_selector_return_xml('selMonths', 'MN');
+        var xml_cz = vrd_graphing_produce_selector_return_xml('selCongestionZones', 'CZ');
+        var xml_fc = vrd_graphing_produce_selector_return_xml('selFacilities', 'FC');
+        var xml_cu = vrd_graphing_produce_selector_return_xml('selCustomers', 'CU');
+        var xml_complete = xml_mn + xml_cz + xml_fc + xml_cu;
+        var DataMain = '';
+        if (xml_complete != '') {
+            DataMain = '?FieldString=' + xml_complete;
+        }
+        var urlMain = '/Services/Graphing.svc/GraphRetailRisk';
+        urlMain = urlMain + DataMain;
+        
+        var ResultData = ReturnDataFromService(urlMain);
+        var StackedTrueFalse = false;
+        var Title = "Testing New Graph";
+        var Totals = false;
+
+        var number_formatter = new google.visualization.NumberFormat({ pattern: '#,###.##%' });
+        // Colors:
+        ColumnName = ResultData.ColumnName;
+        var Colors = [];        
+        ColumnName.forEach(function (row) {
+            Colors.push(row.Color);            
+        });     
+        Title = "Components of Retail Adder";
+        var options = {
+            //width: 600,
+            height: 400,
+            legend: 'top',
+            bar: { groupWidth: '75%' },
+            colors: Colors,
+            title: Title,
+            allowHtml: true,
+            titleTextStyle: {
+                color: 'Black',
+                fontName: 'Arial',
+                fontSize: 20,
+
+            },
+            vAxis: { format: "percent", title: "Average of Shaping Premium and Average of Vol. Risk Premium" },
+            isStacked: false,
+        };        
+        vrd_graphing_drawChart_ColumnChartTable(ResultData, options, number_formatter, false);
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+
+}
+
 function vrd_graphing_drawChart_hourlyshapes() {
     try {
         var xml_mn = vrd_graphing_produce_selector_return_xml('selMonths', 'MN');
@@ -471,8 +528,7 @@ function vrd_graphing_drawChart_monthlyprices() {
             arrAppend.push(rowMain.MonthShortName);
             GraphMonthlyData.forEach(function (row) {
                 if (rowMain.MonthShortName== row.Month) {
-                    arrAppend.push(row.MonthlyUsageMWH);
-                    
+                    arrAppend.push(row.MonthlyUsageMWH);                       
                 }
             });            
             dataTable_chart.addRow(arrAppend);
@@ -531,5 +587,138 @@ function vrd_graphing_drawChart_monthlyprices() {
     catch (e) {
         HeaderDataErrorReport(e);
     }
+}
+
+function vrd_graphing_drawChart_ColumnChartTable(ResultData, options, number_formatter, AddTotal) {
+    try {
+
+
+        if (ResultData.GraphIntTime.length == 0) {
+            alertify.error("No data was received");
+            $('#chart_div').hide();
+            $('#table_div').hide();
+            return;
+        }
+        $('#chart_div').show();
+        $('#table_div').show();
+        // Establish Tables of Data
+        var TimeName = ResultData.TimeName;
+        var ColumnName = ResultData.ColumnName;
+        var GraphData = ResultData.GraphIntTime;
+
+
+
+    // Establish Graphing Tables
+    var dataTable_table = new google.visualization.DataTable();
+    var dataTable_chart = new google.visualization.DataTable();
+    // Filling In Data For Table
+    dataTable_table.addColumn('string', 'SelectorText1');
+        TimeName.forEach(function (row) {
+            dataTable_table.addColumn('number', row.SelectorText);
+    });
+    blFirstRecord = 0;
+    if (AddTotal == true) {
+        dataTable_table.addColumn('number', "Total");
+    }    
+    var Total = 0;
+    ColumnName.forEach(function (rowMain) {
+        arrAppend = [];
+        Total = 0;
+        arrAppend.push(rowMain.SelectorText);
+        GraphData.forEach(function (row) {
+            if (rowMain.SelectorText == row.ColumnName) {
+                arrAppend.push(row.GraphValue);
+                Total = Total + row.GraphValue;
+            }
+        });
+        if (AddTotal == true) {
+            arrAppend.push(Total);
+        }
+        dataTable_table.addRow(arrAppend);
+    });
+    // Add SubTotal at Bottom
+        arrAppend = [];
+    if (AddTotal == true) {
+            arrAppend.push('Total');
+    }    
+    var SubTotal = 0;
+    var TotalColsTable = 0;
+    if (AddTotal == true) {
+        TimeName.forEach(function (rowMain) {
+            Total = 0;
+            GraphData.forEach(function (row) {
+                if (rowMain.SelectorText == row.TimeName) {
+                    Total = Total + row.GraphValue;
+                }
+            });
+            SubTotal = SubTotal + Total;
+            TotalColsTable = TotalColsTable + 1;
+            arrAppend.push(Total);
+
+        });
+
+        arrAppend.push(SubTotal);
+        dataTable_table.addRow(arrAppend);
+    }
+
+    // Establish Data for Chart
+    dataTable_chart.addColumn('string', 'Months');
+    ColumnName.forEach(function (row) {
+        dataTable_chart.addColumn('number', row.SelectorText);
+    });
+
+    TimeName.forEach(function (rowMain) {
+        arrAppend = [];
+        Total = 0;
+        arrAppend.push(rowMain.SelectorText);
+        GraphData.forEach(function (row) {
+            if (rowMain.SelectorText == row.TimeName) {
+                arrAppend.push(row.GraphValue);
+
+            }
+        });
+        dataTable_chart.addRow(arrAppend);
+    });
+
+
+    var view = new google.visualization.DataView(dataTable_table);
+    view.setColumns([0, 1,
+        {
+            calc: "stringify",
+            sourceColumn: 1,
+            type: "string",
+            role: "annotation"
+        },
+        2, 3]);
+    // Colors:
+    var Colors = [];
+    var TotalRowsTable = 0;
+    ColumnName.forEach(function (row) {
+        Colors.push(row.Color);
+        TotalRowsTable = TotalRowsTable + 1;
+    });
+    var i_col_number = dataTable_table.getNumberOfColumns();
+    for (i_col = 0; i_col < i_col_number; i_col++) {
+        number_formatter.format(dataTable_table, i_col);
+    }
+    i_col_number = dataTable_chart.getNumberOfColumns();
+    for (i_col = 0; i_col < i_col_number; i_col++) {
+        number_formatter.format(dataTable_chart, i_col);
+    }
+
+    var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+    chart.draw(dataTable_chart, options);
+
+    var table = new google.visualization.Table(document.getElementById('table_div'));    
+    var i_col_number = dataTable_table.getNumberOfColumns();
+    if (AddTotal == true) {
+        dataTable_table.setRowProperties(TotalRowsTable, { 'className': 'bold-font' });
+        dataTable_table.setColumnProperties(TotalColsTable + 1, { 'className': 'bold-font' });
+    }
+    table.draw(dataTable_table, { showRowNumber: true, width: '100%', height: '100%' });
+}
+catch (e) {
+    HeaderDataErrorReport(e);
+}
 }
 

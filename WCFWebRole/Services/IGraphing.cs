@@ -26,6 +26,14 @@ namespace WCFWebRole
              BodyStyle = WebMessageBodyStyle.Bare)]
         GraphHourlyShapes HourlyShapesGetInfo(String FieldString);
 
+        [WebGet(UriTemplate = "/GraphRetailRisk?FieldString={FieldString}",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        GraphIntegerTimeData GraphRetailRisk(String FieldString);
+
+
+
         [WebGet(UriTemplate = "/FacilitiesGetInfo",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
@@ -113,6 +121,28 @@ namespace WCFWebRole
         public List<SelectorType> WholeSaleBlocks { get; set; }
         [DataMember]
         public List<SelectorType> Hours { get; set; }
+    }
+
+    [DataContract]
+    public class GraphIntTime
+    {
+        [DataMember]
+        public String ColumnName { get; set; }
+        [DataMember]
+        public String TimeName { get; set; }
+        [DataMember]
+        public Double GraphValue { get; set; }
+    }
+
+    [DataContract]
+    public class GraphIntegerTimeData
+    {
+        [DataMember]
+        public List<GraphIntTime> GraphIntTime { get; set; }
+        [DataMember]
+        public List<SelectorType> TimeName { get; set; }
+        [DataMember]
+        public List<SelectorType> ColumnName { get; set; }
     }
 
 

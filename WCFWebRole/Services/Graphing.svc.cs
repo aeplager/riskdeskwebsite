@@ -22,7 +22,99 @@ namespace WCFWebRole
     // NOTE: In order to launch WCF Test Client for testing this service, please select Contracts.svc or Contracts.svc.cs at the Solution Explorer and start debugging.
     public class Graphing : IGraphing
     {
+
+
+
+        public GraphIntegerTimeData GraphRetailRisk(String FieldString)
+        {
+            GraphIntegerTimeData ReturnValue = new GraphIntegerTimeData();
+            ReturnValue = GraphIntTimeFctn("[Graphing].[RetailRiskGetInfo]", FieldString);
+            return ReturnValue;
+        }
+
+        private GraphIntegerTimeData GraphIntTimeFctn(String StoredProcedure, String FieldString)
+        {
+                     
+            List<GraphIntTime> GraphIntTimeRet = new List<GraphIntTime>();
+            List<SelectorType> ColumnNameRet = new List<SelectorType>();
+            List<SelectorType> TimeNameRet = new List<SelectorType>();
+
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = StoredProcedure;
+                    cmd.Parameters.AddWithValue("@FieldString", FieldString);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    // Graph Values
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            GraphIntTimeRet.Add(new GraphIntTime
+                            {
+
+                                ColumnName = dr["ColumnName"].ToString(),
+                                TimeName = dr["TimeName"].ToString(),
+                                GraphValue = Convert.ToDouble(dr["GraphValue"].ToString()),
+                            });
+                        }
+
+                    }
+                    // Column Names
+                    if (ds.Tables[1].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[1].Rows)
+                        {
+                            ColumnNameRet.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["ColumnID"].ToString(),
+                                SelectorText = dr["ColumnName"].ToString(),
+                                Color = dr["Color"].ToString(),
+                            });
+                        }
+
+                    }
+                    // Time Name
+                    if (ds.Tables[2].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[2].Rows)
+                        {
+                            TimeNameRet.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["TimeID"].ToString(),
+                                SelectorText = dr["TimeName"].ToString(),
+                            });
+                        }
+
+                    }
+                }
+            }
+            GraphIntegerTimeData SelectionItemsinfo = new GraphIntegerTimeData();
+            SelectionItemsinfo.GraphIntTime = GraphIntTimeRet;
+            SelectionItemsinfo.TimeName = TimeNameRet;
+            SelectionItemsinfo.ColumnName = ColumnNameRet;
+
+            return SelectionItemsinfo;
+        }
         public GraphMonthly MonthlyEnergyUsageGetInfo(String FieldString)            
+
         {
 
             List<GraphMonthlyData> GraphingData = new List<GraphMonthlyData>();
