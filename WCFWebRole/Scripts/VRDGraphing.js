@@ -32,9 +32,16 @@ function VRDGraphing(PageType) {
                 $('#div_congestion_zone').show();
                 $('#div_Facilities').show();
                 $('#div_Customers').show();
+                $('#TypeOfGraph').text('Monthly Pricing');
+                vrd_graphing_drawChart_monthlyprices();
                 break;
             case "HourlyShapes":
-                day = "Monday";
+                $('#div_months').show();
+                $('#div_congestion_zone').show();
+                $('#div_Facilities').show();
+                $('#div_Customers').show();
+                $('#TypeOfGraph').text('Hourly Shapes');
+                vrd_graphing_drawChart_hourlyshapes();
                 break;
             case "RetailRisk":
                 day = "Tuesday";
@@ -185,20 +192,6 @@ function vrd_graphing_selector(selector) {
         HeaderDataErrorReport(e);
     }
 }
-function vrd_graphing_refresh() {
-    try {
-        var xml_cz = vrd_graphing_produce_selector_return_xml('selCongestionZones', 'CZ');
-        var xml_fc = vrd_graphing_produce_selector_return_xml('selFacilities', 'FC');
-        var xml_cu = vrd_graphing_produce_selector_return_xml('selCustomers', 'CU');
-        var xml_complete = xml_cz + xml_fc + xml_cu;
-        vrd_graphing_drawChart();
-
-    }
-    catch (e) {
-        HeaderDataErrorReport(e);
-    }
-}
-
 function vrd_graphing_produce_selector_return_xml(selector_name, tp){
     try {
         var i_limit = $("#" + selector_name + " ul li").length;
@@ -221,15 +214,185 @@ function vrd_graphing_produce_selector_return_xml(selector_name, tp){
         return xml_dom;
     }
 }
-// Graph 
+// Graphs
+function vrd_graphing_refresh() {
+    try {
+        var graph_type = $('#TypeOfGraph').text();
+        if (graph_type == 'Monthly Pricing') {
+            vrd_graphing_drawChart_monthlyprices();
+        } else if (graph_type == 'Hourly Shapes') {
+            vrd_graphing_drawChart_hourlyshapes();
+        }
+        
+
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
 function vrd_graphing_drawChart() {
+    try {
+        vrd_graphing_drawChart_monthlyprices();
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function vrd_graphing_drawChart_hourlyshapes() {
+    try {
+        var xml_mn = vrd_graphing_produce_selector_return_xml('selMonths', 'MN');
+        var xml_cz = vrd_graphing_produce_selector_return_xml('selCongestionZones', 'CZ');
+        var xml_fc = vrd_graphing_produce_selector_return_xml('selFacilities', 'FC');
+        var xml_cu = vrd_graphing_produce_selector_return_xml('selCustomers', 'CU');
+        var xml_complete = xml_mn + xml_cz + xml_fc + xml_cu;
+        var DataMain = '';
+        if (xml_complete != '') {
+            DataMain = '?FieldString=' + xml_complete;
+        }
+        var urlMain = '/Services/Graphing.svc/HourlyShapesGetInfo';
+        urlMain = urlMain + DataMain;
+        // Fix to read the docker container
+        var ResultData = ReturnDataFromService(urlMain)
+
+        if (ResultData.GraphHourlyShapesData.length == 0) {
+            alertify.error("No data was received");
+            $('#chart_div').hide();
+            $('#table_div').hide();
+            return;
+        }
+        $('#chart_div').show();
+        $('#table_div').show();
+        // Establish Tables of Data
+        var Hours = ResultData.Hours;
+        var WholeSaleBlocks = ResultData.WholeSaleBlocks;
+        var GraphData = ResultData.GraphHourlyShapesData;
+
+
+
+        // Establish Graphing Tables
+        var dataTable_table = new google.visualization.DataTable();
+        var dataTable_chart = new google.visualization.DataTable();
+        // Filling In Data For Table
+        dataTable_table.addColumn('string', 'WholeSaleBlock');
+        Hours.forEach(function (row) {
+            dataTable_table.addColumn('number', row.SelectorID);
+        });
+        blFirstRecord = 0;
+        dataTable_table.addColumn('number', "Total");
+        var Total = 0;
+        WholeSaleBlocks.forEach(function (rowMain) {
+            arrAppend = [];
+            Total = 0;
+            arrAppend.push(rowMain.SelectorText);
+            GraphData.forEach(function (row) {
+                if (rowMain.SelectorText == row.WholesaleBlock) {
+                    arrAppend.push(row.LoadMWh);                                        
+                    Total = Total + parseFloat(row.LoadMWh);                    
+                }
+            });
+            arrAppend.push(Total);
+            dataTable_table.addRow(arrAppend);
+        });
+        // Add SubTotal at Bottom
+        arrAppend = [];
+        arrAppend.push('Total');
+        var SubTotal = 0;
+        var TotalColsTable = 0;
+        Hours.forEach(function (rowMain) {
+            Total = 0;
+            GraphData.forEach(function (row) {
+                if (rowMain.HE == row.SelectorID) {
+                    Total = Total + row.LoadMWh;
+                }
+            });
+            SubTotal = SubTotal + Total;
+            TotalColsTable = TotalColsTable + 1;
+            arrAppend.push(Total);
+        });
+        arrAppend.push(SubTotal);
+        dataTable_table.addRow(arrAppend);
+        // Establish Data for Chart
+        dataTable_chart.addColumn('string', 'Hours');
+        WholeSaleBlocks.forEach(function (row) {
+            dataTable_chart.addColumn('number', row.SelectorText);
+        });
+
+        Hours.forEach(function (rowMain) {
+            arrAppend = [];
+            Total = 0;
+            arrAppend.push(rowMain.MonthShortName);
+            GraphData.forEach(function (row) {
+                if (rowMain.SelectorID == row.HE) {
+                    arrAppend.push(row.LoadMWh);
+
+                }
+            });
+            dataTable_chart.addRow(arrAppend);
+        });
+
+
+        var view = new google.visualization.DataView(dataTable_table);
+        view.setColumns([0, 1,
+            {
+                calc: "stringify",
+                sourceColumn: 1,
+                type: "string",
+                role: "annotation"
+            },
+            2, 3]);
+        // Colors:
+        var Colors = [];
+        var TotalRowsTable = 0;
+        WholeSaleBlocks.forEach(function (row) {
+            Colors.push(row.Color);
+            TotalRowsTable = TotalRowsTable + 1;
+        });
+        var Title = 'Hourly Load (KW)';
+        var options = {
+            //width: 600,
+            height: 400,
+            legend: { position: 'top', maxLines: 3 },
+            bar: { groupWidth: '75%' },
+            colors: Colors,
+            title: Title,
+            allowHtml: true,
+            titleTextStyle: {
+                color: 'Black',
+                fontName: 'Arial',
+                fontSize: 20,
+
+            },
+            isStacked: false,
+        };
+        var number_formatter = new google.visualization.NumberFormat({ pattern: '#,###.##' });
+
+        var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+        chart.draw(dataTable_chart, options);
+
+
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+        var i_col_number = dataTable_table.getNumberOfColumns();
+        for (i_col = 0; i_col < i_col_number; i_col++) {
+            number_formatter.format(dataTable_table, i_col);
+        }
+
+        dataTable_table.setRowProperties(TotalRowsTable, { 'className': 'bold-font' });
+        dataTable_table.setColumnProperties(TotalColsTable + 1, { 'className': 'bold-font' });
+        table.draw(dataTable_table, { showRowNumber: true, width: '100%', height: '100%' });
+
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+function vrd_graphing_drawChart_monthlyprices() {
     try {
         // Obtain Data   
         var xml_cz = vrd_graphing_produce_selector_return_xml('selCongestionZones', 'CZ');
         var xml_fc = vrd_graphing_produce_selector_return_xml('selFacilities', 'FC');
         var xml_cu = vrd_graphing_produce_selector_return_xml('selCustomers', 'CU');
         var xml_complete = xml_cz + xml_fc + xml_cu;
-
         var DataMain = '';
         if (xml_complete != '') {
             DataMain = '?FieldString=' + xml_complete;

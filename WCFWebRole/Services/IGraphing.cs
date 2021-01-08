@@ -19,6 +19,13 @@ namespace WCFWebRole
              BodyStyle = WebMessageBodyStyle.Bare)]
         GraphMonthly MonthlyEnergyUsageGetInfo(String FieldString);
 
+
+        [WebGet(UriTemplate = "/HourlyShapesGetInfo?FieldString={FieldString}",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        GraphHourlyShapes HourlyShapesGetInfo(String FieldString);
+
         [WebGet(UriTemplate = "/FacilitiesGetInfo",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
@@ -85,6 +92,30 @@ namespace WCFWebRole
         [DataMember]
         public List<MonthDef> MonthDef { get; set; }
     }
+
+    [DataContract]
+    public class GraphHourlyShapesData
+    {
+        [DataMember]
+        public String WholesaleBlock { get; set; }
+        [DataMember]
+        public String HE { get; set; }
+        [DataMember]
+        public Double LoadMWh { get; set; }
+    }
+
+    [DataContract]
+    public class GraphHourlyShapes
+    {
+        [DataMember]
+        public List<GraphHourlyShapesData> GraphHourlyShapesData { get; set; }
+        [DataMember]
+        public List<SelectorType> WholeSaleBlocks { get; set; }
+        [DataMember]
+        public List<SelectorType> Hours { get; set; }
+    }
+
+
     [DataContract]
     public class MonthDef
     {

@@ -104,6 +104,93 @@ namespace WCFWebRole
             return SelectionItemsinfo;
         }
 
+
+        public GraphHourlyShapes HourlyShapesGetInfo(String FieldString)
+        {
+
+            List<GraphHourlyShapesData> GraphingData = new List<GraphHourlyShapesData>();
+            List<SelectorType> WholeSaleBlocks = new List<SelectorType>();
+            List<SelectorType> Hours = new List<SelectorType>();
+            
+
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[Graphing].[HourlyShapesGetInfo]";
+                    cmd.Parameters.AddWithValue("@FieldString", FieldString);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    // Graph Monthly
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            GraphingData.Add(new GraphHourlyShapesData
+                            {
+
+                                WholesaleBlock = dr["WholeSaleBlocks"].ToString(),
+                                HE = dr["HE"].ToString(),
+                                LoadMWh = Convert.ToDouble(dr["HourlyLoadKW"].ToString()),
+                            });
+                        }
+
+                    }
+                    // Whole Sale Blocks
+                    if (ds.Tables[1].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[1].Rows)
+                        {
+                            WholeSaleBlocks.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["WholeSaleBlocksID"].ToString(),
+                                SelectorText = dr["WholeSaleBlocks"].ToString(),
+                                Color = dr["Color"].ToString(),
+                            });
+                        }
+
+                    }
+                    // Hours
+                    if (ds.Tables[2].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[2].Rows)
+                        {
+                            Hours.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["HE"].ToString(),
+                                SelectorText = dr["HE"].ToString(),
+                            });
+                        }
+
+                    }
+                }
+            }                 
+
+            
+            GraphHourlyShapes SelectionItemsinfo = new GraphHourlyShapes();
+            SelectionItemsinfo.GraphHourlyShapesData = GraphingData;
+            SelectionItemsinfo.WholeSaleBlocks = WholeSaleBlocks;
+            SelectionItemsinfo.Hours = Hours;
+
+            return SelectionItemsinfo;
+        }
+
+
         public List<SelectorType> DealsGetInfo()
         {
             String SqlCommandText = "[WebSite].[GraphingDealsGetInfo]";
