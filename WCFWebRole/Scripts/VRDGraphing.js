@@ -277,7 +277,7 @@ function vrd_graphing_drawChart_PeakModel() {
             Colors.push(row.Color);
         });        
         var options = {
-            //width: 600,
+            //width: 800,
             height: 400,
             legend: 'top',
             bar: { groupWidth: '75%' },
