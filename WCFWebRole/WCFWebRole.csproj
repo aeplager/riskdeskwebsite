@@ -219,7 +219,6 @@
     <Content Include="css\theme.css" />
     <Content Include="css\timepicker.css" />
     <Content Include="css\wysi\bootstrap-wysihtml5.css" />
-    <Content Include="DataEntry_DELETE.html" />
     <Content Include="DealEntryGeneric.html" />
     <Content Include="DealEntryIndividual.html" />
     <Content Include="Services\CurveUploader.svc" />

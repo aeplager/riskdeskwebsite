@@ -1,5 +1,4 @@
-﻿
-function vrd_graphing_dropdowns_hide_all() {
+﻿function vrd_graphing_dropdowns_hide_all() {
     try {
         // Hide All Selectors
         $('#div_months').hide();
@@ -12,13 +11,22 @@ function vrd_graphing_dropdowns_hide_all() {
         $('#div_SubCategory').hide();
         $('#div_Term').hide();
         $('#div_Deal').hide();
+
+        $('#graphs_two_top_and_bottom_div_top').hide();        
+        $('#graphs_two_top_and_bottom_div_bottom').hide();
+
+        $('graphs_two_left_one_right_div_left_top').hide();
+        $('graphs_two_left_one_right_div_left_bottom').hide();
+        $('graphs_two_left_one_right_div_right').hide();        
+        
+        
     } catch (e) {
         HeaderDataErrorReport(e);
     }
     
 }
 
-function VRDGraphing(PageType) {
+function vrd_graphing_tab_select(PageType) {
     try {
         // Selecting the Graph Type and Setting Up Which Selectors Are Shown
         var base_file_name = 'VRDGraphs.html';
@@ -26,9 +34,11 @@ function VRDGraphing(PageType) {
         if (file_name != base_file_name) {
             $(location).attr("href", base_file_name);
         } 
-        vrd_graphing_dropdowns_hide_all();
+        vrd_graphing_dropdowns_hide_all();        
         switch (PageType) {
             case "MonthlyPricing":
+                $('#graphs_two_top_and_bottom_div_top').show();
+                $('graphs_two_top_and_bottom_div_bottom').show();
                 $('#div_congestion_zone').show();
                 $('#div_Facilities').show();
                 $('#div_Customers').show();
@@ -36,6 +46,8 @@ function VRDGraphing(PageType) {
                 vrd_graphing_drawChart_monthlyprices();
                 break;
             case "HourlyShapes":
+                $('#graphs_two_top_and_bottom_div_top').show();
+                $('graphs_two_top_and_bottom_div_bottom').show();
                 $('#div_months').show();
                 $('#div_congestion_zone').show();
                 $('#div_Facilities').show();
@@ -44,12 +56,16 @@ function VRDGraphing(PageType) {
                 vrd_graphing_drawChart_hourlyshapes();
                 break;
             case "RetailRisk":
+                $('#graphs_two_top_and_bottom_div_top').show();
+                $('graphs_two_top_and_bottom_div_bottom').show();
                 $('#div_congestion_zone').show();
                 $('#div_Customers').show();
                 $('#TypeOfGraph').text('Retail Risk');
                 vrd_graphing_drawChart_RetailRisk();
                 break;
             case "PeakModel":
+                $('#graphs_two_top_and_bottom_div_top').show();
+                $('graphs_two_top_and_bottom_div_bottom').show();
                 $('#div_Facilities').show();
                 $('#div_Customers').show();
                 $('#div_months').show();
@@ -58,6 +74,14 @@ function VRDGraphing(PageType) {
                 vrd_graphing_drawChart_PeakModel();
                 break;
             case "PricingSummary":
+                $('#TypeOfGraph').text('Pricing Summary');
+                $('#div_Customers').show();
+                $('#div_Category').show();
+                $('#div_SubCategory').show();                
+                $('graphs_two_left_one_right_div_left_top').show();
+                $('graphs_two_left_one_right_div_left_bottom').show();
+                $('graphs_two_left_one_right_div_right').show();
+                vrd_graphing_drawChart_PricingSummary();
                 day = "Thursday";
                 break;
             case "MonthlyPrices":
@@ -232,17 +256,27 @@ function vrd_graphing_refresh() {
             vrd_graphing_drawChart_hourlyshapes();
         } else if (graph_type == "Retail Risk") {
             vrd_graphing_drawChart_RetailRisk();
-        } else if ("Peak Model") {
+        } else if (graph_type == "Peak Model") {
             vrd_graphing_drawChart_PeakModel();
+        } else if (graph_type == "Pricing Summary") {
+            vrd_graphing_drawChart_PricingSummary();
         }
-        
 
     }
     catch (e) {
         HeaderDataErrorReport(e);
     }
 }
-
+function showthing() {
+    $('graphs_two_left_one_right_div_left_top').show();
+    $('graphs_two_left_one_right_div_left_bottom').show();
+    $('graphs_two_left_one_right_div_right').show();        
+}
+function hidething() {
+    $('graphs_two_left_one_right_div_left_top').hide();
+    $('graphs_two_left_one_right_div_left_bottom').hide();
+    $('graphs_two_left_one_right_div_right').hide();        
+}
 function vrd_graphing_drawChart() {
     try {
         vrd_graphing_drawChart_monthlyprices();
@@ -353,6 +387,165 @@ function vrd_graphing_drawChart_RetailRisk() {
 
 }
 
+function vrd_graphing_drawChart_PricingSummary() {
+    try {
+        // Pricing Summary Graph
+        var xml_ca = vrd_graphing_produce_selector_return_xml('selCategory', 'CA');
+        var xml_sc = vrd_graphing_produce_selector_return_xml('selSubCategory', 'SCA');
+        var xml_cu = vrd_graphing_produce_selector_return_xml('selCustomers', 'CU');
+        var xml_complete = xml_ca + xml_sc + xml_cu;
+        var DataMain = '';
+        var urlMain = '/Services/Graphing.svc/PricingSummaryGetInfo';
+        if (xml_complete != '') {
+            DataMain = '?FieldString=' + xml_complete;
+        }
+        var urlMain = '/Services/Graphing.svc/PricingSummaryGetInfo';
+        urlMain = urlMain + DataMain;
+        var ResultData = ReturnDataFromService(urlMain);
+        var Categories = ResultData.Categories;
+        var Customers = ResultData.Customers;
+        var GraphOne = ResultData.GraphOne;
+        var GraphTwo = ResultData.GraphTwo;
+        var GraphThree = ResultData.GraphThree;
+        var SubCategories = ResultData.SubCategories;
+
+       
+        // Establish Colors:        
+        var Colors = [];
+        Categories.forEach(function (row) {
+            Colors.push(row.Color);
+        });        
+
+        var options = {
+            height: 500,
+            title: 'Components of Cost'
+        };
+        // Pie Chart on Bottom Right
+        // Establish Graphing Tables        
+        // Establish Pie Chart
+        var dataTable_PieChart = new google.visualization.DataTable();
+        // Filling In Data For Table
+        dataTable_PieChart.addColumn('string', 'Component');
+        dataTable_PieChart.addColumn('number', 'Price');
+        blFirstRecord = 0;        
+        Categories.forEach(function (rowMain) {            
+            Total = 0;
+            arrAppend = [];
+            arrAppend.push(rowMain.SelectorText);
+            GraphTwo.forEach(function (row) {
+                if (rowMain.SelectorID == row.ColumnID) {
+                    arrAppend.push(row.GraphValue);
+                }
+            });            
+            dataTable_PieChart.addRow(arrAppend)
+        });
+
+        var options = {
+            title: 'Compenents of Cost',
+              colors: Colors
+
+        };
+        var number_formatter = new google.visualization.NumberFormat({ pattern: '#,###.##%' });
+        var i_col_number = dataTable_PieChart.getNumberOfColumns();
+        for (i_col = 0; i_col < i_col_number; i_col++) {
+            number_formatter.format(dataTable_PieChart, i_col);
+        }
+        var pie_chart = new google.visualization.PieChart(document.getElementById('graphs_two_left_one_right_div_left_bottom'));
+        pie_chart.draw(dataTable_PieChart , options);
+        // Treating First Row as Data
+        var dataTable_WaterFall = new google.visualization.DataTable();
+
+        dataTable_WaterFall.addColumn('string', 'ColumnName');
+        dataTable_WaterFall.addColumn('number', 'FirstCol');
+        dataTable_WaterFall.addColumn('number', 'SecondCol');
+        dataTable_WaterFall.addColumn('number', 'ThirdCol');
+        dataTable_WaterFall.addColumn('number', 'FourthCol');
+        // A column for custom tooltip content
+        dataTable_WaterFall.addColumn({ type: 'string', role: 'tooltip' });
+
+        GraphOne.forEach(function (row) {            
+            arrAppend = [];
+            arrAppend.push(row.ColumnName);
+            arrAppend.push(row.MinValue);
+            arrAppend.push(row.MinValue);
+            arrAppend.push(row.MaxValue);
+            arrAppend.push(row.MaxValue);
+            var msg = row.ColumnName + ' at $' + row.GraphValue.toFixed(2).toString();
+            arrAppend.push(msg);                
+            dataTable_WaterFall.addRow(arrAppend)
+        });
+                    
+        var options = {
+            hAxis: { title: "Sub Category" },//, slantedText: true, slantedTextAngle: 90 },
+            vAxis: { title: "Price", format: 'currency'},
+            legend: 'none',
+            height: 600,
+            title: 'Per Unit Pricing Components',            
+            bar: { groupWidth: '100%' }, // Remove space between bars.
+            candlestick: {
+                fallingColor: { strokeWidth: 0, fill: '#a52714' }, // red
+                risingColor: { strokeWidth: 0, fill: '#0f9d58' }   // green
+            }
+        };
+        var number_formatter_currency = new google.visualization.NumberFormat({ pattern: '$#,###.##' });
+        var i_col_number = dataTable_PieChart.getNumberOfColumns();
+        for (i_col = 1; i_col < i_col_number; i_col++) {
+            number_formatter_currency.format(dataTable_WaterFall, i_col);
+        }
+
+        var chart = new google.visualization.CandlestickChart(document.getElementById('graphs_two_left_one_right_div_right'));
+        chart.draw(dataTable_WaterFall, options);
+
+        // Table at Top Left of Screen
+        var dataTable_Table = new google.visualization.DataTable();
+
+        dataTable_Table.addColumn('string', 'Category');
+
+        Customers.forEach(function (row) {
+            dataTable_Table.addColumn('number', row.SelectorText);
+        });        
+        Categories.forEach(function (rowMain) {
+            Total = 0;
+            arrAppend = [];                
+            arrAppend.push(rowMain.SelectorText);
+            GraphThree.forEach(function (row) {
+                if (rowMain.SelectorID == row.ColumnTwoID) {
+                    Total = Total + row.GraphValue;
+                    arrAppend.push(row.GraphValue);
+                }
+            });            
+            dataTable_Table.addRow(arrAppend)
+        });
+        // Enter Totals
+        arrAppend = [];
+        blFirstRecord = 0;
+        arrAppend.push('Total');        
+        Customers.forEach(function (rowMain) {
+            Total = 0;            
+            //arrAppend.push(rowMain.SelectorText);
+            GraphThree.forEach(function (row) {
+                if (rowMain.SelectorID == row.ColumnOneID) {
+                    Total = Total + row.GraphValue;                    
+                }
+            });
+            arrAppend.push(Total);            
+        });
+        dataTable_Table.addRow(arrAppend)
+        var table = new google.visualization.Table(document.getElementById('graphs_two_left_one_right_div_left_top'));
+        var i_col_number = dataTable_Table.getNumberOfColumns();
+        for (i_col = 0; i_col < i_col_number; i_col++) {
+            number_formatter_currency.format(dataTable_Table, i_col);
+        }
+        var i_rows_number = dataTable_Table.getNumberOfRows()-1;
+        dataTable_Table.setRowProperties(i_rows_number, { 'className': 'bold-font' });        
+        table.draw(dataTable_Table, { showRowNumber: true, width: '100%', height: '100%' });        
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+
+
+}
+
 function vrd_graphing_drawChart_hourlyshapes() {
     try {
         var xml_mn = vrd_graphing_produce_selector_return_xml('selMonths', 'MN');
@@ -371,12 +564,12 @@ function vrd_graphing_drawChart_hourlyshapes() {
 
         if (ResultData.GraphHourlyShapesData.length == 0) {
             alertify.error("No data was received");
-            $('#chart_div').hide();
-            $('#table_div').hide();
+            $('#graphs_two_top_and_bottom_div_top').hide();
+            $('#graphs_two_top_and_bottom_div_bottom').hide();        
             return;
         }
-        $('#chart_div').show();
-        $('#table_div').show();
+        $('#graphs_two_top_and_bottom_div_top').show();
+        $('#graphs_two_top_and_bottom_div_bottom').show();
         // Establish Tables of Data
         var Hours = ResultData.Hours;
         var WholeSaleBlocks = ResultData.WholeSaleBlocks;
@@ -481,16 +674,16 @@ function vrd_graphing_drawChart_hourlyshapes() {
         };
         var number_formatter = new google.visualization.NumberFormat({ pattern: '#,###.##' });
 
-        var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+        var chart = new google.visualization.ColumnChart(document.getElementById("graphs_two_top_and_bottom_div_top"));
         chart.draw(dataTable_chart, options);
 
 
-        var table = new google.visualization.Table(document.getElementById('table_div'));
+        var table = new google.visualization.Table(document.getElementById('graphs_two_top_and_bottom_div_bottom'));
         var i_col_number = dataTable_table.getNumberOfColumns();
         for (i_col = 0; i_col < i_col_number; i_col++) {
             number_formatter.format(dataTable_table, i_col);
         }
-
+        
         dataTable_table.setRowProperties(TotalRowsTable, { 'className': 'bold-font' });
         dataTable_table.setColumnProperties(TotalColsTable + 1, { 'className': 'bold-font' });
         table.draw(dataTable_table, { showRowNumber: true, width: '100%', height: '100%' });
@@ -518,12 +711,15 @@ function vrd_graphing_drawChart_monthlyprices() {
         
         if (ResultData.GraphMonthlyData.length == 0) {
             alertify.error("No data was received");
-            $('#chart_div').hide();
-            $('#table_div').hide();
-            return;
+            if (ResultData.GraphIntTime.length == 0) {
+                alertify.error("No data was received");
+                $('#graphs_two_top_and_bottom_div_top').hide();
+                $('#graphs_two_top_and_bottom_div_bottom').hide();
+                return;
+            }
         }
-        $('#chart_div').show();
-        $('#table_div').show();
+        $('#graphs_two_top_and_bottom_div_top').show();
+        $('#graphs_two_top_and_bottom_div_bottom').show();
         // Establish Tables of Data
         var MonthDef = ResultData.MonthDef;
         var WholeSaleBlocks = ResultData.WholeSaleBlocks;
@@ -627,11 +823,11 @@ function vrd_graphing_drawChart_monthlyprices() {
         };
         var number_formatter = new google.visualization.NumberFormat({ pattern: '#,###.##'});
 
-        var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+        var chart = new google.visualization.ColumnChart(document.getElementById("graphs_two_top_and_bottom_div_top"));
         chart.draw(dataTable_chart, options);
         
 
-        var table = new google.visualization.Table(document.getElementById('table_div'));
+        var table = new google.visualization.Table(document.getElementById('graphs_two_top_and_bottom_div_bottom'));
         var i_col_number = dataTable_table.getNumberOfColumns();
         for (i_col = 0; i_col < i_col_number; i_col++) {
             number_formatter.format(dataTable_table, i_col);
@@ -652,12 +848,12 @@ function vrd_graphing_drawChart_ColumnChartTable(ResultData, options, number_for
 
         if (ResultData.GraphIntTime.length == 0) {
             alertify.error("No data was received");
-            $('#chart_div').hide();
-            $('#table_div').hide();
+            $('#graphs_two_top_and_bottom_div_top').hide();
+            $('#graphs_two_top_and_bottom_div_bottom').hide();
             return;
         }
-        $('#chart_div').show();
-        $('#table_div').show();
+        $('#graphs_two_top_and_bottom_div_top').show();
+        $('#graphs_two_top_and_bottom_div_bottom').show();
         // Establish Tables of Data
         var TimeName = ResultData.TimeName;
         var ColumnName = ResultData.ColumnName;
@@ -762,10 +958,10 @@ function vrd_graphing_drawChart_ColumnChartTable(ResultData, options, number_for
         number_formatter.format(dataTable_chart, i_col);
     }
 
-    var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+        var chart = new google.visualization.ColumnChart(document.getElementById("graphs_two_top_and_bottom_div_top"));
     chart.draw(dataTable_chart, options);
 
-    var table = new google.visualization.Table(document.getElementById('table_div'));    
+    var table = new google.visualization.Table(document.getElementById('graphs_two_top_and_bottom_div_bottom'));    
     var i_col_number = dataTable_table.getNumberOfColumns();
     if (AddTotal == true) {
         dataTable_table.setRowProperties(TotalRowsTable, { 'className': 'bold-font' });

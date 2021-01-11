@@ -216,7 +216,7 @@
             // Initialize the city
             try {
                 //GeneralSelFill('SelMonths', '- Line Length -', '/Services/CurveUploader.svc/LineStartGetInfo');
-                VRDGraphing('MonthlyPricing');
+                vrd_graphing_tab_select('MonthlyPricing');
                 vrd_graphing_dropdown_initialize('selMonths');
                 vrd_graphing_dropdown_initialize('selCongestionZones');
                 vrd_graphing_dropdown_initialize('selCustomers');
@@ -426,18 +426,18 @@
                             <li>
                                 <a href="">Monthly</a>
                                 <ul>
-                                    <li><a onclick="VRDGraphing('MonthlyPricing')">Monthly Pricing</a></li>
-                                    <li><a onclick="VRDGraphing('HourlyShapes')">Hourly Shapes</a></li>
-                                    <li><a onclick="VRDGraphing('RetailRisk')">Retail Risk</a></li>
-                                    <li><a onclick="VRDGraphing('PeakModel')">Peak Model</a></li>
+                                    <li><a onclick="vrd_graphing_tab_select('MonthlyPricing')">Monthly Pricing</a></li>
+                                    <li><a onclick="vrd_graphing_tab_select('HourlyShapes')">Hourly Shapes</a></li>
+                                    <li><a onclick="vrd_graphing_tab_select('RetailRisk')">Retail Risk</a></li>
+                                    <li><a onclick="vrd_graphing_tab_select('PeakModel')">Peak Model</a></li>
                                 </ul>
                             </li>
                             <li>
                                 <a href="">Pricing</a>
                                 <ul>
-                                    <li><a onclick="VRDGraphing('PricingSummary')">Pricing Summary</a></li>
-                                    <li><a onclick="VRDGraphing('MonthlyPrices')">Monthly Prices</a></li>
-                                    <li><a onclick="VRDGraphing('PriceComparison')">Price Comparison</a></li>
+                                    <li><a onclick="vrd_graphing_tab_select('PricingSummary')">Pricing Summary</a></li>
+                                    <li><a onclick="vrd_graphing_tab_select('MonthlyPrices')">Monthly Prices</a></li>
+                                    <li><a onclick="vrd_graphing_tab_select('PriceComparison')">Price Comparison</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -472,6 +472,8 @@
                                     <div class="col-lg-12">
                                         <div id="div_Refresh" class="col-lg-2">
                                             <input type="button" class="btn-info" onclick="vrd_graphing_refresh()" value="Refresh Graph" />
+                                            <!--<input type="button" class="btn-info" onclick="showthing()" value="Show" />
+                                            <input type="button" class="btn-info" onclick="hidething()" value="Hide" />-->
                                         </div>
                                         <div id="div_months" class="col-lg-2" hidden>
                                             <!--<label class="control-label">Select Months</label>-->
@@ -525,7 +527,7 @@
                                         <div id="div_SubCategory" class="col-lg-2" hidden>
                                             <div id="selSubCategory" class="dropdown-check-list btn-default" tabindex="100">
                                                 <span class="anchor">Select SubCategory</span>
-                                                <ul class="items" id="SubCategory_ul">
+                                                <ul class="items" id="selSubCategory_ul">
                                                     <li><input type="checkbox" onclick="SelectAll('selSubCategory')" />Select All</li>
                                                 </ul>
                                             </div>
@@ -556,30 +558,43 @@
 
         <div class="dashboard-wrapper">                 
                 <div class="left-sidebar">                 
-                <div id="graphs_top_graph_bottom_table" class="row">
+                <div class="row">
                     <div class="col-lg-12 col-md-12">
                         <div class="widget">
                             <div class="widget-header">
                                 <div class="title">
-                                    Graph Above Data Below<a id="dynamic-tables-facility-upload"></a>
+                                    Graph Above Data Below<a id="dynamic-tables-facility-upload"></a>                                    
                                 </div>
                             </div>
-                            <div id="dtExampleWidget-2" class="widget-body">
-                                <div>
-                                    <div class="row">
-                                        <div id="chart_div"></div>
+                            <div  class="widget-body" >
+                                <!--Graph/Table in a div and div On Bottom -->
+                                <div id="graphs_two_top_and_bottom_div">
+                                    <div class="row">                                        
+                                        <div id="graphs_two_top_and_bottom_div_top"></div>
                                     </div>
                                     <div class="row">
-                                        <div id="table_div"></div>
+                                        <div id="graphs_two_top_and_bottom_div_bottom"></div>
                                     </div>
-                                    <div class="clearfix">
-                                    </div>
-                                    <div id="modelloader"></div>
+                                </div>                                
+                                <!--Graph/Table in a two div on on left and div On Bottom -->
+                                <div id="graphs_two_left_one_right_div">                                    
+                                    <div class="row">                                        
+                                        <div class="col-lg-12">
+                                            <div class="col-lg-4">                                                
+                                                <div id="graphs_two_left_one_right_div_left_top"></div>                                                
+                                                <br />                                                
+                                                <div id="graphs_two_left_one_right_div_left_bottom"></div>
+                                            </div>
+                                            <div class="col-lg-8">                                                
+                                                <div id="graphs_two_left_one_right_div_right"></div>
+                                            </div>
+                                        </div>
+                                    </div>                        
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>                
             </div>
         </div>
 

@@ -18,8 +18,7 @@ namespace WCFWebRole
              ResponseFormat = WebMessageFormat.Json,
              BodyStyle = WebMessageBodyStyle.Bare)]
         GraphMonthly MonthlyEnergyUsageGetInfo(String FieldString);
-
-
+              
         [WebGet(UriTemplate = "/HourlyShapesGetInfo?FieldString={FieldString}",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
@@ -38,6 +37,11 @@ namespace WCFWebRole
             BodyStyle = WebMessageBodyStyle.Bare)]
         GraphIntegerTimeData GraphPeakModel(String FieldString);
 
+        [WebGet(UriTemplate = "/PricingSummaryGetInfo?FieldString={FieldString}",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        GraphPricingSummary PricingSummaryGetInfo(String FieldString);
 
         [WebGet(UriTemplate = "/FacilitiesGetInfo",
              RequestFormat = WebMessageFormat.Json,
@@ -138,6 +142,30 @@ namespace WCFWebRole
         [DataMember]
         public Double GraphValue { get; set; }
     }
+    [DataContract]
+    public class GraphXYGenericTableSingle
+    {
+        [DataMember]
+        public String ColumnID { get; set; }
+        [DataMember]
+        public String ColumnName { get; set; }
+        [DataMember]
+        public Double GraphValue { get; set; }
+    }
+    [DataContract]
+    public class GraphXYGenericTableDual
+    {
+        [DataMember]
+        public String ColumnOneID { get; set; }
+        [DataMember]
+        public String ColumnOneName { get; set; }
+        [DataMember]
+        public String ColumnTwoID { get; set; }
+        [DataMember]
+        public String ColumnTwoName { get; set; }
+        [DataMember]
+        public Double GraphValue { get; set; }
+    }
 
     [DataContract]
     public class GraphIntegerTimeData
@@ -149,6 +177,56 @@ namespace WCFWebRole
         [DataMember]
         public List<SelectorType> ColumnName { get; set; }
     }
+    // Pricing Summary Graph Items
+
+    [DataContract]
+    public class WaterfallChart
+    {
+        [DataMember]
+        public String ColumnName { get; set; }
+        [DataMember]
+        public Double GraphValue { get; set; }
+        [DataMember]
+        public Double MinValue { get; set; }
+        [DataMember]
+        public Double MaxValue { get; set; }
+    }
+
+
+    [DataContract]
+    public class GraphPricingSummary
+    {
+        [DataMember]
+        public List<WaterfallChart> GraphOne { get; set; }
+        [DataMember]
+        public List<GraphXYGenericTableSingle> GraphTwo { get; set; }
+
+        [DataMember]
+        public List<GraphXYGenericTableDual> GraphThree { get; set; }
+        [DataMember]
+        public List<SelectorType> SubCategories { get; set; }
+        [DataMember]
+        public List<SelectorType> Categories { get; set; }
+        [DataMember]
+        public List<SelectorType> Customers { get; set; }
+
+    }
+    [DataContract]
+    public class GraphPricingSummaryCustomerCat
+    {
+        [DataMember]
+        public String SubCategoryID { get; set; }
+        [DataMember]
+        public String SubCategory { get; set; }
+        [DataMember]
+        public String CategoryID { get; set; }
+        [DataMember]
+        public String Category { get; set; }
+        [DataMember]
+        public Double GraphValue { get; set; }
+    }
+
+
 
 
     [DataContract]

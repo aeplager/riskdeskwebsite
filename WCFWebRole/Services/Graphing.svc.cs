@@ -118,6 +118,148 @@ namespace WCFWebRole
 
             return SelectionItemsinfo;
         }
+
+        public GraphPricingSummary PricingSummaryGetInfo(String FieldString)
+        {
+
+            GraphPricingSummary SelectionItemsinfo = new GraphPricingSummary();
+            List<WaterfallChart> GraphOne = new List<WaterfallChart>();
+            List<GraphXYGenericTableSingle> GraphTwo = new List<GraphXYGenericTableSingle>();
+            List<GraphXYGenericTableDual> GraphThree = new List<GraphXYGenericTableDual>();
+            
+            List<SelectorType> SubCategories = new List<SelectorType>();            
+            List<SelectorType> Categories = new List<SelectorType>();            
+            List<SelectorType> Customers = new List<SelectorType>();
+
+
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[Graphing].[PriceSummaryGetInfo]";
+                    cmd.Parameters.AddWithValue("@FieldString", FieldString);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    // Graph Values
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            GraphOne.Add(new WaterfallChart
+                            {
+
+                                ColumnName = dr["SubCategory"].ToString(),
+                                GraphValue = Convert.ToDouble(dr["GraphValue"].ToString()),
+                                MinValue = Convert.ToDouble(dr["MinValue"].ToString()),
+                                MaxValue = Convert.ToDouble(dr["MaxValue"].ToString()),
+                            });
+                        }
+
+                    }
+                    // Graph Values
+                    if (ds.Tables[1].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[1].Rows)
+                        {
+                            GraphTwo.Add(new GraphXYGenericTableSingle
+                            {
+
+                                ColumnID = dr["ColumnID"].ToString(),
+                                ColumnName = dr["ColumnName"].ToString(),
+                                GraphValue = Convert.ToDouble(dr["GraphValue"].ToString()),
+                            });
+                        }
+
+                    }
+                    // Column Names
+                    if (ds.Tables[2].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[2].Rows)
+                        {
+                            GraphThree.Add(new GraphXYGenericTableDual
+                            {
+                                ColumnOneID = dr["ColumnOneID"].ToString(),
+                                ColumnOneName = dr["ColumnOneName"].ToString(),
+                                ColumnTwoID = dr["ColumnTwoID"].ToString(),
+                                ColumnTwoName = dr["ColumnTwoName"].ToString(),
+
+                                GraphValue = Convert.ToDouble(dr["GraphValue"].ToString()),
+
+                            });
+                        }
+
+                    }
+                    // Time Name
+                    if (ds.Tables[3].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[3].Rows)
+                        {
+                            SubCategories.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["SelectorID"].ToString(),
+                                SelectorText = dr["SelectorText"].ToString(),
+                                Color = dr["Color"].ToString(),
+                            });
+                        }
+
+                    }
+                    // Time Name
+                    if (ds.Tables[4].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[4].Rows)
+                        {
+                            Categories.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["SelectorID"].ToString(),
+                                SelectorText = dr["SelectorText"].ToString(),
+                                Color = dr["Color"].ToString(),
+                            });
+                        }
+
+                    }
+                    // Time Name
+                    if (ds.Tables[5].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[5].Rows)
+                        {
+                            Customers.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["SelectorID"].ToString(),
+                                SelectorText = dr["SelectorText"].ToString(),
+                                Color = dr["Color"].ToString(),
+                            });
+                        }
+
+                    }
+                }
+            }
+            SelectionItemsinfo.GraphOne = GraphOne;
+            SelectionItemsinfo.GraphTwo = GraphTwo;
+            SelectionItemsinfo.GraphThree = GraphThree;
+            SelectionItemsinfo.Customers = Customers;
+            SelectionItemsinfo.Categories = Categories;
+            SelectionItemsinfo.SubCategories = SubCategories;
+            return SelectionItemsinfo;
+        }
+
+
+
         public GraphMonthly MonthlyEnergyUsageGetInfo(String FieldString)            
 
         {
