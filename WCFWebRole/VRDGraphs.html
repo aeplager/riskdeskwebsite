@@ -68,8 +68,10 @@
     <!--<!--Links to Azure-->-->
     <script src="Azure/azure-storage.blob.js"></script>
     <script src="Azure/AzureGeneral.js"></script>
-
-
+    <!--Date Range Code-->
+    <!--<script src="/js/DataRangePicker//daterangepicker.js"></script>
+    <script src="/js/DataRangePicker/moment.min.js"></script>
+    <link href="/css/DateRangePicker/daterangepicker.css />-->
 
     <script type="text/javascript">
         //override defaults
@@ -210,8 +212,11 @@
         // Callback that creates and populates a data table,
         // instantiates the pie chart, passes in the data and
         // draws it.
+        // Date Range App
+
 
         var oTable = [];
+
         function Initialize() {
             // Initialize the city
             try {
@@ -473,7 +478,7 @@
                                         <div id="div_Refresh" class="col-lg-2">
                                             <input type="button" class="btn-info" onclick="vrd_graphing_refresh()" value="Refresh Graph" />
                                             <!--<input type="button" class="btn-info" onclick="showthing()" value="Show" />
-                                            <input type="button" class="btn-info" onclick="hidething()" value="Hide" />-->
+        <input type="button" class="btn-info" onclick="hidething()" value="Hide" />-->
                                         </div>
                                         <div id="div_months" class="col-lg-2" hidden>
                                             <!--<label class="control-label">Select Months</label>-->
@@ -548,6 +553,10 @@
                                                 </ul>
                                             </div>
                                         </div>
+                                        <div id="div_DateRangePicker" class="col-lg-2" hidden>
+                                            <span class="anchor">Select Date Range</span>
+                                            <input type="text" name="daterange" value="01/01/2018 - 01/15/2018" />
+                                        </div>
                                     </div>
                                 </div>
                             </form>
@@ -566,31 +575,53 @@
                                     Graph Above Data Below<a id="dynamic-tables-facility-upload"></a>                                    
                                 </div>
                             </div>
-                            <div  class="widget-body" >
+                            <div class="widget-body">
                                 <!--Graph/Table in a div and div On Bottom -->
                                 <div id="graphs_two_top_and_bottom_div">
-                                    <div class="row">                                        
+                                    <div class="row">
                                         <div id="graphs_two_top_and_bottom_div_top"></div>
                                     </div>
                                     <div class="row">
                                         <div id="graphs_two_top_and_bottom_div_bottom"></div>
                                     </div>
-                                </div>                                
+                                </div>
                                 <!--Graph/Table in a two div on on left and div On Bottom -->
-                                <div id="graphs_two_left_one_right_div">                                    
-                                    <div class="row">                                        
+                                <div id="graphs_two_left_one_right_div">
+                                    <div class="row">
                                         <div class="col-lg-12">
-                                            <div class="col-lg-4">                                                
-                                                <div id="graphs_two_left_one_right_div_left_top"></div>                                                
-                                                <br />                                                
+                                            <div class="col-lg-4">
+                                                <div id="graphs_two_left_one_right_div_left_top"></div>
+                                                <br />
                                                 <div id="graphs_two_left_one_right_div_left_bottom"></div>
                                             </div>
-                                            <div class="col-lg-8">                                                
+                                            <div class="col-lg-8">
                                                 <div id="graphs_two_left_one_right_div_right"></div>
                                             </div>
                                         </div>
-                                    </div>                        
+                                    </div>
                                 </div>
+                                <!--Graph/Graph Start And End-->                                
+                                <div id="graphs_two_left_one_right_div">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="col-lg-12">
+                                                <div class="col-lg-8"></div>
+                                                <div class="col-lg-4">
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div id="graphs_two_left_one_right_div"></div>
+                                                <br />
+                                                <div id="graphs_two_left_one_right_div_left_bottom"></div>
+                                            </div>
+                                            <div class="col-lg-8">
+                                                <div id="graphs_two_left_one_right_div_right"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>

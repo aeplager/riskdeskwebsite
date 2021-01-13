@@ -141,6 +141,7 @@
     <Content Include="css\alertify.min.css" />
     <Content Include="css\alertify.rtl.css" />
     <Content Include="css\alertify.rtl.min.css" />
+    <Content Include="css\jquery-ui.min.css" />
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\MultiSelectDropDown\bootstrap-multiselect.css" />
     <Content Include="css\MultiSelectDropDown\bootstrap-multiselect.min.css" />
@@ -157,6 +158,7 @@
     <Content Include="css\themes\semantic.rtl.css" />
     <Content Include="css\themes\semantic.rtl.min.css" />
     <Content Include="css\vrd.css" />
+    <Content Include="DateRangeSelector.html" />
     <Content Include="Facilities.html" />
     <Content Include="Customer.html" />
     <Content Include="GenericUploader.html" />

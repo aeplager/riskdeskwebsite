@@ -43,6 +43,12 @@ namespace WCFWebRole
              BodyStyle = WebMessageBodyStyle.Bare)]
         GraphPricingSummary PricingSummaryGetInfo(String FieldString);
 
+        [WebGet(UriTemplate = "/MonthlyPricesGetInfo?FieldString={FieldString}",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        GraphMonthlyPrices MonthlyPricesGetInfo(String FieldString);
+
         [WebGet(UriTemplate = "/FacilitiesGetInfo",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
@@ -192,8 +198,43 @@ namespace WCFWebRole
         public Double MaxValue { get; set; }
     }
 
+    [DataContract]
+    public class GraphDateStringGraphValue
+    {
+        [DataMember]
+        public Int64 ColumnID { get; set; }
+
+        [DataMember]
+        public String ColumnName { get; set; }
+        [DataMember]
+        public String Color { get; set; }
+
+        [DataMember]
+        public String DateValue { get; set; }
+
+        [DataMember]
+        public Double GraphValue { get; set; }
+    }
 
     [DataContract]
+    public class GraphMonthlyPrices
+    {
+        [DataMember]
+        public List<GraphDateStringGraphValue> GraphOne { get; set; }
+
+        [DataMember]
+        public List<SelectorType> GraphOneSelections { get; set; }
+
+        [DataMember]
+        public List<String> DeliveryDate { get; set; }
+
+        [DataMember]
+        public List<GraphDateStringGraphValue> GraphTwo { get; set; }
+
+        [DataMember]
+        public List<SelectorType> GraphTwoSelections { get; set; }
+
+    }
     public class GraphPricingSummary
     {
         [DataMember]

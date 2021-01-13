@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>jQuery UI Daterange demo page</title>
+    <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet">
+    <style type="text/css">
+        body {
+            font: 12px Arial, sans-serif;
+            line-height: 1.4;
+        }
+        .info {
+            background: #f8f8f8;
+            margin-bottom: 1em;
+            padding: 8px;
+            font-size: 16px;
+        }
+		.info code {
+			display: inline-block;
+			background: white;
+			padding: 0 2px;
+			border: 1px solid #ddd;
+			border-radius: 3px;
+		}
+        .form__daterange {
+            font-size: 16px;
+            padding: 8px;
+            width: 30em;
+        }
+		.ui-datepicker-range > .ui-state-default {
+			background: lightsalmon;
+		}
+    </style>
+</head>
+<body>
+
+    <div class="info">
+        <p>
+            This is demo of <a href="https://github.com/mistakster/jquery-daterange/">jQuery UI Daterange plugin</a>
+        </p>
+        <p>
+            First click selects start of range and second &mdash; the end.<br>
+            Also, plugin can automatically swap dates if needed.
+        </p>
+        <p>
+            Previously selected days can be highlighted via class <code>.ui-datepicker-range</code><br>
+        </p>
+    </div>
+
+    <div class="form">
+        <input id="d" class="form__daterange">
+    </div>
+
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <!--<script src="src/jquery.daterange.js"></script>-->
+    <script type="text/javascript" src="/js/DateRangePicker/jquery.daterange.js"></script>
+    <script>
+        $(function () {
+            $("#d").daterange({
+                onClose: function (dateRangeText) {
+                    $("#d").after("<p>" + dateRangeText + "</p>");
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

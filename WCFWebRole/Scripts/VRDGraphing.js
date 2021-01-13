@@ -11,10 +11,9 @@
         $('#div_SubCategory').hide();
         $('#div_Term').hide();
         $('#div_Deal').hide();
-
+        $('#div_DateRangePicker').hide();
         $('#graphs_two_top_and_bottom_div_top').hide();        
         $('#graphs_two_top_and_bottom_div_bottom').hide();
-
         $('graphs_two_left_one_right_div_left_top').hide();
         $('graphs_two_left_one_right_div_left_bottom').hide();
         $('graphs_two_left_one_right_div_right').hide();        
@@ -85,6 +84,11 @@ function vrd_graphing_tab_select(PageType) {
                 day = "Thursday";
                 break;
             case "MonthlyPrices":
+                $('#TypeOfGraph').text('Monthly Prices');
+                $('#div_Customers').show();                
+                $('#div_Deal').show();
+                $('#div_Term').show();   
+                $('#div_DateRangePicker').show();
                 day = "Friday";
                 break;
             case "PriceComparison":
@@ -821,8 +825,8 @@ function vrd_graphing_drawChart_monthlyprices() {
             },
             isStacked: true,
         };
-        var number_formatter = new google.visualization.NumberFormat({ pattern: '#,###.##'});
-
+        var number_formatter = new google.visualization.NumberFormat({ pattern: '#,###.##'});                      
+        
         var chart = new google.visualization.ColumnChart(document.getElementById("graphs_two_top_and_bottom_div_top"));
         chart.draw(dataTable_chart, options);
         
@@ -841,7 +845,14 @@ function vrd_graphing_drawChart_monthlyprices() {
         HeaderDataErrorReport(e);
     }
 }
+function vrd_graphing_drawChart_monthprices() {
+    try {
 
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
 function vrd_graphing_drawChart_ColumnChartTable(ResultData, options, number_formatter, AddTotal) {
     try {
 
@@ -958,7 +969,7 @@ function vrd_graphing_drawChart_ColumnChartTable(ResultData, options, number_for
         number_formatter.format(dataTable_chart, i_col);
     }
 
-        var chart = new google.visualization.ColumnChart(document.getElementById("graphs_two_top_and_bottom_div_top"));
+    var chart = new google.visualization.ColumnChart(document.getElementById("graphs_two_top_and_bottom_div_top"));
     chart.draw(dataTable_chart, options);
 
     var table = new google.visualization.Table(document.getElementById('graphs_two_top_and_bottom_div_bottom'));    

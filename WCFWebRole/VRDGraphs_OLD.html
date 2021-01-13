@@ -29,6 +29,14 @@
     <!--AutoComplete Scripts-->
     <link rel="stylesheet" href="css/AutoComplete.css" />
     <!--Normal Scripts-->
+    <!--DropDown Extras-->
+    <!--<script type="text/javascript" src="js/MultiSelectDropDown/bootstrap-multiselect.js"></script>
+    <script type="text/javascript" src="js/MultiSelectDropDown/bootstrap-multiselect.min.js"></script>
+    <link rel="stylesheet" href="css/MultiSelectDropDown/bootstrap-multiselect.css" />
+    <link rel="stylesheet" href="css/MultiSelectDropDown/bootstrap-multiselect.min.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>-->
+    <!--DropDown Extras-->
 
 
     <script src="https://code.jquery.com/jquery-1.7.min.js"></script>
@@ -55,8 +63,6 @@
     <script type="text/javascript" src="Scripts/General.js"></script>
     <script type="text/javascript" src="Scripts/Customer.js"></script>
     <script type="text/javascript" src="Scripts/AutoComplete.js"></script>
-    <!--<script type="text/javascript" src="Scripts/DealEntry.js"></script>
-    <script type="text/javascript" src="Scripts/Facility.js"></script>-->
     <script type="text/javascript" src="Scripts/GenericUploader.js"></script>
     <script type="text/javascript" src="Scripts/VRDGraphing.js"></script>
     <!--<!--Links to Azure-->-->
@@ -75,6 +81,66 @@
 
     <!--<![endif]-->-->
     <style>
+        /*DropDown*/
+        .dropdown-check-list {
+            display: inline-block;
+        }
+
+            .dropdown-check-list .anchor {
+                position: relative;
+                cursor: pointer;
+                display: inline-block;
+                padding: 5px 50px 5px 10px;
+                border: 1px solid #ccc;
+            }
+
+                .dropdown-check-list .anchor:after {
+                    position: absolute;
+                    content: "";
+                    border-left: 2px solid black;
+                    border-top: 2px solid black;
+                    padding: 5px;
+                    right: 10px;
+                    top: 20%;
+                    -moz-transform: rotate(-135deg);
+                    -ms-transform: rotate(-135deg);
+                    -o-transform: rotate(-135deg);
+                    -webkit-transform: rotate(-135deg);
+                    transform: rotate(-135deg);
+                }
+
+                .dropdown-check-list .anchor:active:after {
+                    right: 8px;
+                    top: 21%;
+                }
+
+            .dropdown-check-list ul.items {
+                padding: 2px;
+                display: none;
+                margin: 0;
+                border: 1px solid #ccc;
+                border-top: none;
+            }
+
+                .dropdown-check-list ul.items li {
+                    list-style: none;
+                }
+
+            .dropdown-check-list.visible .anchor {
+                color: #0094ff;
+            }
+
+            .dropdown-check-list.visible .items {
+                display: block;
+            }
+            
+        /*DropDown*/
+
+        /*Google Charts*/
+        .bold-font {
+            font-weight: bolder;
+        }
+        /*Google Charts*/
         .lichild {
             display: none;
         }
@@ -129,39 +195,61 @@
             }
         }
     </style>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
     <script>
         /*An array containing all the country names in the world:*/
-        var LoadProfiles = [];
-        var Facilities = [];
-        var iPercent = 0;
-        var FileNameUpload = "";
+        // Load the Visualization API and the corechart package.
+        google.charts.load('current', { 'packages': ['corechart', 'table'] });
+
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.charts.setOnLoadCallback(vrd_graphing_drawChart);
+
+        // Callback that creates and populates a data table,
+        // instantiates the pie chart, passes in the data and
+        // draws it.
+
         var oTable = [];
-        var oTableMatch;
-        var RandomNumber = "TEST";
-        var iStartRow = 1;
-        var iEndRow = 50;
-        var FileNameForImport = "N/A";
-        var vblForReturn = "N/A";
         function Initialize() {
             // Initialize the city
             try {
-                //AddHeader();
-                generic_uploader_hide_all_tabs();
-                for (i = 0; i < 10; i++) {
-                    var tbl;
-                    oTable.push(tbl);
-                }
-                var startDate = new Date();
-                for (i = 1; i < 11; i++) {
-                    generic_uploader_add_tab(i, 'generic_uploader_tab_' + i.toString());
-                }
-                var endDate = new Date();
-                var seconds = (endDate.getTime() - startDate.getTime()) / 1000;
-                var msg = "The total seconds for processing the tabs is " + seconds.toString();
-                //alertify.success(msg);
-                generic_uploader_show_tab(2);
-                generic_uploader_show_tab(3);
+                //GeneralSelFill('SelMonths', '- Line Length -', '/Services/CurveUploader.svc/LineStartGetInfo');
+                vrd_graphing_tab_select('MonthlyPricing');
+                vrd_graphing_dropdown_initialize('selMonths');
+                vrd_graphing_dropdown_initialize('selCongestionZones');
+                vrd_graphing_dropdown_initialize('selCustomers');
+                vrd_graphing_dropdown_initialize('selFacilities');
+                vrd_graphing_dropdown_initialize('selWeatherScenario');
+
+                vrd_graphing_dropdown_initialize('selCategory');
+                vrd_graphing_dropdown_initialize('selSubCategory');
+                vrd_graphing_dropdown_initialize('selTerm');
+                vrd_graphing_dropdown_initialize('selDeal');
+                
+                var urlMain = '/Services/WCFWebService.svc/AllMonthsGetInfo';
+                vrd_graphing_dropdown_fill_records('selMonths', urlMain);
+                urlMain = '/Services/Facility.svc/CongestionZonesGetInfo';
+                vrd_graphing_dropdown_fill_records('selCongestionZones', urlMain);
+                urlMain = '/Services/Graphing.svc/CustomersGetInfo';
+                vrd_graphing_dropdown_fill_records('selCustomers', urlMain);                                
+                urlMain = '/Services/Graphing.svc/FacilitiesGetInfo';
+                vrd_graphing_dropdown_fill_records('selFacilities', urlMain);
+                urlMain = '/Services/Graphing.svc/AllWeatherScenariosGetInfo';
+                vrd_graphing_dropdown_fill_records('selWeatherScenario', urlMain);
+
+                urlMain = '/Services/Graphing.svc/CategoriesGetInfo';
+                vrd_graphing_dropdown_fill_records('selCategory', urlMain);
+                urlMain = '/Services/Graphing.svc/SubCategoryGetInfo';
+                vrd_graphing_dropdown_fill_records('selSubCategory', urlMain);
+                urlMain = '/Services/Graphing.svc/TermsGetInfo';
+                vrd_graphing_dropdown_fill_records('selTerm', urlMain);
+                urlMain = '/Services/Graphing.svc/DealsGetInfo';
+                vrd_graphing_dropdown_fill_records('selDeal', urlMain);
+
             }
+
 
             catch (e) {
                 HeaderDataErrorReport(e);
@@ -316,7 +404,7 @@
                             Dashboard
                         </a>
                     </li>
-                    <li class='active'>
+                    <li>
                         <a href="">
                             <i class="fa fa-align-justify"></i>
                             Data Entry
@@ -347,9 +435,9 @@
                             <li>
                                 <a href="">Pricing</a>
                                 <ul>
-                                    <li><a onclick="vrd_graphing_tab_select('PricingSummary')">Pricing Summary</a></li>
-                                    <li><a onclick="vrd_graphing_tab_select('MonthlyPrices')">Monthly Prices</a></li>
-                                    <li><a onclick="vrd_graphing_tab_select('PriceComparison')">Price Comparison</a></li>
+                                    <li><a onclick="VRDGraphing('PricingSummary')">Pricing Summary</a></li>
+                                    <li><a onclick="VRDGraphing('MonthlyPrices')">Monthly Prices</a></li>
+                                    <li><a onclick="VRDGraphing('PriceComparison')">Price Comparison</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -359,18 +447,6 @@
             <!-- Top Nav End -->
             <!-- Sub Nav End -->
             <div class="sub-nav hidden-sm hidden-xs">
-                <ul>
-                    <li><a href="" class="heading">Account Uploader</a></li>  <!--Main Form for Data Entry-->
-                    <li class="hidden-sm hidden-xs">
-                        <a href="#RemoveAbleDiv_Cust">Table of Accounts</a>
-                    </li>
-                    <li class="hidden-sm hidden-xs">
-                        <a href="#">Upload of Accounts</a>
-                    </li>
-                    <!--<li class="hidden-sm hidden-xs">
-                      <a href="#inputs">Status of Upload</a>
-                    </li>-->
-                </ul>
                 <div class="custom-search hidden-sm hidden-xs">
                     <input type="text" class="search-query" placeholder="Search here ...">
                     <i class="fa fa-search"></i>
@@ -378,79 +454,126 @@
             </div>
             <!-- Sub Nav End -->
             <!-- Dashboard Wrapper Start -->
+
+            <div id="div_selector_groups" class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="widget">
+                        <div class="widget-header">
+                            <div class="title">                                
+                                <label id="TypeOfGraph">Monthly</label>
+                                <span class="mini-title">
+                                    Select Parameters for Graphs<a id="enter-deal-single"></a>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="widget-body">
+                            <form class="form-horizontal no-margin">
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <div id="div_Refresh" class="col-lg-2" >
+                                            <input type="button" class="btn-info" onclick="vrd_graphing_refresh()" value="Refresh Graph" />                                            
+                                        </div>
+                                        <div id="div_months" class="col-lg-3"  hidden>
+                                            <!--<label class="control-label">Select Months</label>-->
+                                            <br />
+                                            <div id="selMonths" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Months</span>
+                                                <ul class="items" id="selMonths_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selMonths')" />Select All</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="div_congestion_zone" class="col-lg-3"  hidden>
+                                            <div id="selCongestionZones" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Congestion Zones</span>
+                                                <ul class="items" id="selCongestionZones_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selCongestionZones')" />Select All</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="div_Facilities" class="col-lg-3"  hidden>
+                                            <div id="selFacilities" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Facilities</span>
+                                                <ul class="items" id="selFacilities_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selFacilities')" />Select All</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="div_Customers" class="col-lg-3"  hidden>
+                                            <div id="selCustomers" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Customers</span>
+                                                <ul class="items" id="selCustomers_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selCustomers')" />Select All</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="div_weather_scenario" class="col-lg-3"  hidden>
+                                            <div id="selWeatherScenario" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Weather Scenario</span>
+                                                <ul class="items" id="selWeatherScenario_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selWeatherScenario')" />Select All</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="div_Category" class="col-lg-3"  hidden>
+                                            <div id="selCategory" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Category</span>
+                                                <ul class="items" id="selCategory_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selCategory')" />Select All</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="div_SubCategory" class="col-lg-3"  hidden>
+                                            <div id="selSubCategory" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select SubCategory</span>
+                                                <ul class="items" id="SubCategory_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selSubCategory')" />Select All</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="div_Term" class="col-lg-3"  hidden>
+                                            <div id="selTerm" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Term</span>
+                                                <ul class="items" id="selTerm_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selTerm')" />Select All</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div id="div_Deal" class="col-lg-3"  hidden>
+                                            <div id="selDeal" class="dropdown-check-list btn-default" tabindex="100">
+                                                <span class="anchor">Select Deal</span>
+                                                <ul class="items" id="selDeal_ul">
+                                                    <li><input type="checkbox" onclick="SelectAll('selDeal')" />Select All</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="dashboard-wrapper">
                 <!-- Left Sidebar Start -->
                 <div class="left-sidebar">
                     <!-- Row Start -->
-                    <div id="RemoveUploadDiv_Facility" class="row">
+                    <div id="graphs_top_graph_bottom_table" class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="widget">
                                 <div class="widget-header">
                                     <div class="title">
-                                        Upload Files<a id="dynamic-tables-facility-upload"></a>
+                                        Graph Above Data Below<a id="dynamic-tables-facility-upload"></a>
                                     </div>
                                 </div>
                                 <div id="dtExampleWidget-2" class="widget-body">
-                                    <div id="dt_example-2" class="example_alt_pagination">
-                                        <div class="form-group" hidden>
-                                            <input type="file" id="files" value="test" onchange="generic_uploader_show_file(this)">
-                                        </div>
-                                        <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Upload File" onclick="generic_uploader_upload_files()" />                                        
-                                        <!--<input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Change Tab1" onclick="generic_uploader_change_specific_value(1)" />
-                                        <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Change Tab2" onclick="generic_uploader_change_specific_value(2)" />
-                                        <input type="button" id="validate-button" class="btn btn-primary btn-lg" value="Change Tab3" onclick="generic_uploader_change_specific_value(3)" />-->
-                                        <div class="form-group">
-                                            <div> Uploaded Bytes: <font id="read"> </font> </div>
-                                            <div class="progress">
-                                                <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
-                                                    0%
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group" id="MainSelection_FormSelector">
-                                        </div>
-                                    </div>
                                     <div>
                                         <div class="row">
-                                            <div class="col-lg-12 col-md-12">
-                                                <div class="widget">
-                                                    <div class="widget-header">
-                                                        <div class="title">
-                                                            Tab<a id="tabs">s</a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="widget-body clearfix">
-                                                        <ul id="myTab" class="nav nav-tabs">
-                                                            <li class="active" id="generic_uploader_tab_header_1"><a href="#generic_uploader_tab_1" data-toggle="tab"><label id="tab_header_1">First Tab</label></a></li>
-                                                            <li id="generic_uploader_tab_header_2"><a href="#generic_uploader_tab_2" data-toggle="tab" ><label id="tab_header_2"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_3"><a href="#generic_uploader_tab_3" data-toggle="tab" ><label id="tab_header_3"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_4"><a href="#generic_uploader_tab_4" data-toggle="tab"><label id="tab_header_4"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_5"><a href="#generic_uploader_tab_5" data-toggle="tab"><label id="tab_header_5"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_6"><a href="#generic_uploader_tab_6" data-toggle="tab"><label id="tab_header_6"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_7"><a href="#generic_uploader_tab_7" data-toggle="tab"><label id="tab_header_7"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_8"><a href="#generic_uploader_tab_8" data-toggle="tab"><label id="tab_header_8"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_9"><a href="#generic_uploader_tab_9" data-toggle="tab"><label id="tab_header_9"></label></a></li>
-                                                            <li id="generic_uploader_tab_header_10"><a href="#generic_uploader_tab_10" data-toggle="tab"><label id="tab_header_10"></label></a></li>
-                                                            <!--<li class="hide"><a href="#profile" data-toggle="tab"><label id="tab_header_5">First Tab</label></a></li>-->
-                                                        </ul>
-                                                        <div id="myTabContent" class="tab-content">
-                                                            <div class="tab-pane fade in active" id="generic_uploader_tab_1"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_2"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_3"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_4"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_5"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_6"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_7"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_8"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_9"></div>
-                                                            <div class="tab-pane fade" id="generic_uploader_tab_10"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <div id="chart_div"></div>
                                         </div>
-                                        <div id="RemoveAbleDiv_Cust" class="row">
-
+                                        <div class="row">                                            
+                                            <div id="table_div"></div>
                                         </div>
                                         <div class="clearfix">
                                         </div>
@@ -463,6 +586,12 @@
                 </div>
             </div>
 
+            <div class="dashboard-wrapper">
+                <!-- Left Sidebar Start -->
+                <div class="left-sidebar">
+                    <!-- Row Start -->
+                </div>
+            </div>
             <!-- Row End -->
             <!-- Row Start -->
             <!--********************************************************************-->
@@ -477,10 +606,10 @@
             <!-- Row End -->
             <!--Bottom Of Left Side Bar-->
         </div>
-        <!-- Left Sidebar End -->
-        <!-- Right Sidebar Start -->
-        <!-- Right Sidebar End -->
-    </div>
+                <!-- Left Sidebar End -->
+                <!-- Right Sidebar Start -->
+                <!-- Right Sidebar End -->
+            </div>
 
     <!-- Dashboard Wrapper End -->
 
@@ -575,7 +704,8 @@
         $('.textarea').wysihtml5();
 
         //Color Pickers
-        $(document).ready(function () {
+        $(document).ready(function () {            
+            //$('#SelMonths').multiselect();
             $('.demo').each(function () {
                 $(this).minicolors({
                     control: $(this).attr('data-control') || 'hue',

@@ -119,6 +119,126 @@ namespace WCFWebRole
             return SelectionItemsinfo;
         }
 
+        public GraphMonthlyPrices MonthlyPricesGetInfo(String FieldString)
+        {
+
+            GraphMonthlyPrices SelectionItemsinfo = new GraphMonthlyPrices();
+            List<GraphDateStringGraphValue> GraphOne = new List<GraphDateStringGraphValue>();
+            List<SelectorType> GraphOneSelections = new List<SelectorType>();
+            List<String> DeliveryDate = new List<String>();
+            List<GraphDateStringGraphValue> GraphTwo = new List<GraphDateStringGraphValue>();
+            List<SelectorType> GraphTwoSelections = new List<SelectorType>();
+
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[Graphing].[MonthlyPricesGetInfo]";
+                    cmd.Parameters.AddWithValue("@FieldString", FieldString);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+            int iTable = 0;
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    // Graph Values
+                    iTable = 0;
+                    if (ds.Tables[iTable].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[iTable].Rows)
+                        {
+                            GraphOne.Add(new GraphDateStringGraphValue
+                            {
+
+                                DateValue = dr["DeliveryDate"].ToString(),
+                                ColumnID = Convert.ToInt64(dr["SelectorID"].ToString()),
+                                ColumnName = dr["SelectorText"].ToString(),
+                                Color = dr["Color"].ToString(),
+                                GraphValue = Convert.ToDouble(dr["GraphValue"].ToString()),
+                            }); ;
+                        }
+
+                    }
+                    // Graph Values
+                    iTable = 1;
+                    if (ds.Tables[iTable].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[iTable].Rows)
+                        {
+                            GraphOneSelections.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["SelectorID"].ToString(),
+                                SelectorText = dr["SelectorText"].ToString(),
+                                Color = dr["Color"].ToString(),
+                            });
+                        }
+
+                    }
+                    // Column Names
+                    iTable = 2;
+                    if (ds.Tables[iTable].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[iTable].Rows)
+                        {
+                            DeliveryDate.Add(dr["DeliveryDate"].ToString());
+                        }
+
+                    }
+                    // GraphTwo
+                    iTable = 3;                    
+                    if (ds.Tables[iTable].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[iTable].Rows)
+                        {
+                            GraphTwo.Add(new GraphDateStringGraphValue
+                            {
+                                DateValue = dr["DeliveryDate"].ToString(),
+                                ColumnID = Convert.ToInt64(dr["SelectorID"].ToString()),
+                                ColumnName = dr["SelectorText"].ToString(),
+                                Color = dr["Color"].ToString(),
+                                GraphValue = Convert.ToDouble(dr["GraphValue"].ToString()),
+                            });
+                        }
+
+                    }
+                    // Selection Type For Graph Two
+                    iTable = 4;
+                    if (ds.Tables[iTable].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[iTable].Rows)
+                        {
+                            GraphTwoSelections.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["SelectorID"].ToString(),
+                                SelectorText = dr["SelectorText"].ToString(),
+                                Color = dr["Color"].ToString(),
+                            });
+                        }
+
+                    }            
+                }
+            }
+
+            SelectionItemsinfo.GraphOne = GraphOne;
+            SelectionItemsinfo.GraphOneSelections = GraphOneSelections;
+            SelectionItemsinfo.GraphTwo = GraphTwo;
+            SelectionItemsinfo.GraphTwoSelections= GraphTwoSelections;
+            SelectionItemsinfo.DeliveryDate = DeliveryDate;            
+            return SelectionItemsinfo;
+        }
+
         public GraphPricingSummary PricingSummaryGetInfo(String FieldString)
         {
 
