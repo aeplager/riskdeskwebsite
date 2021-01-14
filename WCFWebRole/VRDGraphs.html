@@ -37,8 +37,15 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>-->
     <!--DropDown Extras-->
-
-
+    <!--DateRange Selector-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.css">-->
+    
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.css">-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.js"></script>-->
+    <!--DateRange Selector-->
     <script src="https://code.jquery.com/jquery-1.7.min.js"></script>
     <script src="https://code.jquery.com/ui/1.7.0/jquery-ui.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -135,7 +142,7 @@
             .dropdown-check-list.visible .items {
                 display: block;
             }
-            
+
         /*DropDown*/
 
         /*Google Charts*/
@@ -232,13 +239,13 @@
                 vrd_graphing_dropdown_initialize('selSubCategory');
                 vrd_graphing_dropdown_initialize('selTerm');
                 vrd_graphing_dropdown_initialize('selDeal');
-                
+
                 var urlMain = '/Services/WCFWebService.svc/AllMonthsGetInfo';
                 vrd_graphing_dropdown_fill_records('selMonths', urlMain);
                 urlMain = '/Services/Facility.svc/CongestionZonesGetInfo';
                 vrd_graphing_dropdown_fill_records('selCongestionZones', urlMain);
                 urlMain = '/Services/Graphing.svc/CustomersGetInfo';
-                vrd_graphing_dropdown_fill_records('selCustomers', urlMain);                                
+                vrd_graphing_dropdown_fill_records('selCustomers', urlMain);
                 urlMain = '/Services/Graphing.svc/FacilitiesGetInfo';
                 vrd_graphing_dropdown_fill_records('selFacilities', urlMain);
                 urlMain = '/Services/Graphing.svc/AllWeatherScenariosGetInfo';
@@ -477,8 +484,6 @@
                                     <div class="col-lg-12">
                                         <div id="div_Refresh" class="col-lg-2">
                                             <input type="button" class="btn-info" onclick="vrd_graphing_refresh()" value="Refresh Graph" />
-                                            <!--<input type="button" class="btn-info" onclick="showthing()" value="Show" />
-        <input type="button" class="btn-info" onclick="hidething()" value="Hide" />-->
                                         </div>
                                         <div id="div_months" class="col-lg-2" hidden>
                                             <!--<label class="control-label">Select Months</label>-->
@@ -621,7 +626,25 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div id="graphs_graph_date_selector_top_bottom" class="row">
+                                    <div class="col-lg-12">
+                                        <div id="graphs_graph_date_selector_top_bottom_top" hidden></div>
+                                        </br>
+                                        <div id="graphs_graph_date_selector_top_bottom_bottom" hidden></div>
+                                        </br>
+                                        <div class="col-lg-12">
+                                            <div id="graphs_graph_date_selector_top_bottom_start_date" class="col-lg-3" hidden>
+                                                <input type="date" class="form-control" id="Term_Date_Modal" width="200">
+                                            </div>
+                                            <div id="graphs_graph_date_selector_top_bottom_end_date" class="col-lg-3" hidden>
+                                                <input type="date" class="form-control" id="Term_Date_Modal" width="200">
+                                            </div>
+                                            <div id="">
+                                                <div id="graphs_graph_date_selector_top_bottom_bottom_right" hidden></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -12,12 +12,19 @@
         $('#div_Term').hide();
         $('#div_Deal').hide();
         $('#div_DateRangePicker').hide();
+
+        //Graph Set One
         $('#graphs_two_top_and_bottom_div_top').hide();        
         $('#graphs_two_top_and_bottom_div_bottom').hide();
-        $('graphs_two_left_one_right_div_left_top').hide();
-        $('graphs_two_left_one_right_div_left_bottom').hide();
-        $('graphs_two_left_one_right_div_right').hide();        
-        
+        //Graph Set Two
+        $('#graphs_two_left_one_right_div_left_top').hide();
+        $('#graphs_two_left_one_right_div_left_bottom').hide();
+        $('#graphs_two_left_one_right_div_right').hide();        
+        //Graph Set Three
+        $('#graphs_graph_date_selector_top_bottom_top').hide();
+        $('#graphs_graph_date_selector_top_bottom_bottom').hide();
+        $('#graphs_graph_date_selector_top_bottom_start_date').hide();
+        $('#graphs_graph_date_selector_top_bottom_end_date').hide();
         
     } catch (e) {
         HeaderDataErrorReport(e);
@@ -60,6 +67,11 @@ function vrd_graphing_tab_select(PageType) {
                 $('#div_congestion_zone').show();
                 $('#div_Customers').show();
                 $('#TypeOfGraph').text('Retail Risk');
+                // Graphs Visible
+                $('#graphs_graph_date_selector_top_bottom_top').show();
+                $('#graphs_graph_date_selector_top_bottom_bottom').show();
+                $('#graphs_graph_date_selector_top_bottom_start_date').show();
+                $('#graphs_graph_date_selector_top_bottom_end_date').show();
                 vrd_graphing_drawChart_RetailRisk();
                 break;
             case "PeakModel":
@@ -88,10 +100,17 @@ function vrd_graphing_tab_select(PageType) {
                 $('#div_Customers').show();                
                 $('#div_Deal').show();
                 $('#div_Term').show();   
-                $('#div_DateRangePicker').show();
+                $('#graphs_graph_date_selector_top_bottom_top').show();
+                $('#graphs_graph_date_selector_top_bottom_bottom').show();
+                $('#graphs_graph_date_selector_top_bottom_start_date').show();
+                $('#graphs_graph_date_selector_top_bottom_end_date').show();
+                $('#graphs_graph_date_selector_top_bottom_bottom_right').show();
+                vrd_graphing_drawChart_monthprices();
                 day = "Friday";
                 break;
             case "PriceComparison":
+
+
                 day = "Saturday";
                 break;
         }
@@ -847,6 +866,94 @@ function vrd_graphing_drawChart_monthlyprices() {
 }
 function vrd_graphing_drawChart_monthprices() {
     try {
+        var xml_tm = vrd_graphing_produce_selector_return_xml('selTerm', 'TM');
+        var xml_dl = vrd_graphing_produce_selector_return_xml('selDeal', 'DL');
+        var xml_cu = vrd_graphing_produce_selector_return_xml('selCustomers', 'CU');
+        var xml_complete = xml_tm + xml_dl + xml_cu;
+        var DataMain = '';
+        if (xml_complete != '') {
+            DataMain = '?FieldString=' + xml_complete;
+        }
+        var urlMain = '/Services/Graphing.svc/MonthlyPricesGetInfo';
+        urlMain = urlMain + DataMain;
+
+        var ResultData = ReturnDataFromService(urlMain)
+
+        if (ResultData.GraphOne.length == 0) {
+            alertify.error("No data was received");
+            if (ResultData.GraphIntTime.length == 0) {
+                alertify.error("No data was received");
+                return;
+            }
+        }
+        // Establish Tables of Data        
+        var GraphOne = ResultData.GraphOne;
+        var DeliveryDate = ResultData.DeliveryDate;
+        var GraphOneSelections = ResultData.GraphOneSelections;
+        var GraphTwo = ResultData.GraphTwo;
+        var GraphTwoSelections = ResultData.GraphTwoSelections;
+        // Table 1
+        var dataTable_table1 = new google.visualization.DataTable();
+        dataTable_table1.addColumn('string', 'Monthly');
+        DeliveryDate.forEach(function (row) {
+            dataTable_table1.addColumn('number', row);
+        });
+        var arrAppend = [];
+        GraphOneSelections.forEach(function (rowMain) {
+            arrAppend = []
+            arrAppend.push(rowMain.SelectorText);
+            GraphOne.forEach(function (row) {
+                if (rowMain.SelectorText == row.ColumnName) {
+                    arrAppend.push(row.GraphValue);
+                }
+            });
+            dataTable_table1.addRow(arrAppend);
+        });
+        var table1 = new google.visualization.Table(document.getElementById('graphs_graph_date_selector_top_bottom_top'));
+        var i_col_number = dataTable_table1.getNumberOfColumns();
+        var number_formatter = new google.visualization.NumberFormat({ pattern: '#,###.##' });
+        for (i_col = 0; i_col < i_col_number; i_col++) {
+            number_formatter.format(dataTable_table1, i_col);
+        }
+        dataTable_table1.setColumnProperties(0, { 'className': 'bold-font' });
+        table1.draw(dataTable_table1, { showRowNumber: false, width: '100%', height: '200' });
+        // Top Graph 
+        var dataTable_graph1 = new google.visualization.DataTable();
+        dataTable_graph1.addColumn('string', 'Delivery Dates');
+        GraphTwoSelections.forEach(function (row) {
+            dataTable_graph1.addColumn('number', row.SelectorText);
+        });
+        DeliveryDate.forEach(function (rowDate) {
+            // Run by 
+            arrAppend = []
+            arrAppend.push(rowDate);
+            GraphTwoSelections.forEach(function (rowColName) {
+                GraphTwo.forEach(function (rowGraphValue) {
+                    if ((rowDate == rowGraphValue.DateValue) && (rowColName.SelectorText == rowGraphValue.ColumnName)) {
+                        arrAppend.push(rowGraphValue.GraphValue);
+                    }
+                });
+            });
+            dataTable_graph1.addRow(arrAppend);
+        });
+        var options = {
+            title: 'Monthly Margin ($/MWH)  and Net Usage (MWH)',
+            height: 500,
+            colors: ['#E1C233', '#12239E'],
+            legend: 'top',            
+            hAxis: { title: 'Date Range' },
+            seriesType: 'bars',
+            series: {
+                // Gives each series an axis name that matches the Y-axis below.
+                0: { axis: 'NetUsage (MWH)', title: 'NetUsage (MWH)', type: 'bar', targetAxisIndex: 0 },
+                1: { axis: 'Monthly Gross Margin', type: 'line', targetAxisIndex: 1, title: 'Monthly Gross Margin'}
+            },
+        };
+
+        var chart = new google.visualization.ComboChart(document.getElementById('graphs_graph_date_selector_top_bottom_bottom'));
+        chart.draw(dataTable_graph1, options);
+
+
 
     }
     catch (e) {
@@ -984,4 +1091,3 @@ catch (e) {
     HeaderDataErrorReport(e);
 }
 }
-
