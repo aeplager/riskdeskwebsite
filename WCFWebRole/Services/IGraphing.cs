@@ -215,6 +215,23 @@ namespace WCFWebRole
         [DataMember]
         public Double GraphValue { get; set; }
     }
+    [DataContract]
+    public class GraphDealStructure
+    {
+        [DataMember]
+        public String CustomerName { get; set; }
+        [DataMember]
+        public Int64 DealID { get; set; }
+        [DataMember]
+        public String StartDate { get; set; }
+        [DataMember]
+        public String EndDate { get; set; }
+        [DataMember]
+        public Int64 Term { get; set; }
+
+
+
+    }
 
     [DataContract]
     public class GraphMonthlyPrices
@@ -233,6 +250,8 @@ namespace WCFWebRole
 
         [DataMember]
         public List<SelectorType> GraphTwoSelections { get; set; }
+        [DataMember]
+        public List<GraphDealStructure> GraphThree { get; set; }
 
     }
     public class GraphPricingSummary

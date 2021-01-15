@@ -128,6 +128,7 @@ namespace WCFWebRole
             List<String> DeliveryDate = new List<String>();
             List<GraphDateStringGraphValue> GraphTwo = new List<GraphDateStringGraphValue>();
             List<SelectorType> GraphTwoSelections = new List<SelectorType>();
+            List<GraphDealStructure> GraphThree = new List<GraphDealStructure>();
 
             DataSet ds = new DataSet();
             string ConnectionString = ReturnConnectionString();
@@ -227,7 +228,26 @@ namespace WCFWebRole
                             });
                         }
 
-                    }            
+                    }
+                    // Selection Type For Graph Two
+                    iTable = 5;
+                    if (ds.Tables[iTable].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[iTable].Rows)
+                        {
+                            GraphThree.Add(new GraphDealStructure
+                            {
+
+
+                                CustomerName = dr["CustomerName"].ToString(),
+                                DealID = Convert.ToInt64(dr["DealID"].ToString()),
+                                StartDate = dr["StartDate"].ToString(),
+                                EndDate = dr["EndDate"].ToString(),
+                                Term = Convert.ToInt64(dr["Term"].ToString()),
+                            });
+                        }
+
+                    }
                 }
             }
 
@@ -235,7 +255,8 @@ namespace WCFWebRole
             SelectionItemsinfo.GraphOneSelections = GraphOneSelections;
             SelectionItemsinfo.GraphTwo = GraphTwo;
             SelectionItemsinfo.GraphTwoSelections= GraphTwoSelections;
-            SelectionItemsinfo.DeliveryDate = DeliveryDate;            
+            SelectionItemsinfo.DeliveryDate = DeliveryDate;
+            SelectionItemsinfo.GraphThree = GraphThree;
             return SelectionItemsinfo;
         }
 

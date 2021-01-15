@@ -17,6 +17,7 @@
         $('#graphs_two_top_and_bottom_div_top').hide();        
         $('#graphs_two_top_and_bottom_div_bottom').hide();
         //Graph Set Two
+        $('#graphs_two_left_one_right_div').hide();
         $('#graphs_two_left_one_right_div_left_top').hide();
         $('#graphs_two_left_one_right_div_left_bottom').hide();
         $('#graphs_two_left_one_right_div_right').hide();        
@@ -25,6 +26,7 @@
         $('#graphs_graph_date_selector_top_bottom_bottom').hide();
         $('#graphs_graph_date_selector_top_bottom_start_date').hide();
         $('#graphs_graph_date_selector_top_bottom_end_date').hide();
+        $('#graphs_graph_date_selector_top_bottom_bottom_right').hide();
         
     } catch (e) {
         HeaderDataErrorReport(e);
@@ -68,6 +70,7 @@ function vrd_graphing_tab_select(PageType) {
                 $('#div_Customers').show();
                 $('#TypeOfGraph').text('Retail Risk');
                 // Graphs Visible
+                $('#graphs_graph_date_selector_top_bottom').show();
                 $('#graphs_graph_date_selector_top_bottom_top').show();
                 $('#graphs_graph_date_selector_top_bottom_bottom').show();
                 $('#graphs_graph_date_selector_top_bottom_start_date').show();
@@ -88,7 +91,8 @@ function vrd_graphing_tab_select(PageType) {
                 $('#TypeOfGraph').text('Pricing Summary');
                 $('#div_Customers').show();
                 $('#div_Category').show();
-                $('#div_SubCategory').show();                
+                $('#div_SubCategory').show();         
+                $('#graphs_two_left_one_right_div').show();
                 $('graphs_two_left_one_right_div_left_top').show();
                 $('graphs_two_left_one_right_div_left_bottom').show();
                 $('graphs_two_left_one_right_div_right').show();
@@ -104,6 +108,7 @@ function vrd_graphing_tab_select(PageType) {
                 $('#graphs_graph_date_selector_top_bottom_bottom').show();
                 $('#graphs_graph_date_selector_top_bottom_start_date').show();
                 $('#graphs_graph_date_selector_top_bottom_end_date').show();
+                $('#graphs_graph_date_selector_top_bottom_bottom_right').show();
                 $('#graphs_graph_date_selector_top_bottom_bottom_right').show();
                 vrd_graphing_drawChart_monthprices();
                 day = "Friday";
@@ -283,6 +288,8 @@ function vrd_graphing_refresh() {
             vrd_graphing_drawChart_PeakModel();
         } else if (graph_type == "Pricing Summary") {
             vrd_graphing_drawChart_PricingSummary();
+        } else if (graph_type == 'Monthly Prices') {
+            vrd_graphing_drawChart_monthprices();
         }
 
     }
@@ -473,7 +480,9 @@ function vrd_graphing_drawChart_PricingSummary() {
         for (i_col = 0; i_col < i_col_number; i_col++) {
             number_formatter.format(dataTable_PieChart, i_col);
         }
+                                                                                           
         var pie_chart = new google.visualization.PieChart(document.getElementById('graphs_two_left_one_right_div_left_bottom'));
+        $('#graphs_two_left_one_right_div_left_bottom').show();
         pie_chart.draw(dataTable_PieChart , options);
         // Treating First Row as Data
         var dataTable_WaterFall = new google.visualization.DataTable();
@@ -517,6 +526,7 @@ function vrd_graphing_drawChart_PricingSummary() {
         }
 
         var chart = new google.visualization.CandlestickChart(document.getElementById('graphs_two_left_one_right_div_right'));
+        $('#graphs_two_left_one_right_div_right').show();
         chart.draw(dataTable_WaterFall, options);
 
         // Table at Top Left of Screen
@@ -555,6 +565,7 @@ function vrd_graphing_drawChart_PricingSummary() {
         });
         dataTable_Table.addRow(arrAppend)
         var table = new google.visualization.Table(document.getElementById('graphs_two_left_one_right_div_left_top'));
+        $('#graphs_two_left_one_right_div_left_top').show();
         var i_col_number = dataTable_Table.getNumberOfColumns();
         for (i_col = 0; i_col < i_col_number; i_col++) {
             number_formatter_currency.format(dataTable_Table, i_col);
@@ -869,7 +880,19 @@ function vrd_graphing_drawChart_monthprices() {
         var xml_tm = vrd_graphing_produce_selector_return_xml('selTerm', 'TM');
         var xml_dl = vrd_graphing_produce_selector_return_xml('selDeal', 'DL');
         var xml_cu = vrd_graphing_produce_selector_return_xml('selCustomers', 'CU');
-        var xml_complete = xml_tm + xml_dl + xml_cu;
+        var start_date = $('#graphs_graph_date_selector_top_bottom_dt_start_date').val();
+        var xml_st = '';
+        if (start_date != "") {
+            tp = 'ST'
+            xml_st = '<Row><TP>' + tp + '</TP><VL>' + start_date  + '</VL></Row>';
+        }
+        var end_date = $('#graphs_graph_date_selector_top_bottom_dt_end_date').val();
+        var xml_en = '';
+        if (end_date != "") {
+            tp = 'EN'
+            xml_en = '<Row><TP>' + tp + '</TP><VL>' + end_date + '</VL></Row>';
+        }
+        var xml_complete = xml_tm + xml_dl + xml_cu + xml_st + xml_en;
         var DataMain = '';
         if (xml_complete != '') {
             DataMain = '?FieldString=' + xml_complete;
@@ -892,6 +915,7 @@ function vrd_graphing_drawChart_monthprices() {
         var GraphOneSelections = ResultData.GraphOneSelections;
         var GraphTwo = ResultData.GraphTwo;
         var GraphTwoSelections = ResultData.GraphTwoSelections;
+        var GraphThree = ResultData.GraphThree;
         // Table 1
         var dataTable_table1 = new google.visualization.DataTable();
         dataTable_table1.addColumn('string', 'Monthly');
@@ -939,9 +963,25 @@ function vrd_graphing_drawChart_monthprices() {
         var options = {
             title: 'Monthly Margin ($/MWH)  and Net Usage (MWH)',
             height: 500,
+            hAxis: {
+                title: 'Date Range',
+                showTextEvery: 3
+                //gridlines: {count: 3}
+            },
+            vAxes: {
+                0: {
+                    gridlines: { color: 'transparent' },
+                    format: "#,###.##",
+                    title: 'Monthly Gross Margin',
+                },
+                1: {
+                    gridlines: { color: 'transparent' },
+                    format: "#,###.##",
+                    title: 'Net Usage (MWh)'
+                },              
+            },
             colors: ['#E1C233', '#12239E'],
-            legend: 'top',            
-            hAxis: { title: 'Date Range' },
+            legend: 'top',                        
             seriesType: 'bars',
             series: {
                 // Gives each series an axis name that matches the Y-axis below.
@@ -953,7 +993,24 @@ function vrd_graphing_drawChart_monthprices() {
         var chart = new google.visualization.ComboChart(document.getElementById('graphs_graph_date_selector_top_bottom_bottom'));
         chart.draw(dataTable_graph1, options);
 
-
+        // Table Three
+        var dataTable_table3 = new google.visualization.DataTable();
+        dataTable_table3.addColumn('string', 'Customer Name');
+        dataTable_table3.addColumn('number', 'Deal ID');
+        dataTable_table3.addColumn('string', 'Start Date');
+        dataTable_table3.addColumn('string', 'End Date');
+        dataTable_table3.addColumn('string', 'Term');        
+        GraphThree.forEach(function (row) {
+            arrAppend = []
+            arrAppend.push(row.CustomerName.toString());
+            arrAppend.push(row.DealID);
+            arrAppend.push(row.StartDate.toString());
+            arrAppend.push(row.EndDate.toString());
+            arrAppend.push(row.Term.toString());
+            dataTable_table3.addRow(arrAppend);
+        });
+        var table2 = new google.visualization.Table(document.getElementById('graphs_graph_date_selector_top_bottom_bottom_right'));
+        table2.draw(dataTable_table3, { showRowNumber: false, width: '50%', height: '75' });
 
     }
     catch (e) {

@@ -229,6 +229,7 @@
             try {
                 //GeneralSelFill('SelMonths', '- Line Length -', '/Services/CurveUploader.svc/LineStartGetInfo');
                 vrd_graphing_tab_select('MonthlyPricing');
+                //vrd_graphing_tab_select('MonthlyPrices');
                 vrd_graphing_dropdown_initialize('selMonths');
                 vrd_graphing_dropdown_initialize('selCongestionZones');
                 vrd_graphing_dropdown_initialize('selCustomers');
@@ -606,7 +607,7 @@
                                     </div>
                                 </div>
                                 <!--Graph/Graph Start And End-->                                
-                                <div id="graphs_two_left_one_right_div">
+                                <!--<div id="graphs_two_left_one_right_div">
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="col-lg-12">
@@ -625,24 +626,27 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div>-->
                                 <div id="graphs_graph_date_selector_top_bottom" class="row">
                                     <div class="col-lg-12">
-                                        <div id="graphs_graph_date_selector_top_bottom_top" hidden></div>
-                                        </br>
-                                        <div id="graphs_graph_date_selector_top_bottom_bottom" hidden></div>
-                                        </br>
                                         <div class="col-lg-12">
                                             <div id="graphs_graph_date_selector_top_bottom_start_date" class="col-lg-3" hidden>
-                                                <input type="date" class="form-control" id="Term_Date_Modal" width="200">
+                                                <h5>Start Date</h5>                                                
+                                                <input type="date" class="form-control" id="graphs_graph_date_selector_top_bottom_dt_start_date" width="200">
                                             </div>
                                             <div id="graphs_graph_date_selector_top_bottom_end_date" class="col-lg-3" hidden>
-                                                <input type="date" class="form-control" id="Term_Date_Modal" width="200">
+                                                <h5>End Date</h5>
+                                                <input type="date" class="form-control" id="graphs_graph_date_selector_top_bottom_dt_end_date" width="200">
                                             </div>
                                             <div id="">
                                                 <div id="graphs_graph_date_selector_top_bottom_bottom_right" hidden></div>
                                             </div>
                                         </div>
+                                        </br>
+                                        <div id="graphs_graph_date_selector_top_bottom_top" hidden></div>
+                                        </br>
+                                        <div id="graphs_graph_date_selector_top_bottom_bottom" hidden></div>                                        
+
                                     </div>
                                 </div>
                             </div>
