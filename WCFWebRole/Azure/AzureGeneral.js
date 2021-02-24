@@ -153,6 +153,8 @@ function displayProcess(process) {
     document.getElementById("progress").style.width = process + '%';
     document.getElementById("progress").innerHTML = process + '%';
 }
+
+
 function uploadBlobByStream(checkMD5, files, filename, AzureParms) {
     //var files = document.getElementById('files').files;
     //if (!files.length) {
@@ -205,10 +207,62 @@ function uploadBlobByStream(checkMD5, files, filename, AzureParms) {
     catch (e) {
         alert(e);
     }
-
-
-
 }
+
+
+function uploadBlobByStream_wholesaledeal(checkMD5, files, filename, AzureParms) {
+    try {
+        var file = files;
+        //var AzureStorageName = AzureParms.AzureStorageName;
+        //var sas = AzureParms.SASKey;
+        //var blobUri = AzureParms.blobUri;
+        //container = AzureParms.AzureContainer;
+
+        var blobService = getBlobService(AzureParms);
+        if (!blobService)
+            return;
+        //var btn = document.getElementById("upload-button");
+        //btn.disabled = true;
+        //btn.innerHTML = "Uploading";
+        // Make a smaller block size when uploading small blobs
+        var blockSize = file.size > 1024 * 1024 * 32 ? 1024 * 1024 * 4 : 1024 * 512;
+        var options = {
+            storeBlobContentMD5: checkMD5,
+            blockSize: blockSize
+        };
+        blobService.singleBlobPutThresholdInBytes = blockSize;
+        var finishedOrError = false;
+        var container = 'testuploadcontainer';
+        var dt = new Date();
+
+
+        //#var speedSummary = blobService.createBlockBlobFromBrowserFile(container, fileList[i]["FileID"], selectedFiles[i].fileObject, options, function (error, result, response) 
+
+
+        var speedSummary = blobService.createBlockBlobFromBrowserFile(AzureParms.AzureContainer,
+            filename,
+            file,
+            (error, result) => {
+                if (error) {
+                    // Handle blob error
+                } else {
+                    console.log('Upload is successful');
+                    //await delay(2000);
+                    setInterval(wholesale_uploader_import_table(), 2000);
+                    //ImportIntoValidationTableNew();
+                }
+            });
+
+        speedSummary.on('progress', function () {
+            var process = speedSummary.getCompletePercent();
+            displayProcess(process);
+        });
+    }
+    catch (e) {
+        alert(e);
+    }
+}
+
 function CreateContainerName() {
     try {
         var accountname = 'riskdeskstorage';

@@ -48,11 +48,11 @@ namespace WCFWebRole
         int RetailDealUpsert(Int64 RetailDealId, String RetailDealName, Double CustomerID, Int64 Active);
 
 
-        [WebGet(UriTemplate = "/WholeSaleDealUpsert?WholeSaleDealID={WholeSaleDealID}&WholesaleDealName={WholesaleDealName}&CounterPartyID={CounterPartyID}&SecondCounterPartyID={SecondCounterPartyID}&SettlementPointID={SettlementPointID}&SetLocationID={SetLocationID}&WholeSaleBlockID={WholeSaleBlockID}&StartDate={StartDate}&EndDate={EndDate}&VolumeMW={VolumeMW}&Price={Price}&Active={Active}",
+        [WebGet(UriTemplate = "/WholeSaleDealUpsert?WholeSaleDealID={WholeSaleDealID}&WholesaleDealName={WholesaleDealName}&CounterPartyID={CounterPartyID}&SecondCounterPartyID={SecondCounterPartyID}&SettlementPointID={SettlementPointID}&SetLocationID={SetLocationID}&WholeSaleBlockID={WholeSaleBlockID}&StartDate={StartDate}&EndDate={EndDate}&VolumeMW={VolumeMW}&Price={Price}&Active={Active}&Fee={Fee}&BuySell={BuySell}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        UpsertType WholeSaleDealUpsert(Int64 WholeSaleDealID, String WholesaleDealName, Int64 CounterPartyID, Int64 SecondCounterPartyID, Int64 SettlementPointID, Int64 SetLocationID, Int64 WholeSaleBlockID, DateTime StartDate, DateTime EndDate, Double VolumeMW, Double Price, Int32 Active);
+        UpsertType WholeSaleDealUpsert(Int64 WholeSaleDealID, String WholesaleDealName, Int64 CounterPartyID, Int64 SecondCounterPartyID, Int64 SettlementPointID, Int64 SetLocationID, Int64 WholeSaleBlockID, DateTime StartDate, DateTime EndDate, Double VolumeMW, Double Price, Int32 Active, Double Fee, String BuySell);
 
         [WebGet(UriTemplate = "/WholeSaleDealGetInfo?WholeSaleDealID={WholeSaleDealID}",
             RequestFormat = WebMessageFormat.Json,
@@ -172,6 +172,9 @@ namespace WCFWebRole
 
         [DataMember]
         public Boolean Active { get; set; }
+        [DataMember]
+        public String BuySell { get; set; }
+
     }
 
 

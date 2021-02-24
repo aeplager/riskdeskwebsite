@@ -108,6 +108,8 @@ namespace WCFWebRole
                                 EndDate = Convert.ToDateTime(dr["EndDate"].ToString()),                                
                                 VolumeMW = Convert.ToDouble(dr["VolumeMW"]),
                                 Price = Convert.ToDouble(dr["Price"]),
+                                Fee = Convert.ToDouble(dr["Fee"]),
+                                BuySell = dr["BuySell"].ToString(),
                                 Active = Convert.ToBoolean(dr["Active"].ToString()),
                             });
                         }
@@ -116,7 +118,7 @@ namespace WCFWebRole
             }
             return SelectionItemsinfo;
         }
-        public UpsertType WholeSaleDealUpsert(Int64 WholeSaleDealID, String WholesaleDealName, Int64 CounterPartyID, Int64 SecondCounterPartyID, Int64 SettlementPointID, Int64 SetLocationID, Int64 WholeSaleBlockID, DateTime StartDate, DateTime EndDate, Double VolumeMW, Double Price, Int32 Active)
+        public UpsertType WholeSaleDealUpsert(Int64 WholeSaleDealID, String WholesaleDealName, Int64 CounterPartyID, Int64 SecondCounterPartyID, Int64 SettlementPointID, Int64 SetLocationID, Int64 WholeSaleBlockID, DateTime StartDate, DateTime EndDate, Double VolumeMW, Double Price, Int32 Active, Double Fee, String BuySell)
         {
             UpsertType SelectionItemsinfo = new UpsertType(); 
             SelectionItemsinfo.Status = "ERROR";
@@ -143,6 +145,8 @@ namespace WCFWebRole
                     cmd.Parameters.AddWithValue("@VolumeMW", VolumeMW);
                     cmd.Parameters.AddWithValue("@Price", Price);
                     cmd.Parameters.AddWithValue("@Active", Active);
+                    cmd.Parameters.AddWithValue("@Fee", Fee);
+                    cmd.Parameters.AddWithValue("@BuySell", BuySell);
                     cmd.Connection = con;
                     using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                     {

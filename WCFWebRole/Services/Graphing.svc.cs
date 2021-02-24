@@ -260,6 +260,128 @@ namespace WCFWebRole
             return SelectionItemsinfo;
         }
 
+
+        public GraphPriceComparison PricingComparisonGetInfo(String FieldString)
+        {
+            GraphPriceComparison SelectionItemsinfo = new GraphPriceComparison();
+
+            List<GraphPriceComparisonGraphOneTwo> GraphOneTwo = new List<GraphPriceComparisonGraphOneTwo>();
+            List<GraphPriceComparisonGraphThree> GraphThree = new List<GraphPriceComparisonGraphThree>();
+            List<SelectorType> SubCategories = new List<SelectorType>();
+            List<SelectorType> Categories = new List<SelectorType>();
+            List<SelectorType> Customers = new List<SelectorType>();
+            // Obtain Data 
+            DataSet ds = new DataSet();
+            string ConnectionString = ReturnConnectionString();
+            using (SqlConnection con = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    string SqlCommandText = "[Graphing].[PriceComparisonGetInfo]";
+                    cmd.Parameters.AddWithValue("@FieldString", FieldString);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = SqlCommandText;
+                    cmd.Connection = con;
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(ds, "SelectionItems");
+                    }
+                }
+            }
+
+            if (ds != null)
+            {
+                if (ds.Tables.Count > 0)
+                {
+                    // Graph Values
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[0].Rows)
+                        {
+                            GraphOneTwo.Add(new GraphPriceComparisonGraphOneTwo
+                            {
+                                Customer = dr["CustomerName"].ToString(),
+                                CustomerID = Convert.ToInt64(dr["CustomerID"].ToString()),
+                                SubCategory = dr["SubCategory"].ToString(),
+                                SubCategoryID = Convert.ToInt64(dr["SubCategoryID"].ToString()),
+                                Price = Convert.ToDouble(dr["Price"].ToString()),
+                                PricePercent = Convert.ToDouble(dr["PricePercent"].ToString()),
+                                TotalPrice = Convert.ToDouble(dr["TotalPrice"].ToString()),
+                            });
+                        }
+
+                    }
+                    // Graph Values
+                    if (ds.Tables[1].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[1].Rows)
+                        {
+                            GraphThree.Add(new GraphPriceComparisonGraphThree
+                            {
+
+                                Customer = dr["CustomerName"].ToString(),
+                                CustomerID = Convert.ToInt64(dr["CustomerID"].ToString()),
+                                Category = dr["Category"].ToString(),
+                                CategoryID = Convert.ToInt64(dr["CategoryID"].ToString()),
+                                Price = Convert.ToDouble(dr["Price"].ToString()),
+                            });
+                        }
+
+                    }
+                    // Column Names
+                    if (ds.Tables[2].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[2].Rows)
+                        {
+                            Customers.Add(new SelectorType
+                            {
+                                SelectorID = dr["CustomerID"].ToString(),
+                                SelectorText = dr["CustomerName"].ToString(),                                
+                            });
+                        }
+
+                    }
+                    // Time Name
+                    if (ds.Tables[3].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[3].Rows)
+                        {
+                            Categories.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["CategoryID"].ToString(),
+                                SelectorText = dr["Category"].ToString(),
+                                Color = dr["Color"].ToString(),
+                            });
+                        }
+
+                    }
+                    // Time Name
+                    if (ds.Tables[4].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in ds.Tables[4].Rows)
+                        {
+                            SubCategories.Add(new SelectorType
+                            {
+
+                                SelectorID = dr["SubCategoryID"].ToString(),
+                                SelectorText = dr["SubCategory"].ToString(),
+                                Color = dr["Color"].ToString(),
+                            });
+                        }
+
+                    }
+                }
+            }
+
+            SelectionItemsinfo.GraphOneTwo = GraphOneTwo;
+            SelectionItemsinfo.GraphThree = GraphThree;
+            SelectionItemsinfo.Customer = Customers;
+            SelectionItemsinfo.Category = Categories;
+            SelectionItemsinfo.SubCategories = SubCategories;
+            return SelectionItemsinfo;
+        }
+
         public GraphPricingSummary PricingSummaryGetInfo(String FieldString)
         {
 

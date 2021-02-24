@@ -114,9 +114,11 @@ function vrd_graphing_tab_select(PageType) {
                 day = "Friday";
                 break;
             case "PriceComparison":
-
-
-                day = "Saturday";
+                $('#TypeOfGraph').text('Pricing Comparison');
+                $('#div_Customers').show();
+                $('#div_Category').show();
+                $('#div_SubCategory').show();         
+                
                 break;
         }
 

@@ -433,7 +433,7 @@ function ReturnDataFromServiceAsync(urlMain) {
                 alert("Error");
             }
         });
-        return ReturnData;
+        return "SUCCESS";
     }
     catch (e) {
         HeaderDataErrorReport(e);

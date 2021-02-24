@@ -36,26 +36,22 @@ function DealGenericAllInfoList_Initialize() {
         HeaderDataErrorReport(e);
     }
 }
-//function FillDropDown(selControl, StoredProc, FirstRec) {
-//    try {
-//        var urlMain = '/Services/WCFWebService.svc/WebSiteDropDownSelectorGetInfo';
-//        var DataUrl = '?StoredProc=' + StoredProc;
-//        // Clear the Drop Down
-//        urlMain = urlMain + DataUrl;
-//        $('#' + selControl).empty();
-//        var SelectorID = 0 ;
-//        var SelectorText = FirstRec;
-//        var ResultData = ReturnDataFromService(urlMain);            
-//        $('#' + selControl).append('<option value="' + SelectorID + '"> - ' + SelectorText + ' - </option>')
-//        for (var i in ResultData) {
-//            SelectorID = ResultData[i].SelectorID;
-//            SelectorText = ResultData[i].SelectorText
-//            $('#' + selControl).append('<option value="' + SelectorID + '">' + SelectorText + '</option>')
-//        }
-//    } catch (e) {
-//        HeaderDataErrorReport(e);
-//    }    
-//}
+function wholesale_deal_selector() {
+    try {
+        var current_wholesale = 'N/A';
+        var control_name = 'selWholesaleBlock';
+        current_wholesale = $("#" + control_name + " option:selected").text();
+        control_name = "wholesale_deal_btn_upload";
+        if (current_wholesale.toLowerCase() == "custom") {
+            $("#" + control_name).prop('disabled', false);
+        } else {
+            $("#" + control_name).prop('disabled', true);
+        }
+        alertify.success(current_wholesale);
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
 
 function WholesaleDealUpsert(NewOld) {
     try {
@@ -63,7 +59,7 @@ function WholesaleDealUpsert(NewOld) {
         var DealDay = $('#DealStartDateDay').val()
         var DealMonth = $('#DealStartDateMonth').val()
         var DealYear = $('#DealStartDateYear').val()
-        var msg = "start"
+        var msg = "start";
         if ((DealDay == 0) || (DealDay == null)) {
             alertify.error("Please select a " + msg + " day");
             return;
@@ -143,13 +139,25 @@ function WholesaleDealDataUpsert(NewOld) {
         var WholesaleBlockID = $('#selWholesaleBlock').val();
         var VolumeMW = $('#WholeSaleDealVolume').val();
         var Price = $('#WholeSaleDealPrice').val();        
+        var Fee = $('#WholeSaleDealFee').val();             
         if (VolumeMW == null) { VolumeMW = 0; }
+        if (Fee == null) { Fee = 0;}
         if (Price == null) { Price = 0; }
         var CurrentDealActive = 1;
         if ($('#Active_Deal').is(':checked') != true) { CurrentDealActive = 0; }         
+        var BuySell = 'Buy';
+        //var rb = document.getElementsByName("buysell");        
+        var BuySellChecker = document.querySelector('input[name=BuySellRadio][value=SellValue]').checked;
+        if (BuySellChecker == true) {
+            BuySell = "Sell"; 
+        }
+        //if (document.BuySellRadiomyForm.BuySellRadio[1].checked == true) { BuySell = "Sell"; }
+        
+
+
         var urlMain = '/Services/Deals.svc/WholeSaleDealUpsert';        
         var DataUrl = '?WholeSaleDealID=' + WholeSaleDealId + '&WholesaleDealName=' + WholeSaleDealName        
-        DataUrl = DataUrl + '&CounterPartyID=' + WholeSaleCounterPartyID + '&SecondCounterPartyID=' + WholeSaleSecondCounterPartyID + '&SettlementPointID=' + SettlementPointID + '&SetLocationID=' + SettlementLocationID + '&WholeSaleBlockID=' + WholesaleBlockID + '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&VolumeMW=' + VolumeMW + '&Price=' + Price + '&Active=' + CurrentDealActive 
+        DataUrl = DataUrl + '&CounterPartyID=' + WholeSaleCounterPartyID + '&SecondCounterPartyID=' + WholeSaleSecondCounterPartyID + '&SettlementPointID=' + SettlementPointID + '&SetLocationID=' + SettlementLocationID + '&WholeSaleBlockID=' + WholesaleBlockID + '&StartDate=' + StartDate + '&EndDate=' + EndDate + '&VolumeMW=' + VolumeMW + '&Price=' + Price + '&Active=' + CurrentDealActive + '&Fee=' + Fee + '&BuySell=' + BuySell
         urlMain = urlMain + DataUrl;
         var ResultData = ReturnDataFromService(urlMain);
         if (ResultData.Status == "SUCCESS") {
@@ -187,6 +195,8 @@ function WholeSaleDealCustomerListChange() {
         $('#selWholesaleBlock').val(0);
         $('#WholeSaleDealVolume').val(0);
         $('#WholeSaleDealPrice').val(0);   
+        $('#WholeSaleDealFee').val(0);   
+        document.querySelector('input[name=BuySellRadio][value=BuyValue]').checked = true;
         if (WholeSaleDealId != 0) {
             var urlMain = '/Services/Deals.svc/WholeSaleDealGetInfo';
             var DataUrl = '?WholeSaleDealID=' + WholeSaleDealId
@@ -209,8 +219,16 @@ function WholeSaleDealCustomerListChange() {
                 $('#selSettlementPoint').val(ResultData[i].SettlementPointID);
                 $('#selSettlementLocation').val(ResultData[i].SettlementLocationID);
                 $('#selWholesaleBlock').val(ResultData[i].WholesaleBlockID);
+                wholesale_deal_selector();
                 $('#WholeSaleDealVolume').val(ResultData[i].VolumeMW);
                 $('#WholeSaleDealPrice').val(ResultData[i].Price);
+                $('#WholeSaleDealFee').val(ResultData[i].Fee);
+                // Buy or Sale
+                var BuySell = ResultData[i].BuySell;                
+                if (BuySell.toLowerCase() == "s") {
+                    document.querySelector('input[name=BuySellRadio][value=SellValue]').checked = true;                                        
+                }
+                
             }
         }
 
@@ -1149,6 +1167,204 @@ function DealGenericClearAndRefillTable() {
         }
     }
     catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+
+
+function wholesale_uploader_show_file(input) {
+    try {
+        progressed = 0.0;
+
+        //#$("#progress").css("width", progressed + "%").attr("aria-valuenow", progressed).text(progressed + "% progress");
+        displayProcess(progressed);
+
+        let file = input.files[0];
+        wholesale_uploader_Upload_files('whole_sale_custom');
+
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+
+
+function wholesale_uploader_upload_files() {
+    try {
+        progressed = 0.0;
+
+        //#$("#progress").css("width", progressed + "%").attr("aria-valuenow", progressed).text(progressed + "% progress");
+        displayProcess(progressed);
+
+        var WholeSaleDealId = $('#selWholeSaleDeal').val();
+        if (WholeSaleDealId == 0) {
+            alertify.error("Please save the new deal before adding a custom.   The system needs a whole sale identifier to add a custom whole saleblock");
+        } else {
+            document.getElementById("files").click();
+            var files = document.getElementById('files').files;
+        }
+        //alertify.success(files[0]);
+    } catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function wholesale_uploader_Upload_files(FileType) {
+    try {
+        //alertify.success("Ok Great");
+        var files = document.getElementById('files').files;
+        //$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+        fileslength = files.length;
+        if (fileslength > 0) {
+            //var FileName = ObtainDateSuffix() + files[0].name;
+            var FileName = files[0].name;
+            FileNameForImport = ObtainDateSuffix(FileName);
+            files[0].name = FileNameForImport;
+            var dt = new Date();
+            AzureParms = ObtainAzureParams(FileType);
+            var UserName = ReturnUserName();
+            var AzureStorageName = AzureParms.AzureStorageName;
+            var sas = AzureParms.SASKey;
+            var blobUri = AzureParms.blobUri;
+            container = AzureParms.AzureContainer;
+            FileType = FileType.toUpperCase();
+            FileType = FileType.trim();
+            if (FileType == 'whole_sale_custom') {
+                FileName = files[0].name;
+                // Update DB for File Status
+                iFileCount = files.length;
+                for (iFile = 0; iFile < iFileCount; iFile++) {
+                    FileName = files[iFile].name;
+                    var FileID = LogFileUploadStatus(0, FileNameForImport, 'UPLD', FileType, UserName);
+                    // Change the files
+                    iFile = 0;
+                    uploadBlobByStream_wholesaledeal(false, files[iFile], FileNameForImport, AzureParms);
+                }
+                msg = "Uploading proceeding";
+                alertify.success(msg);
+                FileNameUpload = FileNameForImport;
+            } else {
+                FileType = FileType.toUpperCase();
+                FileType = FileType.trim();
+                // Update DB for File Status
+                //var FileID = LogFileUploadStatus(0, FileName, 'UPLD', FileType, UserName);
+                iFile = 0;
+                uploadBlobByStream_wholesaledeal(false, files[iFile], FileNameForImport, AzureParms);
+                msg = "Uploading proceeding";
+                alertify.success(msg);
+                FileNameUpload = FileNameForImport;
+            }
+            files = null;
+            document.getElementById("files").value = null;
+
+            progressed = 10.0;
+
+            //#$("#progress").css("width", progressed + "%").attr("aria-valuenow", progressed).text(progressed + "% progress");
+            displayProcess(progressed);
+
+            //$("#progress").progressbar({
+            //    value: 10
+            //});
+        } else {
+            files = null;
+            document.getElementById("files").value = null;
+            //$("#progress").progressbar({
+            //    value: 10
+            //});
+
+            alertify.error("Please select a file before pressing upload");
+        }
+
+    }
+    catch (e) {
+        HeaderDataErrorReport(e);
+    }
+}
+function wholesale_uploader_import_table() {
+    try {
+        var FileName = FileNameForImport;
+        var sheet_name = "Sheet1";
+        sts = UpdateImportStatus("Beginning processing...")
+        var file_name = FileName;
+        file_name = file_name.toLowerCase();
+        var ln = file_name.length;
+        var start = ln - 4;
+        var end = ln;
+        var short_type = file_name.substring(start, ln);
+        start = ln - 5;
+        var long_type = file_name.substring(start, ln);
+        var sheet_name = "SH";
+        // Hide All But One         
+        //generic_uploader_hide_all_tabs();
+        if (short_type == ".xls" || short_type == ".xlm" || long_type == ".xlsx" || long_type == ".xlsm") {
+            // Obtain sheet names
+            file_name = file_name.toLowerCase();
+            var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/obtain_sheets_excel/';
+            var DataMain = FileName;
+            urlMain = urlMain + DataMain;
+            var ResultData = ReturnDataFromService(urlMain);
+            // Clear the selector
+            var selName = "selSheets";
+            $('#' + selName).empty();
+            AddItemsToSelector(selName, '- Select Sheet -', 0);
+            for (var iRows in ResultData) {
+                AddItemsToSelector(selName, ResultData[iRows].SheetName, iRows);
+            }
+            alertify.success(ResultData);
+
+            $("#myModalCustom").modal('show');
+            
+            // Set Here
+        } else {
+            var tab_id = 1;
+            //generic_uploader_hide_all_tabs();
+            var sheet_name = 'CSV';
+            //$('#tab_header_' + tab_id.toString()).text(sheet_name);   
+            var wholesaledeal_id = $('#selWholeSaleDeal').val();
+            run_id = wholesale_deal_run_data_factory_pull(FileName, sheet_name, wholesaledeal_id );
+            //var tab_id_arr = []
+            //var run_id_arr = [];
+            //run_id_arr.push(run_id);
+            //tab_id_arr.push(1);
+            //var iLimiter = 1;
+            //set_run_checkerV2(run_id_arr, tab_id_arr, iLimiter);
+            // Set Here
+        }
+    } catch (e) {
+        $("#DataFactoryProcessing").text("Error in processing...")
+        HeaderDataErrorReport(e)
+
+    }
+}
+function wholesale_deal_run_data_factory_pull(FileName, sheet_name, wholesale_deal_id) {
+    try {
+        // Submit the file for processing via Data Factory        
+        var wholesaledeal_id = $('#selWholeSaleDeal').val();
+        var urlMain = 'http://' + ReturnDataFromService("/Services/WCFWebService.svc/ReturnDockerURL") + '/api/load_wholecustom/';        
+        var DataMain = FileName + '/' + sheet_name + '/' + wholesaledeal_id;
+        urlMain = urlMain + DataMain;
+        var ResultData = ReturnDataFromServiceAsync2(urlMain);
+        //var run_checker_id = ResultData ;        
+        msg = "Import Process Started...Please wait a minute to view the import";
+        alertify.success(msg);
+        return msg;
+    } catch (e) {
+        return "FAILURE";
+        HeaderDataErrorReport(e);
+    }
+}
+function wholesaledeal_uploader_run_data_factory_selected_sheets() {
+    try {
+        //$('#modalSpinner').modal('show');
+        //var multiSelect = document.getElementById("selSheets");
+        var sheet_name = $('#selSheets option:selected').text();
+        //$('#tab_header_' + tab_id.toString()).text(sheet_name);
+        var FileName = FileNameUpload;
+        var wholesaledeal_id = $('#selWholeSaleDeal').val();
+        run_id = wholesale_deal_run_data_factory_pull(FileName, sheet_name, 1);
+        $("#myModalCustom").modal('hide');        
+        //$('#modalSpinner').modal('hide');
+    } catch (e) {
+        $('#myModalCustom').modal('hide');
         HeaderDataErrorReport(e);
     }
 }

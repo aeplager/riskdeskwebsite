@@ -98,7 +98,7 @@
                 SetMonths('DealEndDateMonth');
                 SetYearsAvailable('DealEndDateYear');
                 FillDropDown('selWholeSaleCounterParty', 'CounterPartyGetInfo', 'Counterparty');
-                FillDropDown('selWholeSaleSecondCounterParty', 'CounterPartyGetInfo', 'Second Counterparty');
+                FillDropDown('selWholeSaleSecondCounterParty', 'CounterPartyGetInfo', 'Secondary Counterparty');
                 FillDropDown('selWholesaleBlock', 'WholeSaleBlocksGetInfo', 'Wholesale Block');
                 FillDropDown('selSettlementPoint', 'SettlementPointGetInfo', 'Settlement Point');
                 FillDropDown('selSettlementLocation', 'SettlementLocationGetInfo', 'Settlement Location');
@@ -297,13 +297,7 @@
                 <!-- Left Sidebar Start -->
                 <div class="left-sidebar">
 
-                    <!-- Row Start -->
-                    <!--Manual Deal Entry-->
-                    <!--Manual Deal Entry-->
-                    <!-- Row End -->
-                    <!-- Row Start -->
-                    <!-- Row End -->
-                    <!-- Row Start -->
+
                     <div id="DynamicRow_Cust" class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="widget">
@@ -318,12 +312,6 @@
                                 <div class="widget-body">
                                     <form class="form-horizontal no-margin">
                                         <div class="form-group">
-                                            <!--<label for="CustomerDealListLabel" class="col-sm-2 control-label">Select Customer</label>-->
-                                            <!--<div class="col-md-4 col-sm-4 col-xs-4">
-            <select id="SelCustomer" name="CustomerInfoList_Deal_name" class="form-control" onchange="RetailDealCustomerListChange()">
-                <option>-Customer-</option>
-            </select>
-        </div>-->
                                             <label for="DealListLabel" class="col-sm-2 control-label">Select Deal</label>
                                             <div class="col-md-4 col-sm-4 col-xs-4">
                                                 <select id="selWholeSaleDeal" name="DealInfoList_Deal_name" class="form-control" onchange="WholeSaleDealCustomerListChange()">
@@ -354,10 +342,21 @@
                                                     </div>
 
                                                     <div class="col-md-4 col-sm-4 col-xs-4">
-                                                        <label for="pwd" class="col-sm-5 control-label">Second Counterparty</label>
+                                                        <label for="pwd" class="col-sm-5 control-label">Secondary Counterparty</label>
                                                         <select id="selWholeSaleSecondCounterParty" class="form-control">
                                                             <option>
                                                                 - Second Counterparty -
+                                                            </option>
+                                                            <option value="1">
+                                                                January
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-4 col-sm-4 col-xs-4">
+                                                        <label for="pwd" class="col-sm-5 control-label">Wholesale Block</label>
+                                                        <select id="selWholesaleBlock" class="form-control" onchange="wholesale_deal_selector()">
+                                                            <option>
+                                                                - Wholesale Block -
                                                             </option>
                                                             <option value="1">
                                                                 January
@@ -394,20 +393,17 @@
                                                             </option>
                                                         </select>
                                                     </div>
-                                                    <div class="col-md-4 col-sm-4 col-xs-4">
-                                                        <label for="pwd" class="col-sm-5 control-label">Wholesale Block</label>
-                                                        <select id="selWholesaleBlock" class="form-control">
-                                                            <option>
-                                                                - Wholesale Block -
-                                                            </option>
-                                                            <option value="1">
-                                                                January
-                                                            </option>
-                                                        </select>
+                                                    <div class="col-md-4 col-sm-4 col-xs-4 alignbuttonbottom">
+                                                        <!--<label for="pwd" class="col-sm-5 control-label">Upload Custom</label>-->
+                                                        <div class="form-group" hidden>
+                                                            <input type="file" id="files" value="test" onchange="wholesale_uploader_show_file(this)">
+                                                        </div>
+                                                        <button type="button" class="btn btn-info" id="wholesale_deal_btn_upload" onclick="wholesale_uploader_upload_files()" disabled>Upload Custom</button>
                                                     </div>
+
                                                 </div>
                                             </div>
-                                        </div>                                        
+                                        </div>
 
                                         <div class="form-group">
                                             <label for="pwd" class="col-sm-2 control-label">Start Date</label>
@@ -488,7 +484,7 @@
                                         <div class="form-group">
                                             <label for="pwd" class="col-sm-2 control-label"></label>
                                             <div class="col-sm-10">
-                                                <div class="col-md-4 col-sm-4 col-xs-4">
+                                                <div class="col-md-3 col-sm-3 col-xs-3">
                                                     <div class="col-sm-10">
                                                         <div>
                                                             <label for="pwd" class="control-label">Volume</label>
@@ -496,19 +492,32 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-4 col-sm-4 col-xs-4">
+                                                <div class="col-md-3 col-sm-3 col-xs-3">
                                                     <div class="col-sm-10">
                                                         <label for="pwd" class="control-label">Price</label>
                                                         <input type="number" class="form-control" id="WholeSaleDealPrice" placeholder="0.00" min="-1.00" max="500000.00">
                                                     </div>
                                                 </div>
-
-                                                <!--<div class="col-md-4 col-sm-4 col-xs-4">
-                <div class="col-sm-10">
-                    <label for="pwd" class="control-label">Risk Premium</label>
-                    <input type="number" class="form-control" id="RiskPremium_Deal" placeholder="0.00" min="-1.00" max="500000.00">
-                </div>
-            </div>-->
+                                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                                    <div class="col-sm-10">
+                                                        <label for="pwd" class="control-label">Fee</label>
+                                                        <input type="number" class="form-control" id="WholeSaleDealFee" placeholder="0.00" min="-1.00" max="500000.00">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3 col-sm-3 col-xs-3">
+                                                    <div class="col-sm-10">
+                                                        <label for="pwd" class="control-label">Type of Deal</label>
+                                                        </br>
+                                                        <!--<form name="BuySellRadio">
+                                                            <input type="radio" name="buysell" value="CSS" checked="true"><label for="CSS">Buy</label><br>
+                                                            <input type="radio" name="buysell" value="CSS"><label for="CSS">Sale</label>
+                                                        </form>-->
+                                                        <form name="myForm">
+                                                            <input type='radio' name='BuySellRadio' value='BuyValue'> Buy
+                                                            <input type='radio' name='BuySellRadio' value='SellValue'> Sell
+                                                        </form>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -516,14 +525,22 @@
                                                 <label>
                                                     <input type="checkbox" id="Active_Deal" checked="checked">Is Deal Active?
                                                 </label>
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col-sm-offset-2 col-sm-10">
                                                 <button type="button" class="btn btn-default btn" onclick="WholesaleDealUpsert('New')">New</button>
                                                 <button type="button" class="btn btn-info" onclick="WholesaleDealUpsert('Old')">Save</button>
+                                                <button type="button" class="btn btn-danger" onclick="WholesaleDealUpsert('Old')">Confirm</button>
+                                                <div class="form-group">
+                                                    <div> Uploaded Bytes: <font id="read"> </font> </div>
+                                                    <div class="progress">
+                                                        <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                                            0%
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" id="MainSelection_FormSelector">
+                                                </div>
                                             </div>
                                         </div>
+
                                     </form>
                                 </div>
                             </div>
@@ -618,7 +635,7 @@
                         <!--<h2>Modal Example</h2>-->
                         <!-- Trigger the modal with a button -->
                         <!--<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button>
-                        <button type="button" class="btn btn-info btn-lg" id="myBtn" onclick="OpenModelScreen()">Open Modal 3</button>-->
+        <button type="button" class="btn btn-info btn-lg" id="myBtn" onclick="OpenModelScreen()">Open Modal 3</button>-->
                         <!-- Modal -->
                         <div class="modal fade" id="myModal" role="dialog">
                             <div class="modal-dialog">
@@ -628,7 +645,7 @@
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                         <h4 class="modal-title">Edit Deal Term</h4>
-                                    </div>                                    
+                                    </div>
                                     <div class="modal-body">
                                         <div class="col-md-6 col-sm-6 col-xs-6">
                                             <div class="col-sm-10">
@@ -666,7 +683,7 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-success" onclick="SaveDealToTable()">Save</button>
                                         <button type="button" class="btn btn-danger" onclick="CancelModel()">Cancel</button>
-                                        <input type="hidden" class="form-control" id="RetailDealTermsID_Modal" placeholder="0.00" min="-1.00" max="180.00">                                        
+                                        <input type="hidden" class="form-control" id="RetailDealTermsID_Modal" placeholder="0.00" min="-1.00" max="180.00">
                                     </div>
                                 </div>
 
@@ -675,7 +692,31 @@
 
                     </div>
 
-
+                    <div class="form-group">
+                        <div class="modal fade" id="myModalCustom">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div style="width: 70%;padding: 10px;margin: auto;">
+                                        <label id="ProgressLabel" class="label-bullet-blue">Excel Workbook Uploader</label>
+                                        <br />
+                                        <div class="row">
+                                            <label class="label-bullet-blue">Select a Sheet</label>
+                                            <select id="selSheets" class="form-control">
+                                                <option value="0">
+                                                    - Select Sheet -
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class=""></div>
+                                        <div style="width: 70%;padding: 10px;margin: auto;" class="row">
+                                            <input type="button" id="cancel_button" class="btn btn-primary btn-lg" value="Cancel" onclick="$('#myModalCustom').modal('hide');" />
+                                            <input type="button" id="ok_button" class="btn btn-primary btn-lg" value="OK" onclick="wholesaledeal_uploader_run_data_factory_selected_sheets();" />  <!--run_data_factory_pull_excel(1)-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Row End -->
                     <!--Bottom Of Left Side Bar-->
                 </div>
@@ -859,12 +900,12 @@
             });
 
         });
-        //Data Tables
-        $(document).ready(function () {
-            $('#data-table').dataTable({
-                "sPaginationType": "full_numbers"
-            });
-        });
+        ////Data Tables
+        //$(document).ready(function () {
+        //    $('#data-table').dataTable({
+        //        "sPaginationType": "full_numbers"
+        //    });
+        //});
 
     </script>
 </body>

@@ -49,6 +49,13 @@ namespace WCFWebRole
              BodyStyle = WebMessageBodyStyle.Bare)]
         GraphMonthlyPrices MonthlyPricesGetInfo(String FieldString);
 
+
+        [WebGet(UriTemplate = "/PricingComparisonGetInfo?FieldString={FieldString}",
+             RequestFormat = WebMessageFormat.Json,
+             ResponseFormat = WebMessageFormat.Json,
+             BodyStyle = WebMessageBodyStyle.Bare)]
+        GraphPriceComparison PricingComparisonGetInfo(String FieldString);
+
         [WebGet(UriTemplate = "/FacilitiesGetInfo",
              RequestFormat = WebMessageFormat.Json,
              ResponseFormat = WebMessageFormat.Json,
@@ -233,7 +240,62 @@ namespace WCFWebRole
 
     }
 
+
     [DataContract]
+    public class GraphPriceComparisonGraphOneTwo
+    {
+        [DataMember]
+        public Int64 CustomerID { get; set; }
+        [DataMember]
+        public String Customer { get; set; }
+        [DataMember]
+        public Int64 SubCategoryID { get; set; }
+        [DataMember]
+        public String SubCategory { get; set; }
+        [DataMember]
+        public Double Price { get; set; }
+        [DataMember]
+        public Double PricePercent { get; set; }
+        [DataMember]
+        public Double TotalPrice { get; set; }
+
+    }
+    [DataContract]
+    public class GraphPriceComparisonGraphThree
+    {
+        [DataMember]
+        public Int64 CustomerID { get; set; }
+        [DataMember]
+        public String Customer { get; set; }
+        [DataMember]
+        public Int64 CategoryID { get; set; }
+        [DataMember]
+        public String Category { get; set; }
+        [DataMember]
+        public Double Price { get; set; }
+        
+
+    }
+    [DataContract]
+    public class GraphPriceComparison
+    {
+
+        [DataMember]
+        public List<GraphPriceComparisonGraphOneTwo> GraphOneTwo { get; set; }
+
+        [DataMember]
+        public List<GraphPriceComparisonGraphThree> GraphThree { get; set; }
+
+        [DataMember]
+        public List<SelectorType> Customer { get; set; }
+
+        [DataMember]
+        public List<SelectorType> Category { get; set; }
+        [DataMember]
+        public List<SelectorType> SubCategories { get; set; }
+
+    }
+
     public class GraphMonthlyPrices
     {
         [DataMember]
